@@ -1,6 +1,6 @@
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover"
 import { Button } from "@/components/ui/button"
-const GameTab = () => {
+const GamePage = () => {
 	return <>
 		<div className="flex justify-between h-full gap-4 p-4">
 			<Popover open={true}>
@@ -53,4 +53,4 @@ const GameTab = () => {
 	</>
 }
 
-export default GameTab
+export default GamePage

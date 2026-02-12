@@ -4,6 +4,8 @@ A custom chess piece and chess board configuration creator
 
 Using [shadcn](https://ui.shadcn.com/docs/components) and [tailwindcss](https://tailwindcss.com)
 
+Also uses [React-Router](https://reactrouter.com) in declarative mode
+
 # To Start working
 
 run `npm install` and then `npm run dev` to start the server
