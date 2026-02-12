@@ -6,6 +6,7 @@ const HomePage = () => {
 		<Button onClick={() => { navigate("games"); }}> Create Custom Game</Button>
 		<Button onClick={() => { navigate("pieces"); }}> Create Custom Piece</Button>
 		<Button onClick={() => { navigate("boards"); }}> Create Custom Board</Button>
+		<Button onClick={() => { navigate("start"); }}> Start A Game </Button>
 	</>
 
 
