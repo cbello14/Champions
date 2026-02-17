@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 const HomePage = () => {
 	const navigate = useNavigate();
 	return <>
-		<div className="content-center m-x-10 flex">
+		<div className="content-center">
 			<div className="flex flex-row justify-evenly gap-x-10 m-10">
 				<div className="flex grow flex-col justify-evenly gap-y-10">
 					<Button className="flex-auto" onClick={() => { navigate("start"); }}> Start A Game </Button>
