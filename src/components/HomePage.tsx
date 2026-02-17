@@ -3,14 +3,19 @@ import { useNavigate } from "react-router";
 const HomePage = () => {
 	const navigate = useNavigate();
 	return <>
-		<div className="flex-row justify-between">
-			<div className="flex-col">
-				<Button onClick={() => { navigate("games"); }}> Create Custom Game</Button>
-				<Button onClick={() => { navigate("pieces"); }}> Create Custom Piece</Button>
-				<Button onClick={() => { navigate("boards"); }}> Create Custom Board</Button>
-				<Button onClick={() => { navigate("start"); }}> Start A Game </Button>
+		<div className="content-center m-x-10 flex">
+			<div className="flex flex-row justify-evenly gap-x-10 m-10">
+				<div className="flex grow flex-col justify-evenly gap-y-10">
+					<Button className="flex-auto" onClick={() => { navigate("start"); }}> Start A Game </Button>
+					<div className="flex flex-row flex-grow gap-x-10 ">
+						<Button className="flex-1 h-full" onClick={() => { navigate("games"); }}> Create Custom Game</Button>
+						<Button className="flex-1 h-full" onClick={() => { navigate("pieces"); }}> Create Custom Piece</Button>
+						<Button className="flex-1 h-full" onClick={() => { navigate("boards"); }}> Create Custom Board</Button>
+					</div>
+					<Button className="flex-auto" onClick={() => { navigate("start"); }}> Resume A Game </Button>
+				</div>
+				<img src="https://www.regencychess.co.uk/images/how-to-set-up-a-chessboard/how-to-set-up-a-chessboard-7.jpg" />
 			</div>
-			<img src="https://www.regencychess.co.uk/images/how-to-set-up-a-chessboard/how-to-set-up-a-chessboard-7.jpg" />
 		</div>
 	</>
 
