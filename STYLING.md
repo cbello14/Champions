@@ -15,13 +15,13 @@ The naming for game and instance is open to change, this is just the best name I
 All objects will be in JSON
 
 ## Piece 
-
+```
 {
     name: string,
     moves: string[],
     captures: string[]
 }
-
+```
 ### Movement Notation
 Movement notation will be a variation of [Parlett's Movement Notation](https://en.wikipedia.org/wiki/Fairy_chess_piece#Parlett's_movement_notation)
 All moves will be expressed in some number of '&|#?', where '|' is a seperator 
@@ -41,7 +41,7 @@ All moves will be expressed in some number of '&|#?', where '|' is a seperator
 '&' denotes how the piece moves whether by jumping like a knight '~' or sliding '$' like rook, it can also have 'h' and/or 'v' appended to it for horizontal and vertical reflection.
 Sliding is blocked by empty spaces and other pieces, unless it can capture said other piece, in which case it will land there. This can also have a 'i' appended to show that this move can only be done if it is the piece's first move. Finally  'c', or 'o' can be appended last to indicate that this move can only be done if the piece will capture or the piece won't capture respectively
 
-The order of this goes (~/$) then (h,v) then (i) then (c/o). The only one of these requires is (~/$)
+The order of this goes (\~/$) then (h,v) then (i) then (c/o). The only one of these requires is (\~/$)
 
 Also note that we can combine '#-?' using more '|'
 
@@ -56,46 +56,46 @@ Given some move at index i in the moves array, the corresponding capture rule is
 If a move can be reflected, and has special capture rules (not 'x' or '') then the capture rules will be reflected when the move is
 
 ### A full example
-
+```
 {
     name: 'Pawn',
     moves: ['$o|1^', '$io|2^', '$hc|1/^', '$hc|1/^']
     captures: ['', '', '$1/^', '$1>']
 }
-
+```
 ## Board 
-
+```
 {
     shape: 'rect' | 'tri' | 'hex' | ... (whatever else is managed to implement),
     dimensions: number[]  (has to match to each shape),
     blocked: number[][],
 }
-
+```
 Each shape will have its own way of interpreting dimensions. For example a rectangular board will expect two numbers with the first being the width and the next being the height
 
 The blocked spaces are spaces that no piece can land on or cross (unless jumping over). It will be a list of arrays in the same format as the dimensions. Each shape will have its own 'origin' from which all coordinates on the board will be increased numbers from (eg: a 'rect' with a dimension of [10,10] might interpret the origin as the bottom left grid square, and so including [0,1] in the blocked list will block any pieces from being on the grid square one above the origin.
 
 ## Game 
-
+```
 {
     board: Board,
     pieces: Record<number[], [Piece, number]>
 }
-
+```
 Record is a dictionary, where the key will be a coordinate and the value will be a tuple containing the Piece at that location and a number corresponding to which player it belongs to.
 
 ## Instance 
-
+```
 {
     board: Board,
     pieces: Record<number[], [Piece, number]>,
     data: Record<Piece, Info>
 }
-
+```
 Here data is a dictionary which takes a piece and stores some corresponding information about it (eg: if it has moved, which pieces it has captured, etc.). If a piece is captured it will be removed from 'pieces' but it will still be in 'data'
 
 # Project Structure
-
+```
 src
 |
 +-- assets            # assets folder can contain all the static files such as images, fonts, etc.
@@ -131,3 +131,4 @@ src
 +-- App.tsx           # Child component of Main, anything rendered here will be rendered on every page of the website
 |
 +-- Main.tsx          # Parent component for the website all configuration is done here (eg: routing)
+```
