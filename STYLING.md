@@ -34,9 +34,9 @@ All moves will be expressed in some number of '&|#?', where '|' is a seperator
     - 'v' backwards
     - '^' forwards
     - '/^' up-right
-    - '\^' up-left
+    - '\\^' up-left
     - '/v' down-left
-    - '/v' down-right
+    - '\\v' down-right
 
 '&' denotes how the piece moves whether by jumping like a knight '~' or sliding '$' like rook, it can also have 'h' and/or 'v' appended to it for horizontal and vertical reflection.
 Sliding is blocked by empty spaces and other pieces, unless it can capture said other piece, in which case it will land there. This can also have a 'i' appended to show that this move can only be done if it is the piece's first move. Finally  'c', or 'o' can be appended last to indicate that this move can only be done if the piece will capture or the piece won't capture respectively
@@ -46,8 +46,8 @@ The order of this goes (\~/$) then (h,v) then (i) then (c/o). The only one of th
 Also note that we can combine '#-?' using more '|'
 
 Some examples:
-rook: ['%|n>', '%|n<', '%|nv', '%|n^'] or ['%hv|n>'] or ['%hv|n^'] and so on
-knight: ['~hv|2^|1>', '~hv|2>|1^']
+rook: `['%|n>', '%|n<', '%|nv', '%|n^']` or `['%hv|n>']` or `['%hv|n^']` and so on
+knight: `['~hv|2^|1>', '~hv|2>|1^']`
 
 ### Capturing
 
@@ -60,7 +60,7 @@ If a move can be reflected, and has special capture rules (not 'x' or '') then t
 {
     name: 'Pawn',
     moves: ['$o|1^', '$io|2^', '$hc|1/^', '$hc|1/^']
-    captures: ['', '', '$1/^', '$1>']
+    captures: ['', '', 'x', '1>']
 }
 ```
 ## Board 
