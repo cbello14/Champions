@@ -1,6 +1,7 @@
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover"
 import { Button } from "@/components/ui/button"
 const GameTab = () => {
+	
 	return <>
 		<div className="flex justify-between h-full gap-4 p-4">
 			<Popover open={true}>
@@ -24,9 +25,10 @@ const GameTab = () => {
 			</Popover>
 
 			<main className="flex-1 flex items-center justify-center">
-				<div className="text-center">
-					<h3>The Game</h3>
+				<div className="game-board">
+					<canvas id="board" width="600" height="600" style={{ border: "1px solid #FFFFFF" }}></canvas>
 				</div>
+				<script src="/src/components/TestBoardCanvas.js"></script>
 			</main>
 
 			<Popover open={true}>
