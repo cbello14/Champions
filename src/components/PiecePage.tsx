@@ -28,8 +28,9 @@ const PiecePage = () => {
 				</PopoverContent>
 			</Popover>
 			<main className="flex grow-5 items-center justify-center">
-				<div className="center">
+				<div className="flex flex-col center">
 					<img src="https://www.regencychess.co.uk/images/how-to-set-up-a-chessboard/how-to-set-up-a-chessboard-7.jpg" />
+					<Button className="m-5" type="submit"> Save </Button>
 				</div>
 			</main>
 			<div className="flex grow-1 flex-none w-48">
