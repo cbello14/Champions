@@ -12,7 +12,6 @@ const Board = ({ dimensions, cellWidth }: { dimensions: number[]; cellWidth: num
 		const selectedX = Math.trunc(x / cellWidth)
 		const selectedY = Math.trunc(y / cellWidth)
 		setSelected([selectedX, selectedY]);
-
 	}
 
 	useEffect(() => {
@@ -28,7 +27,7 @@ const Board = ({ dimensions, cellWidth }: { dimensions: number[]; cellWidth: num
 						context.fillStyle = (x + y) % 2 === 0 ? "white" : "black"
 						if (selected && selected[0] === x && selected[1] === y) context.fillStyle = "blue"
 						context.fillRect(cellX, cellY, cellWidth, cellWidth)
-						context.strokeText(x + " x " + y, cellX, cellY+cellWidth);
+						context.strokeText(x + " x " + y, cellX, cellY + cellWidth);
 					}
 				}
 			}
