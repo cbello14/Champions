@@ -2,6 +2,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import BoardsTab from "@/components/BoardsTab"
 import PiecesTab from "@/components/PiecesTab"
 import GameTab from "@/components/GameTab"
+
 const NavMenu = () => {
 
 
