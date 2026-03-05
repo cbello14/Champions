@@ -4,14 +4,8 @@ type movementTypeVerbose = 'jump' | 'slide';
 type reflect = 'h' | 'v' | 'hv' | undefined
 type reflectVerbose = 'horizontal' | 'vertical' | 'horizontal-vertical' | undefined
 
-type initialMove = 'i' | undefined
-type initialMoveVerbose = 'initial' | undefined
-
-type capturing = 'c' | 'o'
-type capturingVerbose = 'capture' | 'non-capture'
-
-type moveAttributes = [movementType, reflect, initialMove, capturing]
-type moveAttributesVerbose = [movementTypeVerbose, reflectVerbose, initialMoveVerbose, capturingVerbose]
+type moveAttributes = { type: movementType, reflection?: reflect, initialMove?: boolean, capturing?: boolean }
+type moveAttributesVerbose = { type: movementTypeVerbose, reflection?: reflectVerbose, initialMove?: boolean, capturing?: boolean }
 
 type cardinalDirection = '>' | '<' | 'v' | '^'
 type cardinalDirectionVerbose = 'right' | 'left' | 'down' | 'up'
@@ -31,4 +25,4 @@ type movementVerbose = [distance, directionVerbose]
 type move = [moveAttributes, ...movement[]]
 type moveVerbose = [moveAttributesVerbose, ...movementVerbose[]]
 
-export type { movementType, movementTypeVerbose, reflect, reflectVerbose, initialMove, initialMoveVerbose, capturing, capturingVerbose, moveAttributes, moveAttributesVerbose, cardinalDirection, cardinalDirectionVerbose, diagonalDirection, diagonalDirectionVerbose, direction, directionVerbose, distance, movement, movementVerbose, move, moveVerbose }
+export type { movementType, movementTypeVerbose, reflect, reflectVerbose, moveAttributes, moveAttributesVerbose, cardinalDirection, cardinalDirectionVerbose, diagonalDirection, diagonalDirectionVerbose, direction, directionVerbose, distance, movement, movementVerbose, move, moveVerbose }
