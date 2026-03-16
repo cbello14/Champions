@@ -1,16 +1,23 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button";
 import SideBar from "@/components/SideBar.tsx";
+import RectBoardPiece from "./RectBoardPiece";
+import type { piece } from "@/features/pieces/types/piece";
 const PiecePage = () => {
 
 	const [piecesOpen, setPiecesOpen] = useState<boolean>(true);
+	const piece: piece = {
+		name: "pawn",
+		moves: [],
+		captures: [],
+	}
 
 	return <>
 		<div className="flex flex-row justify-between gap-4 p-4 items-start">
 			<SideBar isOpen={piecesOpen} setIsOpen={(state: boolean) => { setPiecesOpen(state) }} name={"Pieces"} content={<h2> Pieces would go here </h2>} align={"left"} />
 			<main className="flex grow-5 items-center justify-center">
 				<div className="flex flex-col center">
-					<img src="https://www.regencychess.co.uk/images/how-to-set-up-a-chessboard/how-to-set-up-a-chessboard-7.jpg" />
+					<RectBoardPiece cellWidth={100} moves={[[0, 0], [1, 1], [2, 2], [3, 3]]} captures={[[1, 1]]} piece={piece} location={[4, 4]} />
 					<Button className="m-5" type="submit"> Save </Button>
 				</div>
 			</main>
