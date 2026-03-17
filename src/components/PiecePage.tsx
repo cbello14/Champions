@@ -2,22 +2,21 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button";
 import SideBar from "@/components/SideBar.tsx";
 import RectBoardPiece from "./RectBoardPiece";
-import type { piece } from "@/features/pieces/types/piece";
+import { calculateMovesRect, type piece } from "@/features/pieces/types/piece";
+import type { coordinate } from "@/features/boards/types/board";
+import { king } from "@/features/pieces/types/defaultPieces";
 const PiecePage = () => {
 
+	const piece: piece = king
+	const location: coordinate = [4, 4]
 	const [piecesOpen, setPiecesOpen] = useState<boolean>(true);
-	const piece: piece = {
-		name: "pawn",
-		moves: [],
-		captures: [],
-	}
-
+	const moves = calculateMovesRect(piece, location, [8, 8], [])
 	return <>
 		<div className="flex flex-row justify-between gap-4 p-4 items-start">
 			<SideBar isOpen={piecesOpen} setIsOpen={(state: boolean) => { setPiecesOpen(state) }} name={"Pieces"} content={<h2> Pieces would go here </h2>} align={"left"} />
 			<main className="flex grow-5 items-center justify-center">
 				<div className="flex flex-col center">
-					<RectBoardPiece cellWidth={100} moves={[[0, 0], [1, 1], [2, 2], [3, 3]]} captures={[[1, 1]]} piece={piece} location={[4, 4]} />
+					<RectBoardPiece cellWidth={100} moves={moves} captures={[]} piece={piece} location={location} />
 					<Button className="m-5" type="submit"> Save </Button>
 				</div>
 			</main>
