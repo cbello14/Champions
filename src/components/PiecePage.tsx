@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button";
 import SideBar from "@/components/SideBar.tsx";
-import RectBoardPiece from "./RectBoardPiece";
+import RectBoardPiece from "./RectBoard/RectBoardPiece";
 import { calculateMovesRect, type piece } from "@/features/pieces/types/piece";
 import type { coordinate } from "@/features/boards/types/board";
 import { king } from "@/features/pieces/types/defaultPieces";

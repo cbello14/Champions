@@ -1,14 +1,13 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef } from "react"
 import type { RectBoardDrawingFunction, RectBoardDrawingParams } from "@/types/boardDrawing"
+import type { coordinate } from "@/features/boards/types/board";
 
 
 const RectBoardGeneric =
-	({ dimensions, cellWidth, bottomLayer, middleLayer, topLayer }:
-		{ dimensions: number[]; cellWidth: number; bottomLayer: RectBoardDrawingFunction; middleLayer: RectBoardDrawingFunction; topLayer: RectBoardDrawingFunction }) => {
-		const [selected, setSelected] = useState<number[] | null>(null);
+	({ dimensions, cellWidth, drawingFunction, selected, setSelected }:
+		{ dimensions: number[]; cellWidth: number; drawingFunction: RectBoardDrawingFunction, selected: coordinate | null, setSelected: (newSelected: coordinate | null) => void }) => {
 		const canvasRef = useRef<HTMLCanvasElement>(null);
 		const handleCanvasClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
-			console.log("Hello");
 			const canvas = canvasRef.current;
 			if (!canvas) return;
 			const rect = canvas.getBoundingClientRect();
@@ -25,18 +24,11 @@ const RectBoardGeneric =
 				const context = canvasRef.current.getContext("2d");
 
 				if (context) {
-					for (let x = 0; x < dimensions[0]; x++) {
-						for (let y = 0; y < dimensions[1]; y++) {
-							const isSelected = !!selected && selected[0] === x && selected[1] === y;
-							const params: RectBoardDrawingParams = { gridX: x, gridY: y, cellWidth: cellWidth, ctx: context, selected: isSelected }
-							bottomLayer(params);
-							middleLayer(params);
-							topLayer(params);
-						}
-					}
+					const params: RectBoardDrawingParams = { boardSize: dimensions, cellWidth: cellWidth, ctx: context }
+					drawingFunction(params)
 				}
 			}
-		}, [dimensions, cellWidth, selected, bottomLayer, middleLayer, topLayer])
+		}, [dimensions, cellWidth, selected, drawingFunction])
 		return <>
 			<canvas ref={canvasRef} onClick={handleCanvasClick} width={dimensions[0] * cellWidth} height={dimensions[1] * cellWidth} />
 		</>

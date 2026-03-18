@@ -1,7 +1,7 @@
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Card, CardHeader } from "@/components/ui/card"
-import RectBoardBasic from "@/components/RectBoardBasic.tsx"
+import RectBoardBasic from "@/components/RectBoard/RectBoardBasic"
 import { X } from "lucide-react"
 import { useState } from "react"
 const BoardPage = () => {
