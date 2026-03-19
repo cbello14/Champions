@@ -1,4 +1,4 @@
-import type { coordinate, board } from "@/features/boards/types/board"
+import type { coordinate} from "@/features/boards/types/board"
 import type { piece } from "@/features/pieces/types/piece"
 
 type turn = number
@@ -15,10 +15,4 @@ type info = {
 	movesMade: number,
 }
 
-type instance = {
-	board: board,
-	pieces: Map<coordinate, instancePiece>,
-	data: Map<instancePiece, info>
-}
-
-export type { turn, info, instance }
+export type {turn,instancePiece,info}

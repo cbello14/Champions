@@ -1,4 +1,4 @@
-import { movement, movementVerbose } from "./move"
+import type { movement, movementVerbose } from "./move"
 
 type capture = 'x' | '' | movement[]
 type captureVerbose = 'direct' | 'no-capture' | movementVerbose[]

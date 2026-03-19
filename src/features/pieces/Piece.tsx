@@ -7,7 +7,7 @@ export class Piece {
     captures: Capture[];
     constructor(){
         this.name="pawn";
-        this.image="Not yet"
+        this.image="Not yet";
         var M1= Move.genericConstruct();
         var C1= Capture.genericConstruct();
         this.moves=[M1];
@@ -106,7 +106,7 @@ export function toReadableDirection(s:string){
     }
 
     
-    var split2=splitted[1];
+    //var split2=splitted[1];
     // number & direction
 }
 
