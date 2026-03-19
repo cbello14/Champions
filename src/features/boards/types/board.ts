@@ -1,6 +1,19 @@
 type shape = 'rect' | 'tri' | 'hex'
 type dimension = number[]
 type coordinate = number[]
+type coordinateString = string
+
+export const coordinateToString: (coordinate: coordinate) => coordinateString = (coordinate: coordinate) => { return JSON.stringify(coordinate) }
+export const coordinateStringToCoordinate: (string: coordinateString) => coordinate | null = (string: coordinateString) => {
+	// unfortunately necessary 
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
+	const parsed: any = JSON.parse(string)
+	if (Array.isArray(parsed) && parsed.every((item) => typeof item === "number")) {
+		return parsed as coordinate
+	} else {
+		return null
+	}
+}
 
 type board = {
 	name: string,
@@ -9,4 +22,4 @@ type board = {
 	blocked: coordinate[]
 }
 
-export type { shape, dimension, coordinate, board }
+export type { shape, dimension, coordinate, coordinateString, board }

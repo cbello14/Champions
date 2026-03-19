@@ -5,7 +5,6 @@ import type { movement, move, direction } from "./move";
 type attributeParams = { isJump: boolean, flippedHorizontally: boolean, flippedVertically: boolean }
 
 const calculateMovesRect = (piece: piece, location: coordinate, boardSize: dimension, blocking: coordinate[], teamDirection: coordinate, isFirstMove: boolean) => {
-	console.log("Calculating moves for " + piece.name)
 	const possibleMoves: coordinate[] = [];
 	piece.moves.forEach((move: move) => {
 		const isJump = move.attributes.type == '~'
@@ -36,72 +35,77 @@ const calculateMovesRect = (piece: piece, location: coordinate, boardSize: dimen
 }
 
 const calculateMoveRect = (location: coordinate, move: move, boardSize: dimension, blocking: coordinate[], attributes: attributeParams, teamDirection: coordinate) => {
-	// console.log("Calculating movements for " + JSON.stringify(move))
-	let possibleMoves: coordinate[] = [];
+	if (attributes.isJump) {
+		return calculateMoveRectJump(location, move, boardSize, blocking, attributes, teamDirection)
+	} else {
+		return calculateMoveRectNoJump(location, move, boardSize, blocking, attributes, teamDirection)
+	}
+}
+
+const calculateMoveRectJump = (location: coordinate, move: move, boardSize: dimension, blocking: coordinate[], attributes: attributeParams, teamDirection: coordinate) => {
+	let landingLocation: coordinate = location;
+	move.movements.forEach((movement: movement) => {
+		landingLocation = calculateMovementRectJump(landingLocation, movement, boardSize, attributes, teamDirection)
+	})
+	if (blocking.some((blockedCoordinate) => blockedCoordinate[0] === landingLocation[0] && blockedCoordinate[1] === landingLocation[1])) {
+		return [];
+	} else if (
+		landingLocation[0] < 0 || landingLocation[1] < 0 || landingLocation[0] >= boardSize[0] || landingLocation[1] >= boardSize[1]
+	) {
+		return [];
+	}
+	return [landingLocation];
+}
+
+const calculateMoveRectNoJump = (location: coordinate, move: move, boardSize: dimension, blocking: coordinate[], attributes: attributeParams, teamDirection: coordinate) => {
+	const possibleMoves: coordinate[] = [];
 	let startingLocation = location;
 	move.movements.forEach((movement: movement) => {
 		if (!startingLocation.length) {
 			return;
 		}
-		const movements = calculateMovementRect(startingLocation, movement, boardSize, blocking, attributes, teamDirection)
-		if (attributes.isJump) {
-			possibleMoves = movements
-		} else {
-			possibleMoves.push(...movements);
-		}
+		const movements = calculateMovementRectNoJump(startingLocation, movement, boardSize, blocking, attributes, teamDirection)
+		possibleMoves.push(...movements);
 		startingLocation = possibleMoves[possibleMoves.length - 1]
 	})
-	// console.log("Possible locations for this move are" + JSON.stringify(possibleMoves))
 	return possibleMoves;
 }
 
-const calculateMovementRect = (location: coordinate, movement: movement, boardSize: dimension, blocking: coordinate[], attributes: attributeParams, teamDirection: coordinate) => {
-	let possibleMoves: coordinate[] = [];
+const calculateMovementRectNoJump = (location: coordinate, movement: movement, boardSize: dimension, blocking: coordinate[], attributes: attributeParams, teamDirection: coordinate) => {
+	const possibleMoves: coordinate[] = [];
 	const movementDirection = parseDirectionRect(movement.direction, teamDirection);
-	if (attributes.flippedHorizontally) {
-		movementDirection[0] *= -1;
-	}
-	if (attributes.flippedVertically) {
-		movementDirection[1] *= -1;
-	}
+	movementDirection[0] *= attributes.flippedHorizontally ? -1 : 1
+	movementDirection[1] *= attributes.flippedVertically ? -1 : 1
 	const distance = movement.distance === 'n' ? Math.max(boardSize[0], boardSize[1]) : movement.distance
 	let prevLoc = location;
 	for (let i = 0; i < distance; i++) {
 		const nextLoc = [prevLoc[0] + movementDirection[0], prevLoc[1] + movementDirection[1]];
-		// console.log("Next location in this movement is " + JSON.stringify(nextLoc))
 		if (nextLoc[0] >= boardSize[0] || nextLoc[1] >= boardSize[1] || nextLoc[0] < 0 || nextLoc[1] < 0) {
-			// out of bounds
-			// console.log("Went out of bounds nvm")
-			if (attributes.isJump) {
-				possibleMoves = []
-			}
 			break;
 		}
-		else if (blocking.includes(nextLoc)) {
-			// on invalid spot 
-			// console.log("Hit an invalid spot, nvm")
-			if (attributes.isJump) {
-				possibleMoves = []
-			}
+		else if (blocking.some((blockingCoordinate: coordinate) => blockingCoordinate[0] === nextLoc[0] && blockingCoordinate[1] === nextLoc[1])) {
 			break;
 		}
-		else {
-			// console.log("Valid loc, adding to array")
-			if (attributes.isJump) {
-				possibleMoves[0] = nextLoc
-			} else {
-				possibleMoves.push(nextLoc);
-			}
-			prevLoc = nextLoc;
-		}
+		possibleMoves.push(nextLoc);
+		prevLoc = nextLoc;
 	}
-	// console.log("Possible locations for this movement are" + JSON.stringify(possibleMoves))
 	return possibleMoves;
+}
+
+const calculateMovementRectJump = (location: coordinate, movement: movement, boardSize: dimension, attributes: attributeParams, teamDirection: coordinate) => {
+	let currentLocation: coordinate = location;
+	const movementDirection = parseDirectionRect(movement.direction, teamDirection);
+	movementDirection[0] *= attributes.flippedHorizontally ? -1 : 1
+	movementDirection[1] *= attributes.flippedVertically ? -1 : 1
+	const distance = movement.distance === 'n' ? Math.max(boardSize[0], boardSize[1]) : movement.distance
+	for (let i = 0; i < distance; i++) {
+		currentLocation = [currentLocation[0] + movementDirection[0], currentLocation[1] + movementDirection[1]];
+	}
+	return currentLocation;
 
 }
 
 const parseDirectionRect = (direction: direction, teamDirection: coordinate) => {
-	// top left corner is 0,0
 	let coordinateDirection;
 
 	switch (direction) {

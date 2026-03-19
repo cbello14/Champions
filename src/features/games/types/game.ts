@@ -1,9 +1,9 @@
-import type { board, coordinate } from "@/features/boards/types/board"
+import type { board, coordinateString } from "@/features/boards/types/board"
 import type { piece } from "@/features/pieces/types/piece"
 
 type game = {
 	board: board,
-	pieces: Record<coordinate, [piece, number]>
+	pieces: Map<coordinateString, [piece, number]>
 }
 
 export type { game }

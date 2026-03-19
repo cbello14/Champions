@@ -1,7 +1,11 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import SideBar from "@/components/SideBar.tsx"
+import { basicGame } from "@/features/games/types/defaultGames"
+import RectBoardGame from "./RectBoard/RectBoardGame"
+import type { game } from "@/features/games/types/game"
 const GamePage = () => {
+	const game: game = basicGame
 
 	const [piecesOpen, setPiecesOpen] = useState<boolean>(true);
 	const [boardsOpen, setBoardsOpen] = useState<boolean>(true);
@@ -12,7 +16,7 @@ const GamePage = () => {
 
 			<main className="flex grow-5 items-center justify-center">
 				<div className="flex flex-col center">
-					<img src="https://www.regencychess.co.uk/images/how-to-set-up-a-chessboard/how-to-set-up-a-chessboard-7.jpg" />
+					<RectBoardGame cellWidth={100} game={game} />
 					<Button className="m-5" type="submit"> Save </Button>
 				</div>
 			</main>
