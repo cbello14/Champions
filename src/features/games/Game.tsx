@@ -1,16 +1,13 @@
-import {Piece} from "@/features/pieces/Piece"
 import {Board} from "@/features/boards/Board"
-import type {pieces} from "@/features/games/types/game"
+import type { coordinate } from "@/types/board";
+import type { instancePiece } from "@/types/instance";
 
 export class Game{
     board: Board;
-    piecesRecord: pieces //keys have got to be a string to be hashable
-    constructor(b: Board, r:pieces ){
+    pieces: Map<coordinate,instancePiece> //keys have got to be a string to be hashable
+    constructor(b: Board=new Board(), r:Map<coordinate,instancePiece> =new Map<coordinate,instancePiece>() ){
        this.board=b
-       this.piecesRecord=r
+       this.pieces=r
     }
 
-    static GenericCon(){ 
-        return new Game(Board.GenericCon(),{coordinate:"null", piece:[new Piece(),-1]} )
-    }
 }

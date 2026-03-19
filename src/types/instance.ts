@@ -1,11 +1,11 @@
-import type { coordinate} from "@/features/boards/types/board"
-import type { piece } from "@/features/pieces/types/piece"
+import type { coordinate} from "@/types/board"
+import { Piece } from "@/features/pieces/Piece"
 
 type turn = number
 type team = number
 
 type instancePiece = {
-    piece: piece,
+    piece: Piece,
     team: team
 }
 

@@ -1,5 +1,5 @@
-import type { move, moveVerbose } from './move'
-import type { capture, captureVerbose } from './capture'
+import type { move, moveVerbose } from '@/types/move'
+import type { capture, captureVerbose } from '@/types/capture'
 
 type piece = {
 	name: string,
@@ -24,3 +24,4 @@ type pieceAlternativeVerbose = {
 }
 
 export type { piece, pieceVerbose, pieceAlternative, pieceAlternativeVerbose }
+
