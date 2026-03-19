@@ -1,4 +1,4 @@
-import type { coordinate } from "@/features/boards/types/board";
+import type { coordinate } from "@/types/board";
 
 type movementType = '~' | '$';
 type movementTypeVerbose = 'jump' | 'slide';
@@ -28,3 +28,20 @@ type move = { attributes: moveAttributes, movement: movement[] }
 type moveVerbose = { attributes: moveAttributesVerbose, movement: movementVerbose[] }
 
 export type { movementType, movementTypeVerbose, reflect, reflectVerbose, moveAttributes, moveAttributesVerbose, cardinalDirection, cardinalDirectionVerbose, diagonalDirection, diagonalDirectionVerbose, direction, directionVerbose, distance, movement, movementVerbose, move, moveVerbose }
+
+/*
+POssible some class version
+
+
+export class Move {
+    direction: string;
+    condition: boolean;
+    static genericConstruct(){
+        return new Move("$o|1^",true);
+    }
+    constructor(directions: string,conditions: boolean){
+        this.direction=directions
+        this.condition=conditions
+    }    
+};
+*/
