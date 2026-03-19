@@ -2,15 +2,16 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button";
 import SideBar from "@/components/SideBar.tsx";
 import RectBoardPiece from "./RectBoard/RectBoardPiece";
-import { calculateMovesRect, type piece } from "@/features/pieces/types/piece";
+import { type piece } from "@/features/pieces/types/piece";
+import { calculateMovesRect } from "@/features/pieces/types/moveCalculation";
 import type { coordinate } from "@/features/boards/types/board";
-import { king } from "@/features/pieces/types/defaultPieces";
+import { king, knight, pawn } from "@/features/pieces/types/defaultPieces";
 const PiecePage = () => {
 
-	const piece: piece = king
+	const piece: piece = pawn
 	const location: coordinate = [4, 4]
 	const [piecesOpen, setPiecesOpen] = useState<boolean>(true);
-	const moves = calculateMovesRect(piece, location, [8, 8], [])
+	const moves = calculateMovesRect(piece, location, [8, 8], [], [1, 1], false)
 	return <>
 		<div className="flex flex-row justify-between gap-4 p-4 items-start">
 			<SideBar isOpen={piecesOpen} setIsOpen={(state: boolean) => { setPiecesOpen(state) }} name={"Pieces"} content={<h2> Pieces would go here </h2>} align={"left"} />
