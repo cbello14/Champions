@@ -39,8 +39,8 @@ const RectBoardDrawing = {
 
 
 	rectBoardGame: (params: RectBoardDrawingParams, game: Game) => {
-		game.getKeys().forEach((coordinate: coordinate) => {
-			const instancePiece = game.getPiece(coordinate)
+		game.pieces.getKeys().forEach((coordinate: coordinate) => {
+			const instancePiece = game.pieces.getInstancePiece(coordinate)
 			if (instancePiece) {
 				rectBoardDrawPiece(params, instancePiece.piece, coordinate, instancePiece.team)
 			}

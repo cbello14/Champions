@@ -3,9 +3,9 @@ import { basic } from "../boards/defaultBoards";
 import { pawn, rook, knight, bishop, queen, king } from "../pieces/defaultPieces";
 import type { coordinateString } from "@/types/board";
 import type { instancePiece } from "@/types/instance";
+import { InstancePieceMap } from "@/types/instancePieceMap";
 
-export const basicGame: Game = new Game(
-	basic,
+const map =
 	new Map<coordinateString, instancePiece>([
 		["[0,0]", { piece: rook, team: 0 }], ["[1,0]", { piece: knight, team: 0 }], ["[2,0]", { piece: bishop, team: 0 }], ["[3,0]", { piece: queen, team: 0 }],
 		["[4,0]", { piece: king, team: 0 }], ["[5,0]", { piece: bishop, team: 0 }], ["[6,0]", { piece: knight, team: 0 }], ["[7,0]", { piece: rook, team: 0 }],
@@ -17,4 +17,10 @@ export const basicGame: Game = new Game(
 		["[0,7]", { piece: rook, team: 1 }], ["[1,7]", { piece: knight, team: 1 }], ["[2,7]", { piece: bishop, team: 1 }], ["[3,7]", { piece: queen, team: 1 }],
 		["[4,7]", { piece: king, team: 1 }], ["[5,7]", { piece: bishop, team: 1 }], ["[6,7]", { piece: knight, team: 1 }], ["[7,7]", { piece: rook, team: 1 }]
 	])
+
+const instancePieceMap = new InstancePieceMap(map)
+
+export const basicGame: Game = new Game(
+	basic,
+	instancePieceMap
 );

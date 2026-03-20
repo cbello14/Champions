@@ -17,11 +17,11 @@ const RectBoardGame = ({ cellWidth, game }:
 		RectBoardDrawing.rectBoardColoring(params, "white", "black", selected);
 		let moves: coordinate[] = []
 		if (selected) {
-			const selectedPiece = game.getPiece(selected)
+			const selectedPiece = game.pieces.getInstancePiece(selected)
 			const direction = selectedPiece?.team === 1 ? [1, 1] : [-1, -1]
-			const gamePieces = [...game.getKeys()].filter((value): value is coordinate => (value[0] !== selected[0] || value[1] !== selected[1]))
-			const blocked = [...gamePieces, ...game.getBoard().blocked]
-			moves = selectedPiece ? calculateMovesRect(selectedPiece.piece, selected, game.getBoard().dimensions, blocked, direction, true) : [];
+			const gamePieces = [...game.pieces.getKeys()].filter((value): value is coordinate => (value[0] !== selected[0] || value[1] !== selected[1]))
+			const blocked = [...gamePieces, ...game.board.blocked]
+			moves = selectedPiece ? calculateMovesRect(selectedPiece.piece, selected, game.board.dimensions, blocked, direction, true) : [];
 		}
 		RectBoardDrawing.rectBoardMoveCaptures(params, moves, [])
 		RectBoardDrawing.rectBoardGame(params, game)

@@ -1,4 +1,4 @@
-import type { coordinate, dimension } from "@//types/board";
+import type { coordinate, dimension } from "@/types/board";
 import { Piece } from "@/features/pieces/piece";
 import type { movement, move, direction } from "./move";
 
