@@ -2,7 +2,7 @@ import {  type coordinate, type dimension } from "./board"
 import { Piece } from "@/features/pieces/piece"
 import type { Game } from "@/features/games/game"
 
-type RectBoardDrawingParams = { boardSize: dimension, cellWidth: number, ctx: CanvasRenderingContext2D }
+interface RectBoardDrawingParams { boardSize: dimension, cellWidth: number, ctx: CanvasRenderingContext2D }
 type RectBoardDrawingFunction = (params: RectBoardDrawingParams) => void
 
 

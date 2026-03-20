@@ -1,10 +1,10 @@
 import type { coordinate, dimension } from "@//types/board";
-import type { piece } from "./piece";
+import { Piece } from "@/features/pieces/piece";
 import type { movement, move, direction } from "./move";
 
-type attributeParams = { isJump: boolean, flippedHorizontally: boolean, flippedVertically: boolean }
+interface attributeParams { isJump: boolean, flippedHorizontally: boolean, flippedVertically: boolean }
 
-const calculateMovesRect = (piece: piece, location: coordinate, boardSize: dimension, blocking: coordinate[], teamDirection: coordinate, isFirstMove: boolean) => {
+const calculateMovesRect = (piece: Piece, location: coordinate, boardSize: dimension, blocking: coordinate[], teamDirection: coordinate, isFirstMove: boolean) => {
 	const possibleMoves: coordinate[] = [];
 	piece.moves.forEach((move: move) => {
 		const isJump = move.attributes.type == '~'

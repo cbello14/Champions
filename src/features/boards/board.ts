@@ -5,7 +5,7 @@ export class Board {
 	shape: shape;
 	dimensions: number[]
 	blocked: coordinate[]
-	constructor(n: string = "basic", shap: shape = 'rect', dim: [number, number] = [8, 8], b: coordinate[] = []) {
+	constructor(n = "basic", shap: shape = 'rect', dim: [number, number] = [8, 8], b: coordinate[] = []) {
 		this.name = n
 		this.shape = shap
 		this.dimensions = dim

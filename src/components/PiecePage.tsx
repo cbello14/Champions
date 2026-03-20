@@ -5,7 +5,7 @@ import RectBoardPiece from "./RectBoard/RectBoardPiece";
 import { Piece } from "@/features/pieces/piece";
 import { calculateMovesRect } from "@/types/moveCalculation";
 import type { coordinate } from "@/types/board";
-import { king, knight, pawn } from "@/features/pieces/defaultPieces";
+import { pawn } from "@/features/pieces/defaultPieces";
 const PiecePage = () => {
 
 	const piece: Piece = pawn

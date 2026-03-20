@@ -6,7 +6,7 @@ import tseslint from 'typescript-eslint'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-	globalIgnores(['dist', './src/components/ui/*.tsx']),
+	globalIgnores(['dist', './src/components/ui/*.tsx', './src/main.tsx', './src/hooks/use-mobile.ts']),
 	{
 		files: ['**/*.{ts,tsx}'],
 		extends: [
@@ -14,6 +14,7 @@ export default defineConfig([
 			tseslint.configs.recommended,
 			tseslint.configs.recommendedTypeChecked,
 			tseslint.configs.strictTypeChecked,
+			tseslint.configs.stylisticTypeChecked,
 			reactHooks.configs.flat.recommended,
 			reactRefresh.configs.vite,
 		],

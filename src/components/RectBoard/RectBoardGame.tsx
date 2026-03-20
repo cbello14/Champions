@@ -18,7 +18,7 @@ const RectBoardGame = ({ cellWidth, game }:
 		let moves: coordinate[] = []
 		if (selected) {
 			const selectedPiece = game.getPiece(selected)
-			const direction = selectedPiece && selectedPiece.team === 1 ? [1, 1] : [-1, -1]
+			const direction = selectedPiece?.team === 1 ? [1, 1] : [-1, -1]
 			const gamePieces = [...game.getKeys()].filter((value): value is coordinate => (value[0] !== selected[0] || value[1] !== selected[1]))
 			const blocked = [...gamePieces, ...game.getBoard().blocked]
 			moves = selectedPiece ? calculateMovesRect(selectedPiece.piece, selected, game.getBoard().dimensions, blocked, direction, true) : [];
