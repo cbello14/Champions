@@ -1,6 +1,6 @@
 import RectBoardGeneric from "@/components/RectBoard/RectBoardGeneric"
 import { type coordinate } from "@/types/board";
-import { rectBoardColoring, rectBoardMoveCaptures, rectBoardGame } from "@/types/boardDrawing"
+import { RectBoardDrawing } from "@/types/boardDrawing.ts";
 import type { RectBoardDrawingParams } from "@/types/boardDrawing.ts"
 import { useCallback, useState } from "react";
 import { Game } from "@/features/games/game";
@@ -14,7 +14,7 @@ const RectBoardGame = ({ cellWidth, game }:
 	const setSelected = (newSelected: coordinate | null) => { changeSelected(newSelected) }
 
 	const drawingFunction = useCallback((params: RectBoardDrawingParams) => {
-		rectBoardColoring(params, "white", "black", selected);
+		RectBoardDrawing.rectBoardColoring(params, "white", "black", selected);
 		let moves: coordinate[] = []
 		if (selected) {
 			const selectedPiece = game.getPiece(selected)
@@ -23,8 +23,8 @@ const RectBoardGame = ({ cellWidth, game }:
 			const blocked = [...gamePieces, ...game.getBoard().blocked]
 			moves = selectedPiece ? calculateMovesRect(selectedPiece.piece, selected, game.getBoard().dimensions, blocked, direction, true) : [];
 		}
-		rectBoardMoveCaptures(params, moves, [])
-		rectBoardGame(params, game)
+		RectBoardDrawing.rectBoardMoveCaptures(params, moves, [])
+		RectBoardDrawing.rectBoardGame(params, game)
 	}, [game, selected]);
 
 	return (<RectBoardGeneric dimensions={[8, 8]} cellWidth={cellWidth} drawingFunction={drawingFunction} selected={selected} setSelected={setSelected} />)

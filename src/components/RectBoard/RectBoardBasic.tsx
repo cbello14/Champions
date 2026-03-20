@@ -1,6 +1,6 @@
 import RectBoardGeneric from "@/components/RectBoard/RectBoardGeneric"
 import type { coordinate } from "@/types/board";
-import { rectBoardColoring } from "@/types/boardDrawing"
+import { RectBoardDrawing } from "@/types/boardDrawing.ts";
 import type { RectBoardDrawingParams } from "@/types/boardDrawing.ts"
 import { useCallback, useState } from "react";
 
@@ -12,7 +12,7 @@ const RectBoardBasic = ({ dimensions, cellWidth, primaryColor = "white", alterna
 	const setSelected = (newSelected: coordinate | null) => { changeSelected(newSelected) }
 
 	const drawingFunction = useCallback((params: RectBoardDrawingParams) => {
-		rectBoardColoring(params, primaryColor, alternateColor, selected, selectedColor, outlineColor);
+		RectBoardDrawing.rectBoardColoring(params, primaryColor, alternateColor, selected, selectedColor, outlineColor);
 	}, [primaryColor, alternateColor, selectedColor, selected, outlineColor]);
 
 
