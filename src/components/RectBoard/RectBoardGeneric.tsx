@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react"
 import type { RectBoardDrawingFunction, RectBoardDrawingParams } from "@/types/boardDrawing"
-import type { coordinate } from "@/features/boards/types/board";
+import type { coordinate } from "@/types/board";
 
 
 const RectBoardGeneric =
@@ -19,11 +19,12 @@ const RectBoardGeneric =
 		}
 
 		useEffect(() => {
-			// put this inside a seperate file at some point
 			if (canvasRef.current) {
 				const context = canvasRef.current.getContext("2d");
+				const canvas = canvasRef.current
 
 				if (context) {
+					context.clearRect(0, 0, canvas.width, canvas.height);
 					const params: RectBoardDrawingParams = { boardSize: dimensions, cellWidth: cellWidth, ctx: context }
 					drawingFunction(params)
 				}

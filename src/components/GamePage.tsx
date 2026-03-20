@@ -1,11 +1,11 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import SideBar from "@/components/SideBar.tsx"
-import { basicGame } from "@/features/games/types/defaultGames"
+import { basicGame } from "@/features/games/defaultGames"
 import RectBoardGame from "./RectBoard/RectBoardGame"
-import type { game } from "@/features/games/types/game"
+import { Game } from "@/features/games/game"
 const GamePage = () => {
-	const game: game = basicGame
+	const game: Game = basicGame
 
 	const [piecesOpen, setPiecesOpen] = useState<boolean>(true);
 	const [boardsOpen, setBoardsOpen] = useState<boolean>(true);

@@ -1,12 +1,12 @@
 import RectBoardGeneric from "@/components/RectBoard/RectBoardGeneric"
-import type { coordinate } from "@/features/boards/types/board";
-import type { piece } from "@/features/pieces/types/piece";
+import type { coordinate } from "@/types/board";
+import { Piece } from "@/features/pieces/piece";
 import { rectBoardColoring, rectBoardMoveCaptures, rectBoardPiece } from "@/types/boardDrawing"
 import type { RectBoardDrawingParams } from "@/types/boardDrawing.ts"
 import { useCallback, useState } from "react";
 
 const RectBoardPiece = ({ cellWidth, moves, captures, piece, location }:
-	{ cellWidth: number; moves: coordinate[], captures: coordinate[], piece: piece, location: coordinate }) => {
+	{ cellWidth: number; moves: coordinate[], captures: coordinate[], piece: Piece, location: coordinate }) => {
 
 	const [selected, changeSelected] = useState<coordinate | null>(null)
 

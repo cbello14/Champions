@@ -1,5 +1,5 @@
 import RectBoardGeneric from "@/components/RectBoard/RectBoardGeneric"
-import type { coordinate } from "@/features/boards/types/board";
+import type { coordinate } from "@/types/board";
 import { rectBoardColoring } from "@/types/boardDrawing"
 import type { RectBoardDrawingParams } from "@/types/boardDrawing.ts"
 import { useCallback, useState } from "react";

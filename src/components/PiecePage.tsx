@@ -2,13 +2,13 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button";
 import SideBar from "@/components/SideBar.tsx";
 import RectBoardPiece from "./RectBoard/RectBoardPiece";
-import { type piece } from "@/features/pieces/types/piece";
-import { calculateMovesRect } from "@/features/pieces/types/moveCalculation";
-import type { coordinate } from "@/features/boards/types/board";
-import { king, knight, pawn } from "@/features/pieces/types/defaultPieces";
+import { Piece } from "@/features/pieces/piece";
+import { calculateMovesRect } from "@/types/moveCalculation";
+import type { coordinate } from "@/types/board";
+import { king, knight, pawn } from "@/features/pieces/defaultPieces";
 const PiecePage = () => {
 
-	const piece: piece = pawn
+	const piece: Piece = pawn
 	const location: coordinate = [4, 4]
 	const [piecesOpen, setPiecesOpen] = useState<boolean>(true);
 	const moves = calculateMovesRect(piece, location, [8, 8], [], [1, -1], false)

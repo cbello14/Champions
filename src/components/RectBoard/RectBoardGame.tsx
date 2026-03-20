@@ -1,13 +1,13 @@
 import RectBoardGeneric from "@/components/RectBoard/RectBoardGeneric"
-import { coordinateStringToCoordinate, coordinateToString, type coordinate, type coordinateString } from "@/features/boards/types/board";
-import { rectBoardColoring, rectBoardMoveCaptures, rectBoardPieces } from "@/types/boardDrawing"
+import { type coordinate } from "@/types/board";
+import { rectBoardColoring, rectBoardMoveCaptures, rectBoardGame } from "@/types/boardDrawing"
 import type { RectBoardDrawingParams } from "@/types/boardDrawing.ts"
 import { useCallback, useState } from "react";
-import type { game } from "@/features/games/types/game";
-import { calculateMovesRect } from "@/features/pieces/types/moveCalculation";
+import { Game } from "@/features/games/game";
+import { calculateMovesRect } from "@/types/moveCalculation";
 
 const RectBoardGame = ({ cellWidth, game }:
-	{ cellWidth: number; game: game }) => {
+	{ cellWidth: number; game: Game }) => {
 
 	const [selected, changeSelected] = useState<coordinate | null>(null)
 
@@ -17,17 +17,15 @@ const RectBoardGame = ({ cellWidth, game }:
 		rectBoardColoring(params, "white", "black", selected);
 		let moves: coordinate[] = []
 		if (selected) {
-
-			const stringLocation: coordinateString = coordinateToString(selected)
-			const selectedPiece = game.pieces.get(stringLocation)
-			const direction = selectedPiece && selectedPiece[1] === 1 ? [1, 1] : [-1, -1]
-			const gamePieces = [...game.pieces.keys()].map((value) => coordinateStringToCoordinate(value)).filter((value) => value !== selected && value != null)
-			const blocked = [...gamePieces, ...game.board.blocked].filter((location) => location != selected)
-			moves = selectedPiece ? calculateMovesRect(selectedPiece[0], selected, game.board.dimension, blocked, direction, true) : [];
+			const selectedPiece = game.getPiece(selected)
+			const direction = selectedPiece && selectedPiece.team === 1 ? [1, 1] : [-1, -1]
+			const gamePieces = [...game.getKeys()].filter((value): value is coordinate => (value[0] !== selected[0] || value[1] !== selected[1]))
+			const blocked = [...gamePieces, ...game.getBoard().blocked]
+			moves = selectedPiece ? calculateMovesRect(selectedPiece.piece, selected, game.getBoard().dimensions, blocked, direction, true) : [];
 		}
 		rectBoardMoveCaptures(params, moves, [])
-		rectBoardPieces(params, game.pieces)
-	}, [game.board.blocked, game.board.dimension, game.pieces, selected]);
+		rectBoardGame(params, game)
+	}, [game, selected]);
 
 	return (<RectBoardGeneric dimensions={[8, 8]} cellWidth={cellWidth} drawingFunction={drawingFunction} selected={selected} setSelected={setSelected} />)
 

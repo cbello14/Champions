@@ -1,5 +1,5 @@
 import type { coordinate} from "@/types/board"
-import { Piece } from "@/features/pieces/Piece"
+import { Piece } from "@/features/pieces/piece"
 
 type turn = number
 type team = number
