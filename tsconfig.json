@@ -8,7 +8,7 @@
       "path": "./tsconfig.node.json"
     }
   ],
-  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "include": ["src/**/*.ts", "src/**/*.tsx",],
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
