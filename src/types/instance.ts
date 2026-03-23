@@ -1,18 +1,18 @@
-import type { coordinate} from "@/types/board"
-import { Piece } from "@/features/pieces/Piece"
+import type { coordinate } from "@/types/board"
+import { Piece } from "@/features/pieces/piece"
 
 type turn = number
 type team = number
 
-type instancePiece = {
-    piece: Piece,
-    team: team
+interface instancePiece {
+	piece: Piece,
+	team: team
 }
 
-type info = {
+interface info {
 	captured?: [coordinate, turn],
 	hasMoved: boolean,
 	movesMade: number,
 }
 
-export type {turn,instancePiece,info}
+export type { turn, instancePiece, info }

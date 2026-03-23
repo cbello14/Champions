@@ -5,7 +5,7 @@ const DecisionPage = () => {
     const navigate = useNavigate();
 
 	return <> Choosing a board, have a list 
-        <Button onClick={() => { navigate("/games"); }}> Start that game </Button> 
+        <Button onClick={() => { void navigate("/games"); }}> Start that game </Button> 
     </>
 }
 
