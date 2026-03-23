@@ -5,7 +5,7 @@ import { InstancePieceMap } from "@/types/instancePieceMap"
 
 export class Instance {
 	board: Board;
-	piecesRecord: InstancePieceMap//keys have got to be a string to be hashable
+	piecesRecord: InstancePieceMap
 	data: Map<instancePiece, info>
 	constructor(b: Board = new Board(), r: InstancePieceMap = new InstancePieceMap(),
 		d: Map<instancePiece, info> = new Map<instancePiece, info>()) {
