@@ -27,9 +27,8 @@ export class Piece {
 	replaceMove(move: move, index: number) {
 		this.moves[index] = move
 	}
-	
+
 	static fromJSON(data: any): Piece {
-    // Re-create the instance so it has access to methods like addMove()
     return new Piece(data.name, data.image, data.moves, data.captures);
   }
 };
