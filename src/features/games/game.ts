@@ -1,6 +1,6 @@
 import { Board } from "@/features/boards/board"
 import { InstancePieceMap } from "@/types/instancePieceMap";
-
+import type { GameJSON } from "@/types/game";
 
 export class Game {
 	name: string;
@@ -12,4 +12,14 @@ export class Game {
 		this.pieces = r
 	}
 
+	toJSON() {
+		return {
+			name: this.name,
+			board: this.board.toJSON(),
+			pieces: this.pieces.toJSON()
+		};
+	}
+	static fromJSON(data: GameJSON): Game {
+		return new Game(data.name, Board.fromJSON(data.board), InstancePieceMap.fromJSON(data.pieces));
+	}
 }

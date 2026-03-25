@@ -1,18 +1,19 @@
 import { Piece } from "./piece";
 
-export const pawn: Piece = {
-	name: 'Pawn',
-	moves: [
+export const pawn: Piece = new Piece(
+	"Pawn",
+	"",
+	[
 		{ attributes: { type: '$', initialMove: true }, movements: [{ distance: 2, direction: '^' }] },
 		{ attributes: { type: '$' }, movements: [{ distance: 1, direction: '^' }] }
 	],
-	captures: [],
-	image: ""
-};
+	[]
+)
 
-export const knight: Piece = {
-	name: 'Knight',
-	moves: [
+export const knight: Piece = new Piece(
+	"Knight",
+	"",
+	[
 		{
 			attributes: { type: '~', reflection: 'hv' },
 			movements: [{ distance: 2, direction: '^' }, { distance: 1, direction: '>' }]
@@ -22,48 +23,47 @@ export const knight: Piece = {
 			movements: [{ distance: 1, direction: '^' }, { distance: 2, direction: '>' }]
 		}
 	],
-	captures: [],
-	image: ""
-};
+	[]
+)
 
-export const bishop: Piece = {
-	name: 'Bishop',
-	moves: [
+export const bishop: Piece = new Piece(
+	"Bishop",
+	"",
+	[
 		{ attributes: { type: '$', reflection: 'hv' }, movements: [{ distance: 'n', direction: '/^' }] }
 	],
-	captures: [],
-	image: ""
-};
+	[],
+);
 
-export const rook: Piece = {
-	name: 'Rook',
-	moves: [
+export const rook: Piece = new Piece(
+	"Rook",
+	"",
+	[
 		{ attributes: { type: '$', reflection: 'hv' }, movements: [{ distance: 'n', direction: '^' }] },
 		{ attributes: { type: '$', reflection: 'hv' }, movements: [{ distance: 'n', direction: '>' }] }
 	],
-	captures: [],
-	image: ""
-};
+	[]
+);
 
-export const queen: Piece = {
-	name: 'Queen',
-	moves: [
+export const queen: Piece = new Piece(
+	"Queen",
+	"",
+	[
 		{ attributes: { type: '$', reflection: 'hv' }, movements: [{ distance: 'n', direction: '^' }] },
 		{ attributes: { type: '$', reflection: 'hv' }, movements: [{ distance: 'n', direction: '>' }] },
 		{ attributes: { type: '$', reflection: 'hv' }, movements: [{ distance: 'n', direction: '/^' }] }
 	],
-	captures: [],
-	image: ""
-};
+	[]
+);
 
-export const king: Piece = {
-	name: 'King',
-	moves: [
+export const king: Piece = new Piece(
+	"King",
+	"",
+	[
 		{ attributes: { type: '$', reflection: 'hv' }, movements: [{ distance: 1, direction: '^' }] },
 		{ attributes: { type: '$', reflection: 'hv' }, movements: [{ distance: 1, direction: '>' }] },
 		{ attributes: { type: '$', reflection: 'hv' }, movements: [{ distance: 1, direction: '/^' }] }
 	],
-	captures: [],
-	image: ""
-};
+	[]
+);
 

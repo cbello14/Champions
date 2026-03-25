@@ -1,15 +1,20 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { Piece } from '@/features/pieces/piece.ts';
-import { Board } from '@/features/boards/board.ts';
-import { Game } from '@/features/games/game.ts';
-import { Instance } from '@/features/instances/instance.ts';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { Piece } from "@/features/pieces/piece.ts";
+import { Board } from "@/features/boards/board.ts";
+import { Game } from "@/features/games/game.ts";
+import { Instance } from "@/features/instances/instance.ts";
+
+import type { PieceJSON } from "@/types/piece";
+import type { BoardJSON } from "@/types/board";
+import type { GameJSON } from "@/types/game";
+import type { InstanceJSON } from "@/types/instance";
 
 interface StorageState {
-  pieces: Record<string, Piece>,
-  boards: Record<string, Board>,
-  games: Record<string, Game>,
-  instance: Instance | null;
+  pieces: Record<string, PieceJSON>,
+  boards: Record<string, BoardJSON>,
+  games: Record<string, GameJSON>,
+  instance: InstanceJSON | null;
 
   // create / update
   setPiece: (piece: Piece) => void;
@@ -43,45 +48,64 @@ export const useStore = create<StorageState>()(
 
       setPiece: (p) => {
         set((state) => ({
-          pieces: {...state.pieces, [p.name]: p}
+          pieces: {...state.pieces, [p.name]: p.toJSON()}
         }))
       },
       setBoard: (b) => {
         set((state) => ({
-          boards: {...state.boards, [b.name]: b}
+          boards: {...state.boards, [b.name]: b.toJSON()}
         }))
       },
       setGame: (g) => {
         set((state) => ({
-          games: {...state.games, [g.name]: g}
+          games: {...state.games, [g.name]: g.toJSON()}
         }))
       },
       setInstance: (i) => {
         set((_) => ({
-          instance: i 
+          instance: i.toJSON()
         }))
       },
 
       getPieces: () => {
-        return get().pieces;
+        const pieces = get().pieces;
+        const result: Record<string, Piece> = {};
+        for (const key in pieces) {
+          result[key] = Piece.fromJSON(pieces[key]);
+        }
+        return result;
       },
       getPiece: (name) => {
-        return get().pieces[name] ?? null;
+        const json = get().pieces[name];
+        return json ? Piece.fromJSON(json) : null;
       },
       getBoards: () => {
-        return get().boards;
+        const boards = get().boards;
+        const result: Record<string, Board> = {};
+        for (const key in boards) {
+          result[key] = Board.fromJSON(boards[key]);
+        }
+        return result;
       },
       getBoard: (name) => {
-        return get().boards[name] ?? null;
+        const json = get().boards[name];
+        return json ? Board.fromJSON(json) : null;
       },
       getGames: () => {
-        return get().games;
+        const games = get().games;
+        const result: Record<string, Game> = {};
+        for (const key in games) {
+          result[key] = Game.fromJSON(games[key]);
+        }
+        return result;
       },
       getGame: (name) => {
-        return get().games[name] ?? null;
+        const json = get().games[name];
+        return json ? Game.fromJSON(json) : null;
       },
       getInstance: () => {
-        return get().instance;
+        const json = get().instance;
+        return json ? Instance.fromJSON(json) : null;
       },
 
       deletePiece: (name) => {
@@ -120,7 +144,7 @@ export const useStore = create<StorageState>()(
       }
     }),
     {
-      name: 'champions-storage'
+      name: "champions-storage"
     }
   )
 );

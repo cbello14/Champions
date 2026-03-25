@@ -9,6 +9,8 @@ import { pawn } from "@/features/pieces/defaultPieces";
 
 import { useStore } from "@/utils/storage";
 
+import { basicGame } from "@/features/games/defaultGames";
+
 const PiecePage = () => {
 
 	const piece: Piece = pawn
@@ -20,8 +22,23 @@ const PiecePage = () => {
 	const getPieces = useStore((state) => state.getPieces);
 	const getPiece = useStore((state) => state.getPiece);
 	const deletePiece = useStore((state) => state.deletePiece);
-	const handleClick = () => {
+	const saveGame = useStore((state) => state.setGame);
+	const getGames = useStore((state) => state.getGames);
+	const handleClick1 = () => {
 		savePiece(pawn);
+	};
+	const handleClick2 = () => {
+		console.log(getPieces());
+	};
+	const handleClick3 = () => {
+		console.log(getPiece(pawn.name));
+	};
+	const handleClick4 = () => {
+		console.log(deletePiece(pawn.name));
+	};
+	const handleClick5 = () => {
+		saveGame(basicGame);
+		console.log(getGames());
 	};
 
 	return <>
@@ -31,7 +48,11 @@ const PiecePage = () => {
 				<div className="flex flex-col center">
 					<RectBoardPiece cellWidth={100} moves={moves} captures={[]} piece={piece} location={location} />
 					<Button className="m-5" type="submit"> Save </Button>
-					<Button onClick={handleClick}> Test Store </Button>
+					<Button onClick={handleClick1}> Save Piece </Button>
+					<Button onClick={handleClick2}> Get Pieces </Button>
+					<Button onClick={handleClick3}> Get Piece </Button>
+					<Button onClick={handleClick4}> Delete Piece </Button>
+					<Button onClick={handleClick5}> Game Test </Button>
 				</div>
 			</main>
 			<div className="flex grow-1 flex-none w-48">

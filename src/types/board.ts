@@ -5,7 +5,7 @@ type coordinateString = string
 type BoardJSON = {
 	name: string;
 	shape: shape;
-	dimensions: [number, number];
+	dimensions: number[];
 	blocked: coordinate[];
 };
 

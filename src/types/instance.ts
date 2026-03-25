@@ -1,8 +1,16 @@
 import type { coordinate } from "@/types/board"
 import { Piece } from "@/features/pieces/piece"
+import type { PieceJSON } from "@/types/piece"
+import type { BoardJSON } from "@/types/board"
+import type { InstancePieceMapJSON } from "./instancePieceMap"
 
 type turn = number
 type team = number
+
+type InstancePieceJSON = {
+	piece: PieceJSON,
+	team: team
+};
 
 interface instancePiece {
 	piece: Piece,
@@ -15,4 +23,10 @@ interface info {
 	movesMade: number,
 }
 
-export type { turn, instancePiece, info }
+type InstanceJSON = {
+	board: BoardJSON,
+	piecesRecord: InstancePieceMapJSON,
+	data: [InstancePieceJSON, info][]
+};
+
+export type { turn, instancePiece, info, InstancePieceJSON, InstanceJSON }

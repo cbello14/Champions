@@ -29,6 +29,14 @@ export class Piece {
 		this.moves[index] = move
 	}
 
+	toJSON(): PieceJSON {
+		return {
+			name: this.name,
+			image: this.image,
+			moves: this.moves,
+			captures: this.captures,
+		};
+	}
 	static fromJSON(data: PieceJSON): Piece {
     return new Piece(data.name, data.image, data.moves, data.captures);
   }
