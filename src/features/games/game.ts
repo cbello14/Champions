@@ -1,6 +1,9 @@
 import { Board } from "@/features/boards/board"
+import type { coordinate } from "@/types/board";
 import { InstancePieceMap } from "@/types/instancePieceMap";
 import type { GameJSON } from "@/types/game";
+import { Instance } from "../instances/instance";
+
 
 export class Game {
 	name: string;
@@ -21,5 +24,14 @@ export class Game {
 	}
 	static fromJSON(data: GameJSON): Game {
 		return new Game(data.name, Board.fromJSON(data.board), InstancePieceMap.fromJSON(data.pieces));
+  }
+	verifyPieces() {
+		this.pieces.getKeys().forEach((coordinate: coordinate) => {
+			if (!this.board.isLocationValid(coordinate)) { this.pieces.removeInstancePiece(coordinate) }
+		})
+	}
+	createInstance() {
+		const instance = new Instance(this.board, this.pieces)
+		return instance
 	}
 }

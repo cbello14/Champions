@@ -9,6 +9,7 @@ type BoardJSON = {
 	blocked: coordinate[];
 };
 
+export const checkCoordinateEquality = (coordinateOne: coordinate, coordinateTwo: coordinate) => { return coordinateToString(coordinateOne) === coordinateToString(coordinateTwo) }
 export const coordinateToString: (coordinate: coordinate) => coordinateString = (coordinate: coordinate) => { return JSON.stringify(coordinate) }
 export const coordinateStringToCoordinate: (string: coordinateString) => coordinate | null = (string: coordinateString) => {
 	// unfortunately necessary 

@@ -6,6 +6,7 @@ import type { InstancePieceMapJSON } from "./instancePieceMap"
 
 type turn = number
 type team = number
+type instancePieceId = number
 
 type InstancePieceJSON = {
 	piece: PieceJSON,
@@ -13,6 +14,7 @@ type InstancePieceJSON = {
 };
 
 interface instancePiece {
+	id: instancePieceId,
 	piece: Piece,
 	team: team
 }
@@ -29,4 +31,4 @@ type InstanceJSON = {
 	data: [InstancePieceJSON, info][]
 };
 
-export type { turn, instancePiece, info, InstancePieceJSON, InstanceJSON }
+export type { turn, instancePiece, info, InstancePieceJSON, InstanceJSON, instancePieceId }

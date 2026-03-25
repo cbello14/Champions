@@ -1,18 +1,18 @@
 import { Piece } from "./piece";
 
-export const pawn: Piece = new Piece(
-	"Pawn",
-	"",
+export const pawn = new Piece(
+	'Pawn',
+	'',
 	[
 		{ attributes: { type: '$', initialMove: true }, movements: [{ distance: 2, direction: '^' }] },
 		{ attributes: { type: '$' }, movements: [{ distance: 1, direction: '^' }] }
 	],
 	[]
-)
+);
 
-export const knight: Piece = new Piece(
-	"Knight",
-	"",
+export const knight = new Piece(
+	'Knight',
+	'',
 	[
 		{
 			attributes: { type: '~', reflection: 'hv' },
@@ -24,20 +24,18 @@ export const knight: Piece = new Piece(
 		}
 	],
 	[]
-)
-
-export const bishop: Piece = new Piece(
-	"Bishop",
-	"",
-	[
-		{ attributes: { type: '$', reflection: 'hv' }, movements: [{ distance: 'n', direction: '/^' }] }
-	],
-	[],
 );
 
-export const rook: Piece = new Piece(
-	"Rook",
-	"",
+export const bishop = new Piece(
+	'Bishop',
+	'',
+	[{ attributes: { type: '$', reflection: 'hv' }, movements: [{ distance: 'n', direction: '/^' }] }],
+	[]
+);
+
+export const rook = new Piece(
+	'Rook',
+	'',
 	[
 		{ attributes: { type: '$', reflection: 'hv' }, movements: [{ distance: 'n', direction: '^' }] },
 		{ attributes: { type: '$', reflection: 'hv' }, movements: [{ distance: 'n', direction: '>' }] }
@@ -45,9 +43,9 @@ export const rook: Piece = new Piece(
 	[]
 );
 
-export const queen: Piece = new Piece(
-	"Queen",
-	"",
+export const queen = new Piece(
+	'Queen',
+	'',
 	[
 		{ attributes: { type: '$', reflection: 'hv' }, movements: [{ distance: 'n', direction: '^' }] },
 		{ attributes: { type: '$', reflection: 'hv' }, movements: [{ distance: 'n', direction: '>' }] },
@@ -56,9 +54,9 @@ export const queen: Piece = new Piece(
 	[]
 );
 
-export const king: Piece = new Piece(
-	"King",
-	"",
+export const king = new Piece(
+	'King',
+	'',
 	[
 		{ attributes: { type: '$', reflection: 'hv' }, movements: [{ distance: 1, direction: '^' }] },
 		{ attributes: { type: '$', reflection: 'hv' }, movements: [{ distance: 1, direction: '>' }] },
@@ -66,4 +64,3 @@ export const king: Piece = new Piece(
 	],
 	[]
 );
-
