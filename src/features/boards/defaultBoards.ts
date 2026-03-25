@@ -1,8 +1,8 @@
 import { Board } from "./board"
 
-export const basic: Board = {
-	name: "Default",
-	shape: "rect",
-	dimensions: [8, 8],
-	blocked: []
-}
+export const basic: Board = new Board(
+	"Default",
+	"rect",
+	[8, 8],
+	[]
+)

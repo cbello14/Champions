@@ -1,6 +1,9 @@
-import type { instancePiece, instancePieceId } from "@/types/instance"
+import type { instancePiece, InstancePieceJSON, instancePieceId } from "@/types/instance"
 import { type coordinateString, coordinateStringToCoordinate, coordinateToString, type coordinate } from "@/types/board"
 import type { Piece } from "@/features/pieces/piece";
+import { Piece as PieceClass } from "@/features/pieces/piece";
+
+export type InstancePieceMapJSON = [coordinateString, InstancePieceJSON][];
 
 export class InstancePieceMap {
 	map: Map<coordinateString, instancePiece>
@@ -54,6 +57,28 @@ export class InstancePieceMap {
 			.map(coordString => coordinateStringToCoordinate(coordString))
 			.filter((coord): coord is coordinate => coord !== null);
 	};
+
+	toJSON(): InstancePieceMapJSON {
+		return Array.from(this.map.entries()).map(([coord, inst]) => [
+			coord,
+			{
+				piece: inst.piece.toJSON(),
+				team: inst.team
+			}
+		]);
+	}
+	static fromJSON(data: InstancePieceMapJSON): InstancePieceMap {
+		const map = new Map<coordinateString, instancePiece>(
+			data.map(([coord, inst]) => [
+				coord,
+				{
+					piece: PieceClass.fromJSON(inst.piece),
+					team: inst.team
+				}
+			])
+		);
+		return new InstancePieceMap(map);
+  }
 	clear() {
 		this.map.clear()
 	}

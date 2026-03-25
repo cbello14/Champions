@@ -1,11 +1,11 @@
-import type { shape, coordinate } from "@/types/board";
+import type { shape, coordinate, BoardJSON } from "@/types/board";
 
 export class Board {
 	name: string
 	shape: shape;
 	dimensions: number[]
 	blocked: coordinate[]
-	constructor(n = "basic", shap: shape = 'rect', dim: [number, number] = [8, 8], b: coordinate[] = []) {
+	constructor(n = "basic", shap: shape = 'rect', dim: number[] = [8, 8], b: coordinate[] = []) {
 		this.name = n
 		this.shape = shap
 		this.dimensions = dim
@@ -28,6 +28,18 @@ export class Board {
 		this.blocked = []
 		oldBlocked.forEach((cell: coordinate) => { this.addBlocked(cell) })
 	}
+
+	toJSON(): BoardJSON {
+		return {
+			name: this.name,
+			shape: this.shape,
+			dimensions: this.dimensions,
+			blocked: this.blocked
+		};
+	}
+	static fromJSON(data: BoardJSON): Board {
+    return new Board(data.name, data.shape, data.dimensions, data.blocked);
+  }
 	isLocationValid(location: coordinate) {
 		const outOfBounds = location.some((value, index) => {
 			const outOfBounds = value < 0 || value >= this.dimensions[index]
