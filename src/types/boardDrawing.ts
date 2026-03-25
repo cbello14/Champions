@@ -1,7 +1,6 @@
 import { type coordinate, type dimension } from "./board"
 import { Piece } from "@/features/pieces/piece"
 import type { Game } from "@/features/games/game"
-import RectBoardInstance from "@/components/RectBoard/RectBoardInstance"
 import type { Instance } from "@/features/instances/instance"
 
 interface RectBoardDrawingParams { boardSize: dimension, cellWidth: number, ctx: CanvasRenderingContext2D }

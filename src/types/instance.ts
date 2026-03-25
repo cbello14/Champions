@@ -3,8 +3,10 @@ import { Piece } from "@/features/pieces/piece"
 
 type turn = number
 type team = number
+type instancePieceId = number
 
 interface instancePiece {
+	id: instancePieceId,
 	piece: Piece,
 	team: team
 }
@@ -15,4 +17,4 @@ interface info {
 	movesMade: number,
 }
 
-export type { turn, instancePiece, info }
+export type { turn, instancePiece, info, instancePieceId } 

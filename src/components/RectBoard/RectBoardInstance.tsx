@@ -8,8 +8,8 @@ import { calculateMovesRect } from "@/types/moveCalculation";
 import type { Instance } from "@/features/instances/instance";
 
 
-const RectBoardInstance = ({ cellWidth, instance, currentTeam }:
-	{ cellWidth: number; instance: Instance; currentTeam: number }) => {
+const RectBoardInstance = ({ cellWidth, instance, currentTeam, nextTeam }:
+	{ cellWidth: number; instance: Instance; currentTeam: number, nextTeam: () => void }) => {
 	const [selected, changeSelected] = useState<coordinate | null>(null)
 
 	const setSelected = (newSelected: coordinate | null) => {
@@ -19,11 +19,15 @@ const RectBoardInstance = ({ cellWidth, instance, currentTeam }:
 				const direction = prevSelectedPiece.team === 1 ? [1, 1] : [-1, -1]
 				const gamePieces = [...instance.piecesRecord.getKeys()].filter((value): value is coordinate => (value[0] !== selected[0] || value[1] !== selected[1]))
 				const blocked = [...gamePieces, ...instance.board.blocked]
-				const moves = calculateMovesRect(prevSelectedPiece.piece, selected, instance.board.dimensions, blocked, direction, true)
-				const selectedMove = moves.some((moveLocation: coordinate) => { return checkCoordinateEquality(moveLocation, selected) })
+				const moves = calculateMovesRect(prevSelectedPiece.piece, selected, instance.board.dimensions, blocked, direction, !instance.hasPieceMoved(prevSelectedPiece))
+				const selectedMove = moves.some((moveLocation: coordinate) => { return checkCoordinateEquality(moveLocation, newSelected) })
 				if (selectedMove) {
 					instance.piecesRecord.removeInstancePiece(selected)
 					instance.piecesRecord.setInstancePiece(newSelected, prevSelectedPiece)
+					nextTeam()
+					instance.recordPieceMove(prevSelectedPiece)
+					changeSelected(null)
+					return
 				}
 			}
 		}
@@ -38,7 +42,7 @@ const RectBoardInstance = ({ cellWidth, instance, currentTeam }:
 			const direction = selectedPiece?.team === 1 ? [1, 1] : [-1, -1]
 			const gamePieces = [...instance.piecesRecord.getKeys()].filter((value): value is coordinate => (value[0] !== selected[0] || value[1] !== selected[1]))
 			const blocked = [...gamePieces, ...instance.board.blocked]
-			moves = selectedPiece ? calculateMovesRect(selectedPiece.piece, selected, instance.board.dimensions, blocked, direction, true) : [];
+			moves = selectedPiece ? calculateMovesRect(selectedPiece.piece, selected, instance.board.dimensions, blocked, direction, !instance.hasPieceMoved(selectedPiece)) : [];
 		}
 		RectBoardDrawing.rectBoardMoveCaptures(params, moves, [])
 		RectBoardDrawing.RectBoardInstance(params, instance)
