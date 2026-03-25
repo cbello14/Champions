@@ -6,44 +6,117 @@ import { Game } from '@/features/games/game.ts';
 import { Instance } from '@/features/instances/instance.ts';
 
 interface StorageState {
-  pieces: Piece[],
-  boards: Board[],
-  games: Game[],
+  pieces: Record<string, Piece>,
+  boards: Record<string, Board>,
+  games: Record<string, Game>,
   instance: Instance | null;
 
-  savePiece: (piece: Piece) => void;
-  saveBoard: (board: Board) => void;
-  saveGame: (game: Game) => void;
-  saveInstance: (instance: Instance) => void;
+  // create / update
+  setPiece: (piece: Piece) => void;
+  setBoard: (board: Board) => void;
+  setGame: (game: Game) => void;
+  setInstance: (instance: Instance) => void;
+
+  // retrieve
+  getPieces: () => Record<string, Piece>;
+  getPiece: (name: string) => Piece | null;
+  getBoards: () => Record<string, Board>;
+  getBoard: (name: string) => Board | null;
+  getGames: () => Record<string, Game>;
+  getGame: (name: string) => Game | null;
+  getInstance: () => Instance | null;
+
+  // delete
+  deletePiece: (name: string) => boolean;
+  deleteBoard: (name: string) => boolean;
+  deleteGame: (name: string) => boolean;
+  deleteInstance: () => boolean;
 };
 
 export const useStore = create<StorageState>()(
   persist(
-    (set) => ({
-      pieces: [],
-      boards: [],
-      games: [],
+    (set, get) => ({
+      pieces: {},
+      boards: {},
+      games: {},
       instance: null,
 
-      savePiece: (p) => {
+      setPiece: (p) => {
         set((state) => ({
-          pieces: [...state.pieces, p]
+          pieces: {...state.pieces, [p.name]: p}
         }))
       },
-      saveBoard: (b) => {
+      setBoard: (b) => {
         set((state) => ({
-          boards: [...state.boards, b]
+          boards: {...state.boards, [b.name]: b}
         }))
       },
-      saveGame: (g) => {
+      setGame: (g) => {
         set((state) => ({
-          games: [...state.games, g]
+          games: {...state.games, [g.name]: g}
         }))
       },
-      saveInstance: (i) => {
+      setInstance: (i) => {
         set((_) => ({
           instance: i 
         }))
+      },
+
+      getPieces: () => {
+        return get().pieces;
+      },
+      getPiece: (name) => {
+        return get().pieces[name] ?? null;
+      },
+      getBoards: () => {
+        return get().boards;
+      },
+      getBoard: (name) => {
+        return get().boards[name] ?? null;
+      },
+      getGames: () => {
+        return get().games;
+      },
+      getGame: (name) => {
+        return get().games[name] ?? null;
+      },
+      getInstance: () => {
+        return get().instance;
+      },
+
+      deletePiece: (name) => {
+        if (!get().pieces[name]) return false;
+        set((state) => {
+          const newPieces = {...state.pieces};
+          delete newPieces[name];
+          return {pieces: newPieces};
+        });
+        return true;
+      },
+      deleteBoard: (name) => {
+        if (!get().boards[name]) return false;
+        set((state) => {
+          const newBoards = {...state.boards};
+          delete newBoards[name];
+          return {boards: newBoards};
+        });
+        return true;
+      },
+      deleteGame: (name) => {
+        if (!get().games[name]) return false;
+        set((state) => {
+          const newGames = {...state.games};
+          delete newGames[name];
+          return {games: newGames};
+        });
+        return true;
+      },
+      deleteInstance: () => {
+        if (!get().instance) return false;
+        set((_) => ({
+          instance: null
+        }));
+        return true;
       }
     }),
     {

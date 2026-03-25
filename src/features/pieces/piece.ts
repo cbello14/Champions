@@ -1,6 +1,7 @@
 //I have made these seperate for future scaling - like sometimes this move captures sometimes it doesn't etc etc
 import type { move } from "@/types/move"
 import type { capture } from "@/types/capture";
+import type { PieceJSON } from "@/types/piece";
 
 export class Piece {
 	name: string;
@@ -28,7 +29,7 @@ export class Piece {
 		this.moves[index] = move
 	}
 
-	static fromJSON(data: any): Piece {
+	static fromJSON(data: PieceJSON): Piece {
     return new Piece(data.name, data.image, data.moves, data.captures);
   }
 };

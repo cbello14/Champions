@@ -16,7 +16,10 @@ const PiecePage = () => {
 	const [piecesOpen, setPiecesOpen] = useState<boolean>(true);
 	const moves = calculateMovesRect(piece, location, [8, 8], [], [1, -1], false)
 
-	const savePiece = useStore((state) => state.savePiece);
+	const savePiece = useStore((state) => state.setPiece);
+	const getPieces = useStore((state) => state.getPieces);
+	const getPiece = useStore((state) => state.getPiece);
+	const deletePiece = useStore((state) => state.deletePiece);
 	const handleClick = () => {
 		savePiece(pawn);
 	};

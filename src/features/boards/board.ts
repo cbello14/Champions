@@ -1,4 +1,4 @@
-import type { shape, coordinate } from "@/types/board";
+import type { shape, coordinate, BoardJSON } from "@/types/board";
 
 export class Board {
 	name: string
@@ -28,4 +28,8 @@ export class Board {
 		this.blocked = []
 		oldBlocked.forEach((cell: coordinate) => { this.addBlocked(cell) })
 	}
+
+	static fromJSON(data: BoardJSON): Board {
+    return new Board(data.name, data.shape, data.dimensions, data.blocked);
+  }
 }

@@ -2,6 +2,12 @@ type shape = 'rect' | 'tri' | 'hex'
 type dimension = number[]
 type coordinate = number[]
 type coordinateString = string
+type BoardJSON = {
+	name: string;
+	shape: shape;
+	dimensions: [number, number];
+	blocked: coordinate[];
+};
 
 export const coordinateToString: (coordinate: coordinate) => coordinateString = (coordinate: coordinate) => { return JSON.stringify(coordinate) }
 export const coordinateStringToCoordinate: (string: coordinateString) => coordinate | null = (string: coordinateString) => {
@@ -15,4 +21,4 @@ export const coordinateStringToCoordinate: (string: coordinateString) => coordin
 	}
 }
 
-export type { shape, dimension, coordinate, coordinateString }
+export type { shape, dimension, coordinate, coordinateString, BoardJSON }

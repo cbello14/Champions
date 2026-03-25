@@ -21,6 +21,7 @@ const map =
 const instancePieceMap = new InstancePieceMap(map)
 
 export const basicGame: Game = new Game(
+	"basic",
 	basic,
 	instancePieceMap
 );
