@@ -1,16 +1,30 @@
 import { Board } from "@/features/boards/board"
 import type { coordinate } from "@/types/board";
 import { InstancePieceMap } from "@/types/instancePieceMap";
+import type { GameJSON } from "@/types/game";
 import { Instance } from "../instances/instance";
 
 
 export class Game {
+	name: string;
 	board: Board;
 	pieces: InstancePieceMap //keys have got to be a string to be hashable
-	constructor(b: Board = new Board(), r: InstancePieceMap = new InstancePieceMap()) {
+	constructor(n: string, b: Board = new Board(), r: InstancePieceMap = new InstancePieceMap()) {
+		this.name = n;
 		this.board = b
 		this.pieces = r
 	}
+
+	toJSON() {
+		return {
+			name: this.name,
+			board: this.board.toJSON(),
+			pieces: this.pieces.toJSON()
+		};
+	}
+	static fromJSON(data: GameJSON): Game {
+		return new Game(data.name, Board.fromJSON(data.board), InstancePieceMap.fromJSON(data.pieces));
+  }
 	verifyPieces() {
 		this.pieces.getKeys().forEach((coordinate: coordinate) => {
 			if (!this.board.isLocationValid(coordinate)) { this.pieces.removeInstancePiece(coordinate) }

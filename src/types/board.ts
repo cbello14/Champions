@@ -2,8 +2,14 @@ type shape = 'rect' | 'tri' | 'hex'
 type dimension = number[]
 type coordinate = number[]
 type coordinateString = string
-export const checkCoordinateEquality = (coordinateOne: coordinate, coordinateTwo: coordinate) => { return coordinateToString(coordinateOne) === coordinateToString(coordinateTwo) }
+type BoardJSON = {
+	name: string;
+	shape: shape;
+	dimensions: number[];
+	blocked: coordinate[];
+};
 
+export const checkCoordinateEquality = (coordinateOne: coordinate, coordinateTwo: coordinate) => { return coordinateToString(coordinateOne) === coordinateToString(coordinateTwo) }
 export const coordinateToString: (coordinate: coordinate) => coordinateString = (coordinate: coordinate) => { return JSON.stringify(coordinate) }
 export const coordinateStringToCoordinate: (string: coordinateString) => coordinate | null = (string: coordinateString) => {
 	// unfortunately necessary 
@@ -16,4 +22,4 @@ export const coordinateStringToCoordinate: (string: coordinateString) => coordin
 	}
 }
 
-export type { shape, dimension, coordinate, coordinateString }
+export type { shape, dimension, coordinate, coordinateString, BoardJSON }
