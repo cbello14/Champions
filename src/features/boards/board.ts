@@ -28,4 +28,15 @@ export class Board {
 		this.blocked = []
 		oldBlocked.forEach((cell: coordinate) => { this.addBlocked(cell) })
 	}
+	isLocationValid(location: coordinate) {
+		const outOfBounds = location.some((value, index) => {
+			const outOfBounds = value < 0 || value >= this.dimensions[index]
+			return outOfBounds
+		})
+		const wrongDimension = location.length != this.dimensions.length
+		if (outOfBounds || wrongDimension) {
+			return false
+		}
+		return true
+	}
 }

@@ -2,6 +2,7 @@ type shape = 'rect' | 'tri' | 'hex'
 type dimension = number[]
 type coordinate = number[]
 type coordinateString = string
+export const checkCoordinateEquality = (coordinateOne: coordinate, coordinateTwo: coordinate) => { return coordinateToString(coordinateOne) === coordinateToString(coordinateTwo) }
 
 export const coordinateToString: (coordinate: coordinate) => coordinateString = (coordinate: coordinate) => { return JSON.stringify(coordinate) }
 export const coordinateStringToCoordinate: (string: coordinateString) => coordinate | null = (string: coordinateString) => {

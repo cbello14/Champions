@@ -1,11 +1,24 @@
-import type { instancePiece } from "@/types/instance"
+import type { instancePiece, instancePieceId } from "@/types/instance"
 import { type coordinateString, coordinateStringToCoordinate, coordinateToString, type coordinate } from "@/types/board"
 import type { Piece } from "@/features/pieces/piece";
 
 export class InstancePieceMap {
 	map: Map<coordinateString, instancePiece>
-	constructor(m: Map<coordinateString, instancePiece> = new Map<coordinateString, instancePiece>()) {
-		this.map = m
+	private maxId: instancePieceId
+	constructor(map: Map<coordinateString, instancePiece> = new Map<coordinateString, instancePiece>()) {
+		this.map = map
+		this.maxId = 0;
+		[...this.map.entries()].forEach(([coordinateString, instancePiece]: [coordinateString, instancePiece]) => {
+			if (instancePiece.id <= this.maxId) {
+				const newId = this.maxId++
+				instancePiece.id = newId;
+				this.map.set(coordinateString, instancePiece)
+				this.maxId = newId
+			} else {
+				this.maxId = instancePiece.id
+			}
+
+		})
 	}
 	getInstancePiece(coordinate: coordinate) {
 		const coordinateString = coordinateToString(coordinate);
@@ -14,18 +27,34 @@ export class InstancePieceMap {
 	setPiece(coordinate: coordinate, piece: Piece) {
 		const coordinateString = coordinateToString(coordinate);
 		const instance: instancePiece = {
+			id: this.maxId + 1,
 			piece: piece,
 			team: 1
 		}
+		this.maxId++
 		this.map.set(coordinateString, instance)
 	};
 	setInstancePiece(coordinate: coordinate, instancePiece: instancePiece) {
 		const coordinateString = coordinateToString(coordinate);
+		if (instancePiece.id <= this.maxId) {
+			const newId = this.maxId++
+			instancePiece.id = newId;
+			this.maxId = newId
+		} else {
+			this.maxId = instancePiece.id
+		}
 		this.map.set(coordinateString, instancePiece)
+	}
+	removeInstancePiece(coordinate: coordinate) {
+		const coordinateString = coordinateToString(coordinate)
+		this.map.delete(coordinateString)
 	}
 	getKeys(): coordinate[] {
 		return [...this.map.keys()]
 			.map(coordString => coordinateStringToCoordinate(coordString))
 			.filter((coord): coord is coordinate => coord !== null);
 	};
+	clear() {
+		this.map.clear()
+	}
 }
