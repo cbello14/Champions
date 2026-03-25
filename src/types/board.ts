@@ -2,12 +2,13 @@ type shape = 'rect' | 'tri' | 'hex'
 type dimension = number[]
 type coordinate = number[]
 type coordinateString = string
-type BoardJSON = {
+
+interface BoardJSON {
 	name: string;
 	shape: shape;
 	dimensions: number[];
 	blocked: coordinate[];
-};
+}
 
 export const checkCoordinateEquality = (coordinateOne: coordinate, coordinateTwo: coordinate) => { return coordinateToString(coordinateOne) === coordinateToString(coordinateTwo) }
 export const coordinateToString: (coordinate: coordinate) => coordinateString = (coordinate: coordinate) => { return JSON.stringify(coordinate) }

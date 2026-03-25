@@ -8,10 +8,11 @@ type turn = number
 type team = number
 type instancePieceId = number
 
-type InstancePieceJSON = {
+interface InstancePieceJSON {
+	id: instancePieceId,
 	piece: PieceJSON,
 	team: team
-};
+}
 
 interface instancePiece {
 	id: instancePieceId,
@@ -25,10 +26,10 @@ interface info {
 	movesMade: number,
 }
 
-type InstanceJSON = {
+interface InstanceJSON {
 	board: BoardJSON,
 	piecesRecord: InstancePieceMapJSON,
-	data: [InstancePieceJSON, info][]
-};
+	data: [instancePieceId, info][]
+}
 
 export type { turn, instancePiece, info, InstancePieceJSON, InstanceJSON, instancePieceId }
