@@ -1,4 +1,5 @@
 import { Board } from "@/features/boards/board"
+import type { coordinate } from "@/types/board";
 import { InstancePieceMap } from "@/types/instancePieceMap";
 
 
@@ -9,5 +10,9 @@ export class Game {
 		this.board = b
 		this.pieces = r
 	}
-
+	verifyPieces() {
+		this.pieces.getKeys().forEach((coordinate: coordinate) => {
+			if (!this.board.isLocationValid(coordinate)) { this.pieces.removeInstancePiece(coordinate) }
+		})
+	}
 }

@@ -23,9 +23,16 @@ export class InstancePieceMap {
 		const coordinateString = coordinateToString(coordinate);
 		this.map.set(coordinateString, instancePiece)
 	}
+	removeInstancePiece(coordinate: coordinate) {
+		const coordinateString = coordinateToString(coordinate)
+		this.map.delete(coordinateString)
+	}
 	getKeys(): coordinate[] {
 		return [...this.map.keys()]
 			.map(coordString => coordinateStringToCoordinate(coordString))
 			.filter((coord): coord is coordinate => coord !== null);
 	};
+	clear() {
+		this.map.clear()
+	}
 }
