@@ -6,7 +6,7 @@ import { Piece } from "@/features/pieces/piece";
 import { calculateMovesRect } from "@/types/moveCalculation";
 import type { coordinate } from "@/types/board";
 import { useStore } from "@/utils/storage";
-import type { movementType, reflect } from "@/types/move";
+import type { direction, distance, movementType, reflect } from "@/types/move";
 
 const PiecePage = () => {
 	const [piece, setPiece] = useState<Piece>(new Piece());
@@ -27,7 +27,16 @@ const PiecePage = () => {
 	const handleAddMove = () => {
 		// add a move to the moves list of the current piece
 		const newMoves = [...piece.moves];
-		
+		newMoves.push({
+			attributes: {
+				type: '$',
+				reflection: 'h',
+				initialMove: false,
+				capturing: false
+			},
+			movements: []
+		});
+		setPiece(new Piece(piece. name, piece.image, newMoves, piece.captures));
 	};
 
 	return <>
@@ -156,10 +165,46 @@ const PiecePage = () => {
 								</div>
 
 								<div className="flex flex-col center">
-									Moves
+									Movements:
 								{
-									move.movements.map((movement, index) => (
-										<div>a move</div>
+									move.movements.map((movement, movementIndex) => (
+										<div>
+											<label>Distance:</label>
+											<input
+												type="text"
+												value={movement.distance}
+												onChange={(e) => {
+													const newMoves = [...piece.moves];
+													newMoves[index].movements[movementIndex] = {
+														...newMoves[index].movements[movementIndex],
+														distance: e.target.value as distance
+													};
+													setPiece(new Piece(piece.name, piece.image, newMoves, piece.captures));
+												}}
+											/>
+											<br/>
+											<label>Direction:</label>
+											<select
+												value={movement.direction}
+												onChange={(e) => {
+													const newMoves = [...piece.moves];
+													newMoves[index].movements[movementIndex] = {
+														...newMoves[index].movements[movementIndex],
+														direction: e.target.value as direction
+													};
+													setPiece(new Piece(piece.name, piece.image, newMoves, piece.captures));
+												}}
+											>
+												<option value="^">Up</option>
+												<option value="/^">Up-Right</option>
+												<option value=">">Right</option>
+												<option value="\>">Down-Right</option>
+												<option value="v">Down</option>
+												<option value="/v">Down-Left</option>
+												<option value="<">Left</option>
+												<option value="\\^">Up-Left</option>
+											</select>
+										</div>
 									))
 								}
 								</div>
