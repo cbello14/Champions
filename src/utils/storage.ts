@@ -5,10 +5,15 @@ import { Board } from "@/features/boards/board.ts";
 import { Game } from "@/features/games/game.ts";
 import { Instance } from "@/features/instances/instance.ts";
 
+import { pawn, knight, bishop, rook, queen, king } from "@/features/pieces/defaultPieces";
+import { basic } from "@/features/boards/defaultBoards";
+import { basicGame } from "@/features/games/defaultGames";
+
 import type { PieceJSON } from "@/types/piece";
 import type { BoardJSON } from "@/types/board";
 import type { GameJSON } from "@/types/game";
 import type { InstanceJSON } from "@/types/instance";
+
 
 interface StorageState {
   pieces: Record<string, PieceJSON>,
@@ -38,12 +43,27 @@ interface StorageState {
   deleteInstance: () => boolean;
 };
 
+const defaultPieces = {
+  [pawn.name]: pawn.toJSON(),
+  [knight.name]: knight.toJSON(),
+  [bishop.name]: bishop.toJSON(),
+  [rook.name]: rook.toJSON(),
+  [queen.name]: queen.toJSON(),
+  [king.name]: king.toJSON(),
+};
+const defaultBoards = {
+  [basic.name]: basic.toJSON()
+};
+const defaultGames = {
+  [basicGame.name]: basicGame.toJSON()
+};
+
 export const useStore = create<StorageState>()(
   persist(
     (set, get) => ({
-      pieces: {},
-      boards: {},
-      games: {},
+      pieces: defaultPieces,
+      boards: defaultBoards,
+      games: defaultGames,
       instance: null,
 
       setPiece: (p) => {
