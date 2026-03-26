@@ -6,6 +6,7 @@ import PiecePage from "@/components/PiecePage.tsx";
 import GamePage from "@/components/GamePage.tsx";
 import BoardPage from "@/components/BoardPage.tsx";
 import DecisionPage from "@/components/DecisionPage.tsx";
+import RestartGamePage from "@/components/RestartGamePage.tsx";
 import App from './App.tsx'
 import HomePage from './components/HomePage.tsx';
 import InstancePage from './components/InstancePage.tsx';
@@ -19,7 +20,9 @@ createRoot(document.getElementById('root')!).render(
 					<Route path="pieces" element={<PiecePage />} />
 					<Route path="games" element={<GamePage />} />
 					<Route path="boards" element={<BoardPage />} />
-					<Route path="start" element={<InstancePage />} />
+					<Route path="start" element={<DecisionPage />} />
+					<Route path="current-games" element={<RestartGamePage />} />
+					<Route path="play" element={<InstancePage />} />
 				</Route>
 			</Routes>
 		</BrowserRouter>
