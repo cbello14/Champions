@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button";
 import { Input } from "./ui/input";
-import {Select} from "./ui/select"
+import {Select,  SelectContent,  SelectGroup,  SelectItem,  SelectTrigger,  SelectValue,} from "./ui/select"
 import SideBar from "@/components/SideBar.tsx";
 import RectBoardPiece from "./RectBoard/RectBoardPiece";
 import { Piece } from "@/features/pieces/piece";
@@ -125,6 +125,20 @@ const PiecePage = () => {
 								
 								<div>
 									<label>Type:</label>
+									<Select>
+										<SelectTrigger>
+            								<SelectValue />
+          								</SelectTrigger>
+										<SelectContent >
+											<SelectGroup>
+												<SelectItem value="apple">Apple</SelectItem>
+												<SelectItem value="banana">Banana</SelectItem>
+												<SelectItem value="blueberry">Blueberry</SelectItem>
+												<SelectItem value="grapes">Grapes</SelectItem>
+												<SelectItem value="pineapple">Pineapple</SelectItem>
+											</SelectGroup>
+										</SelectContent>
+									</Select>
 									<select
 										value={move.attributes.type}
 										onChange={(e) => {
