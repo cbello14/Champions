@@ -8,7 +8,7 @@ export class Piece {
 	image: string;//html
 	moves: move[];
 	captures: capture[];
-	constructor(name = "Pawn", image = "", m: move[] = [], c: capture[] = []) {
+	constructor(name = "", image = "", m: move[] = [], c: capture[] = []) {
 		this.name = name;
 		this.image = image
 		this.moves = m;

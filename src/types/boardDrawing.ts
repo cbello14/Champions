@@ -83,7 +83,7 @@ const rectBoardDrawPiece = (params: RectBoardDrawingParams, piece: Piece, locati
 		const image = new Image()
 		image.src = piece.image
 		ctx.drawImage(image, pixelX, pixelY, cellWidth, cellWidth)
-	} else {
+	} else if (piece.name.length > 0) {
 		drawLetter(ctx, centerX, centerY, radius, piece.name[0], teamColor, teamOutline)
 	}
 
