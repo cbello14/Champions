@@ -19,9 +19,13 @@ const PiecePage = () => {
 		Object.entries(piecesJSON).map(([k, v]) => [k, Piece.fromJSON(v)])
 	);
 	const savePiece = useStore((state) => state.setPiece);
+	const deletePiece = useStore((state) => state.deletePiece);
 
 	const handleSave = () => {
 		savePiece(piece);
+	};
+	const handleDelete = () => {
+		deletePiece(piece.name);
 	};
 
 	const handleAddMove = () => {
@@ -37,6 +41,10 @@ const PiecePage = () => {
 		});
 		setPiece(new Piece(piece.name, piece.image, newMoves, piece.captures));
 	};
+	const handleDeleteMove = (ind: number) => {
+		const newMoves = piece.moves.filter((_, i) => i != ind);
+		setPiece(new Piece(piece.name, piece.image, newMoves, piece.captures));
+	};
 
 	const handleAddMovement = (ind: number) => {
 		const newMoves = [...piece.moves];
@@ -44,6 +52,15 @@ const PiecePage = () => {
 			distance: 1,
 			direction: '^'
 		});
+		setPiece(new Piece(piece.name, piece.image, newMoves, piece.captures));
+	};
+	const handleDeleteMovement = (moveInd: number, movementInd: number) => {
+		const newMovements = piece.moves[moveInd].movements.filter((_, i) => i != movementInd);
+		const newMoves = [...piece.moves];
+		newMoves[moveInd] = {
+			...newMoves[moveInd],
+			movements: newMovements
+		};
 		setPiece(new Piece(piece.name, piece.image, newMoves, piece.captures));
 	};
 
@@ -58,7 +75,7 @@ const PiecePage = () => {
 						<Button 
 							key="add-piece" 
 							className="m-1"
-							onClick={() => setPiece(new Piece())}
+							onClick={() => { setPiece(new Piece()) }}
 						> 
 							Add Piece 
 						</Button>
@@ -67,7 +84,7 @@ const PiecePage = () => {
 								<Button
 									key={p.name}
 									className="m-1"
-									onClick={() => setPiece(p)}
+									onClick={() => { setPiece(p) }}
 								>
 									{p.name}
 								</Button>
@@ -81,6 +98,7 @@ const PiecePage = () => {
 				<div className="flex flex-col center">
 					<RectBoardPiece cellWidth={100} moves={moves} captures={[]} piece={piece} location={location} />
 					<Button className="m-5" onClick={handleSave}> Save </Button>
+					<Button className="m-5" onClick={handleDelete}> Delete </Button>
 				</div>
 			</main>
 			<div className="flex grow-2 items-center justify-center">
@@ -219,11 +237,14 @@ const PiecePage = () => {
 													<option value="<">Left</option>
 													<option value="\\^">Up-Left</option>
 												</select>
+												<Button onClick={() => { handleDeleteMovement(index, movementIndex) }}> Delete Movement </Button>
 											</div>
 										))
 									}
-									<Button onClick={() => handleAddMovement(index)}> Add Movement </Button>
+									<Button onClick={() => { handleAddMovement(index) }}> Add Movement </Button>
 								</div>
+
+								<Button onClick={() => { handleDeleteMove(index) }}> Delete Move </Button>
 
 							</div>
 						))
