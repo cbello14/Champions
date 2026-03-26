@@ -38,8 +38,8 @@ export class Board {
 		};
 	}
 	static fromJSON(data: BoardJSON): Board {
-    return new Board(data.name, data.shape, data.dimensions, data.blocked);
-  }
+		return new Board(data.name, data.shape, data.dimensions, data.blocked);
+	}
 	isLocationValid(location: coordinate) {
 		const outOfBounds = location.some((value, index) => {
 			const outOfBounds = value < 0 || value >= this.dimensions[index]

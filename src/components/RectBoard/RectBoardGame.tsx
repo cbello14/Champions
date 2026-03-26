@@ -45,7 +45,7 @@ const RectBoardGame = ({ cellWidth, game, onClickAction }:
 		RectBoardDrawing.rectBoardGame(params, game)
 	}, [game, onClickAction, selected]);
 
-	return (<RectBoardGeneric dimensions={[8, 8]} cellWidth={cellWidth} drawingFunction={drawingFunction} selected={selected} setSelected={setSelected} />)
+	return (<RectBoardGeneric dimensions={game.board.dimensions} cellWidth={cellWidth} drawingFunction={drawingFunction} selected={selected} setSelected={setSelected} />)
 
 }
 

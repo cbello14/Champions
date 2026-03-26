@@ -1,4 +1,3 @@
-import { Piece } from "@/features/pieces/piece"
 import { Board } from "@/features/boards/board"
 import type { info, instancePiece, InstanceJSON, instancePieceId } from "@/types/instance"
 import { InstancePieceMap } from "@/types/instancePieceMap"
@@ -34,26 +33,11 @@ export class Instance {
 		return {
 			board: this.board.toJSON(),
 			piecesRecord: this.piecesRecord.toJSON(),
-			data: Array.from(this.data.entries()).map(([inst, inf]) => [
-							{
-								piece: inst.piece.toJSON(),
-								team: inst.team
-							},
-							inf
-						])
+			data: Array.from(this.data.entries())
 		};
 	}
 	static fromJSON(data: InstanceJSON): Instance {
-		const instanceData = new Map<instancePiece, info>(
-			data.data.map(([keyJson, info]) => [
-				{
-					piece: Piece.fromJSON(keyJson.piece),
-					team: keyJson.team
-				},
-				info
-			])
-		);
-
+		const instanceData = new Map<instancePieceId, info>(data.data);
 		return new Instance(
 			Board.fromJSON(data.board),
 			InstancePieceMap.fromJSON(data.piecesRecord),
