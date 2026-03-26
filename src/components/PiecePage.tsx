@@ -25,7 +25,6 @@ const PiecePage = () => {
 	};
 
 	const handleAddMove = () => {
-		// add a move to the moves list of the current piece
 		const newMoves = [...piece.moves];
 		newMoves.push({
 			attributes: {
@@ -36,7 +35,16 @@ const PiecePage = () => {
 			},
 			movements: []
 		});
-		setPiece(new Piece(piece. name, piece.image, newMoves, piece.captures));
+		setPiece(new Piece(piece.name, piece.image, newMoves, piece.captures));
+	};
+
+	const handleAddMovement = (ind: number) => {
+		const newMoves = [...piece.moves];
+		newMoves[ind].movements.push({
+			distance: 1,
+			direction: '^'
+		});
+		setPiece(new Piece(piece.name, piece.image, newMoves, piece.captures));
 	};
 
 	return <>
@@ -77,7 +85,14 @@ const PiecePage = () => {
 			</main>
 			<div className="flex grow-2 items-center justify-center">
 				<div className="flex flex-col center">
-					<h1>{piece.name}</h1>
+					<label>Name:</label>
+					<input
+						type="text"
+						value={piece.name}
+						onChange={(e) => {
+							setPiece(new Piece(e.target.value, piece.image, piece.moves, piece.captures));
+						}}
+					/>
 					<img src={piece.image} />
 					{
 						piece.moves.map((move, index) => (
@@ -166,47 +181,48 @@ const PiecePage = () => {
 
 								<div className="flex flex-col center">
 									Movements:
-								{
-									move.movements.map((movement, movementIndex) => (
-										<div>
-											<label>Distance:</label>
-											<input
-												type="text"
-												value={movement.distance}
-												onChange={(e) => {
-													const newMoves = [...piece.moves];
-													newMoves[index].movements[movementIndex] = {
-														...newMoves[index].movements[movementIndex],
-														distance: e.target.value as distance
-													};
-													setPiece(new Piece(piece.name, piece.image, newMoves, piece.captures));
-												}}
-											/>
-											<br/>
-											<label>Direction:</label>
-											<select
-												value={movement.direction}
-												onChange={(e) => {
-													const newMoves = [...piece.moves];
-													newMoves[index].movements[movementIndex] = {
-														...newMoves[index].movements[movementIndex],
-														direction: e.target.value as direction
-													};
-													setPiece(new Piece(piece.name, piece.image, newMoves, piece.captures));
-												}}
-											>
-												<option value="^">Up</option>
-												<option value="/^">Up-Right</option>
-												<option value=">">Right</option>
-												<option value="\>">Down-Right</option>
-												<option value="v">Down</option>
-												<option value="/v">Down-Left</option>
-												<option value="<">Left</option>
-												<option value="\\^">Up-Left</option>
-											</select>
-										</div>
-									))
-								}
+									{
+										move.movements.map((movement, movementIndex) => (
+											<div>
+												<label>Distance:</label>
+												<input
+													type="text"
+													value={movement.distance}
+													onChange={(e) => {
+														const newMoves = [...piece.moves];
+														newMoves[index].movements[movementIndex] = {
+															...newMoves[index].movements[movementIndex],
+															distance: e.target.value as distance
+														};
+														setPiece(new Piece(piece.name, piece.image, newMoves, piece.captures));
+													}}
+												/>
+												<br/>
+												<label>Direction:</label>
+												<select
+													value={movement.direction}
+													onChange={(e) => {
+														const newMoves = [...piece.moves];
+														newMoves[index].movements[movementIndex] = {
+															...newMoves[index].movements[movementIndex],
+															direction: e.target.value as direction
+														};
+														setPiece(new Piece(piece.name, piece.image, newMoves, piece.captures));
+													}}
+												>
+													<option value="^">Up</option>
+													<option value="/^">Up-Right</option>
+													<option value=">">Right</option>
+													<option value="\>">Down-Right</option>
+													<option value="v">Down</option>
+													<option value="/v">Down-Left</option>
+													<option value="<">Left</option>
+													<option value="\\^">Up-Left</option>
+												</select>
+											</div>
+										))
+									}
+									<Button onClick={() => handleAddMovement(index)}> Add Movement </Button>
 								</div>
 
 							</div>
