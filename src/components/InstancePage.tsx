@@ -1,18 +1,26 @@
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { basicGame } from "@/features/games/defaultGames"
 import RectBoardInstance from "./RectBoard/RectBoardInstance"
 import { Card, CardHeader } from "./ui/card"
+import { useStore } from "@/utils/storage"
 
 const InstancePage = () => {
-	const instance = useMemo(() => basicGame.createInstance(), []);
+	const storedInstance = useStore((state) => state.instance);
+	const getInstance = useStore((state) => state.getInstance);
+	const saveInstance = useStore((state) => state.setInstance);
+	const instance = useMemo(() => getInstance() ?? basicGame.createInstance(), [getInstance]);
 
 	const [currentTeam, setCurrentTeam] = useState<number>(1);
-	const nextTeam = () => {
-		if (currentTeam === 0) {
-			setCurrentTeam(1)
-		} else {
-			setCurrentTeam(0)
+
+	useEffect(() => {
+		if (!storedInstance) {
+			saveInstance(instance);
 		}
+	}, [storedInstance, saveInstance, instance]);
+
+	const nextTeam = () => {
+		setCurrentTeam((team) => team === 0 ? 1 : 0);
+		saveInstance(instance);
 	}
 
 	return <>
@@ -32,4 +40,3 @@ const InstancePage = () => {
 }
 
 export default InstancePage
-
