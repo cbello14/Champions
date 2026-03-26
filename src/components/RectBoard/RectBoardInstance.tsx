@@ -48,7 +48,7 @@ const RectBoardInstance = ({ cellWidth, instance, currentTeam, nextTeam }:
 		RectBoardDrawing.RectBoardInstance(params, instance)
 	}, [instance, selected]);
 
-	return (<RectBoardGeneric dimensions={[8, 8]} cellWidth={cellWidth} drawingFunction={drawingFunction} selected={selected} setSelected={setSelected} />)
+	return (<RectBoardGeneric dimensions={instance.board.dimensions} cellWidth={cellWidth} drawingFunction={drawingFunction} selected={selected} setSelected={setSelected} />)
 
 }
 

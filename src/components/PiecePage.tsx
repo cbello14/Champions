@@ -1,5 +1,7 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button";
+import { Input } from "./ui/input";
+import {Select} from "./ui/select"
 import SideBar from "@/components/SideBar.tsx";
 import RectBoardPiece from "./RectBoard/RectBoardPiece";
 import { Piece } from "@/features/pieces/piece";
@@ -103,14 +105,19 @@ const PiecePage = () => {
 			</main>
 			<div className="flex grow-2 items-center justify-center">
 				<div className="flex flex-col center">
-					<label>Name:</label>
-					<input
-						type="text"
-						value={piece.name}
-						onChange={(e) => {
-							setPiece(new Piece(e.target.value, piece.image, piece.moves, piece.captures));
-						}}
-					/>
+					<div>
+						<label className="pr-4">Name:</label>
+						<Input 
+							placeholder="Default Name"						
+							type="text"
+							value={piece.name}
+							onChange={(e) => {
+								setPiece(new Piece(e.target.value, piece.image, piece.moves, piece.captures));
+							}}
+						/>
+					</div>
+					
+					
 					<img src={piece.image} />
 					{
 						piece.moves.map((move, index) => (
@@ -161,7 +168,7 @@ const PiecePage = () => {
 
 								<div>
 									<label>Initial Move:</label>
-									<input
+									<Input
 										type="checkbox"
 										checked={move.attributes.initialMove}
 										onChange={(e) => {
@@ -180,7 +187,7 @@ const PiecePage = () => {
 
 								<div>
 									<label>Capturing:</label>
-									<input
+									<Input
 										type="checkbox"
 										checked={move.attributes.capturing}
 										onChange={(e) => {
@@ -203,7 +210,7 @@ const PiecePage = () => {
 										move.movements.map((movement, movementIndex) => (
 											<div>
 												<label>Distance:</label>
-												<input
+												<Input
 													type="text"
 													value={movement.distance}
 													onChange={(e) => {
