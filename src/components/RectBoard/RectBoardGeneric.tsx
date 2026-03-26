@@ -10,12 +10,25 @@ const RectBoardGeneric =
 		const handleCanvasClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
 			const canvas = canvasRef.current;
 			if (!canvas) return;
+
 			const rect = canvas.getBoundingClientRect();
-			const x = event.clientX - rect.left
-			const y = event.clientY - rect.top
-			const selectedX = Math.trunc(x / cellWidth)
-			const selectedY = Math.trunc(y / cellWidth)
-			setSelected([selectedX, selectedY]);
+
+			const rawX = event.clientX - rect.left;
+			const rawY = event.clientY - rect.top;
+
+			const scaleX = canvas.width / rect.width;
+			const scaleY = canvas.height / rect.height;
+
+			const internalX = rawX * scaleX;
+			const internalY = rawY * scaleY;
+
+			const selectedX = Math.trunc(internalX / cellWidth);
+			const selectedY = Math.trunc(internalY / cellWidth);
+
+			if (selectedX >= 0 && selectedX < dimensions[0] &&
+				selectedY >= 0 && selectedY < dimensions[1]) {
+				setSelected([selectedX, selectedY]);
+			}
 		}
 
 		useEffect(() => {
