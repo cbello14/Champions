@@ -125,59 +125,55 @@ const PiecePage = () => {
 								
 								<div>
 									<label>Type:</label>
-									<Select>
+									<Select onValueChange={(e) => {
+											const newMoves = [...piece.moves];
+											newMoves[index] = {
+												...move,
+												attributes: {
+													...move.attributes,
+													type: e as movementType
+												}
+												
+											};
+											console.log(e);
+											setPiece(new Piece(piece.name, piece.image, newMoves, piece.captures));
+										}}>
 										<SelectTrigger>
             								<SelectValue />
           								</SelectTrigger>
 										<SelectContent >
 											<SelectGroup>
-												<SelectItem value="apple">Apple</SelectItem>
-												<SelectItem value="banana">Banana</SelectItem>
-												<SelectItem value="blueberry">Blueberry</SelectItem>
-												<SelectItem value="grapes">Grapes</SelectItem>
-												<SelectItem value="pineapple">Pineapple</SelectItem>
+												<SelectItem value="$">Slide</SelectItem>
+												<SelectItem value="~">Jump</SelectItem>
 											</SelectGroup>
 										</SelectContent>
 									</Select>
-									<select
-										value={move.attributes.type}
-										onChange={(e) => {
-											const newMoves = [...piece.moves];
-											newMoves[index] = {
-												...move,
-												attributes: {
-													...move.attributes,
-													type: e.target.value as movementType
-												}
-											};
-											setPiece(new Piece(piece.name, piece.image, newMoves, piece.captures));
-										}}
-									>
-										<option value="$">Slide</option>
-										<option value="~">Jump</option>
-									</select>
 								</div>
 
 								<div>
 									<label>Reflection:</label>
-									<select
-										value={move.attributes.reflection}
-										onChange={(e) => {
+									<Select onValueChange={(e) => {
 											const newMoves = [...piece.moves];
 											newMoves[index] = {
 												...move,
 												attributes: {
 													...move.attributes,
-													reflection: e.target.value as reflect
+													reflection: e as reflect
 												}
 											};
 											setPiece(new Piece(piece.name, piece.image, newMoves, piece.captures));
-										}}
-									>
-										<option value="h">Horizontal</option>
-										<option value="v">Vertical</option>
-										<option value="hv">Horizontal-Vertical</option>
-									</select>
+										}}>
+										<SelectTrigger>
+            								<SelectValue />
+          								</SelectTrigger>
+										<SelectContent >
+											<SelectGroup>
+												<SelectItem value="h">Horizontal</SelectItem>
+												<SelectItem value="v">Vertical</SelectItem>
+												<SelectItem value="hv">Horizontal-Vertical </SelectItem>
+											</SelectGroup>
+										</SelectContent>
+									</Select>
 								</div>
 
 								<div>
@@ -238,26 +234,26 @@ const PiecePage = () => {
 												/>
 												<br/>
 												<label>Direction:</label>
-												<select
-													value={movement.direction}
-													onChange={(e) => {
+												<Select onValueChange={(e) => {
 														const newMoves = [...piece.moves];
 														newMoves[index].movements[movementIndex] = {
 															...newMoves[index].movements[movementIndex],
-															direction: e.target.value as direction
+															direction: e as direction
 														};
+														console.log(e)
 														setPiece(new Piece(piece.name, piece.image, newMoves, piece.captures));
-													}}
-												>
-													<option value="^">Up</option>
-													<option value="/^">Up-Right</option>
-													<option value=">">Right</option>
-													<option value="\>">Down-Right</option>
-													<option value="v">Down</option>
-													<option value="/v">Down-Left</option>
-													<option value="<">Left</option>
-													<option value="\\^">Up-Left</option>
-												</select>
+													}}>
+													<SelectTrigger>
+														<SelectValue />
+													</SelectTrigger>
+													<SelectContent >
+														<SelectGroup>
+															<SelectItem value="h">Horizontal</SelectItem>
+															<SelectItem value="v">Vertical</SelectItem>
+															<SelectItem value="hv">Horizontal-Vertical </SelectItem>
+														</SelectGroup>
+													</SelectContent>
+												</Select>
 												<Button onClick={() => { handleDeleteMovement(index, movementIndex) }}> Delete Movement </Button>
 											</div>
 										))
