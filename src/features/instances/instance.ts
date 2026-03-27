@@ -3,11 +3,12 @@ import type { info, instancePiece, InstanceJSON, instancePieceId } from "@/types
 import { InstancePieceMap } from "@/types/instancePieceMap"
 
 export class Instance {
-	board: Board;
+	id: string
+	board: Board
 	piecesRecord: InstancePieceMap
 	data: Map<instancePieceId, info>
-	constructor(b: Board = new Board(), r: InstancePieceMap = new InstancePieceMap(),
-		d: Map<instancePieceId, info> = new Map<instancePieceId, info>()) {
+	constructor(b: Board = new Board(), r: InstancePieceMap = new InstancePieceMap(), d: Map<instancePieceId, info> = new Map<instancePieceId, info>(), id?: string) {
+		this.id = id ?? crypto.randomUUID()
 		this.board = b
 		this.piecesRecord = r
 		this.data = d
@@ -31,6 +32,7 @@ export class Instance {
 
 	toJSON(): InstanceJSON {
 		return {
+			id: this.id,
 			board: this.board.toJSON(),
 			piecesRecord: this.piecesRecord.toJSON(),
 			data: Array.from(this.data.entries())
@@ -41,7 +43,8 @@ export class Instance {
 		return new Instance(
 			Board.fromJSON(data.board),
 			InstancePieceMap.fromJSON(data.piecesRecord),
-			instanceData
+			instanceData,
+			data.id
 		);
 	}
 }

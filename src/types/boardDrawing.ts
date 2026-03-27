@@ -2,6 +2,7 @@ import { type coordinate, type dimension } from "./board"
 import { Piece } from "@/features/pieces/piece"
 import type { Game } from "@/features/games/game"
 import type { Instance } from "@/features/instances/instance"
+import type { InstancePieceMap } from "./instancePieceMap"
 
 interface RectBoardDrawingParams { boardSize: dimension, cellWidth: number, ctx: CanvasRenderingContext2D }
 type RectBoardDrawingFunction = (params: RectBoardDrawingParams) => void
@@ -60,6 +61,14 @@ const RectBoardDrawing = {
 
 	rectBoardPiece: (params: RectBoardDrawingParams, piece: Piece, location: coordinate, team: number) => {
 		rectBoardDrawPiece(params, piece, location, team)
+	},
+	rectBoardPieces: (params: RectBoardDrawingParams, piecesRecord: InstancePieceMap) => {
+		piecesRecord.getKeys().forEach((coordinate: coordinate) => {
+			const instancePiece = piecesRecord.getInstancePiece(coordinate)
+			if (instancePiece) {
+				rectBoardDrawPiece(params, instancePiece.piece, coordinate, instancePiece.team)
+			}
+		})
 	}
 }
 

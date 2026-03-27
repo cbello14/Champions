@@ -27,6 +27,7 @@ interface info {
 }
 
 interface InstanceJSON {
+	id: string,
 	board: BoardJSON,
 	piecesRecord: InstancePieceMapJSON,
 	data: [instancePieceId, info][]

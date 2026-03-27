@@ -4,6 +4,7 @@ type coordinate = number[]
 type coordinateString = string
 
 interface BoardJSON {
+	id: string
 	name: string;
 	shape: shape;
 	dimensions: number[];

@@ -21,8 +21,9 @@ const DecisionPage = () => {
 	const games = Object.values(getGames());
 
 	const onStartGame = (game: Game) => {
-		setInstance(game.createInstance());
-		void navigate("/play");
+		const instance = game.createInstance()
+		setInstance(instance)
+		void navigate(`/play/${instance.id}`);
 	};
 
 	return <main className="p-4 flex flex-col gap-4">

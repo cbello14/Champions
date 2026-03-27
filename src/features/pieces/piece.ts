@@ -4,11 +4,13 @@ import type { capture } from "@/types/capture";
 import type { PieceJSON } from "@/types/piece";
 
 export class Piece {
+	id: string
 	name: string;
 	image: string;//html
 	moves: move[];
 	captures: capture[];
-	constructor(name = "", image = "", m: move[] = [], c: capture[] = []) {
+	constructor(name = "", image = "", m: move[] = [], c: capture[] = [], id?: string) {
+		this.id = id ?? crypto.randomUUID()
 		this.name = name;
 		this.image = image
 		this.moves = m;
@@ -31,6 +33,7 @@ export class Piece {
 
 	toJSON(): PieceJSON {
 		return {
+			id: this.id,
 			name: this.name,
 			image: this.image,
 			moves: this.moves,
@@ -38,7 +41,7 @@ export class Piece {
 		};
 	}
 	static fromJSON(data: PieceJSON): Piece {
-    return new Piece(data.name, data.image, data.moves, data.captures);
-  }
+		return new Piece(data.name, data.image, data.moves, data.captures, data.id);
+	}
 };
 

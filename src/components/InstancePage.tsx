@@ -1,24 +1,22 @@
-import { useEffect, useMemo, useState } from "react"
-import { basicGame } from "@/features/games/defaultGames"
+import { useMemo, useState } from "react"
 import RectBoardInstance from "./RectBoard/RectBoardInstance"
 import { Card, CardHeader } from "./ui/card"
 import { useStore } from "@/utils/storage"
+import { useParams } from "react-router"
+import { Instance } from "@/features/instances/instance"
 
 const InstancePage = () => {
-	const storedInstance = useStore((state) => state.instance);
-	const getInstance = useStore((state) => state.getInstance);
+	const { instanceId } = useParams<{ instanceId: string }>()
+	const instanceJSON = useStore((state) => instanceId ? state.instances[instanceId] : null)
 	const saveInstance = useStore((state) => state.setInstance);
-	const instance = useMemo(() => getInstance() ?? basicGame.createInstance(), [getInstance]);
+	const instance = useMemo(() => {
+		return instanceJSON ? Instance.fromJSON(instanceJSON) : null
+	}, [instanceJSON])
 
 	const [currentTeam, setCurrentTeam] = useState<number>(1);
 
-	useEffect(() => {
-		if (!storedInstance) {
-			saveInstance(instance);
-		}
-	}, [storedInstance, saveInstance, instance]);
-
 	const nextTeam = () => {
+		if (!instance) return
 		setCurrentTeam((team) => team === 0 ? 1 : 0);
 		saveInstance(instance);
 	}
@@ -32,7 +30,7 @@ const InstancePage = () => {
 							<h3>{currentTeam === 0 ? "Black" : "White"} Teams Turn</h3>
 						</CardHeader>
 					</Card>
-					<RectBoardInstance cellWidth={100} instance={instance} currentTeam={currentTeam} nextTeam={nextTeam} />
+					{instance ? <RectBoardInstance cellWidth={100} instance={instance} currentTeam={currentTeam} nextTeam={nextTeam} /> : <div>Could not find game</div>}
 				</div>
 			</main>
 		</div >
