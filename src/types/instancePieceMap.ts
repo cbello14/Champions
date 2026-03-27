@@ -61,6 +61,7 @@ export class InstancePieceMap {
 		return Array.from(this.map.entries()).map(([coord, inst]) => [
 			coord,
 			{
+				id: inst.id,
 				piece: inst.piece.toJSON(),
 				team: inst.team
 			}
@@ -71,6 +72,7 @@ export class InstancePieceMap {
 			data.map(([coord, inst]: [string, InstancePieceJSON]) => [
 				coord,
 				{
+					id: inst.id,
 					piece: Piece.fromJSON(inst.piece),
 					team: inst.team
 				}
