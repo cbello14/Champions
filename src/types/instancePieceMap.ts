@@ -56,7 +56,6 @@ export class InstancePieceMap {
 			.map(coordString => coordinateStringToCoordinate(coordString))
 			.filter((coord): coord is coordinate => coord !== null);
 	};
-
 	toJSON(): InstancePieceMapJSON {
 		return Array.from(this.map.entries()).map(([coord, inst]) => [
 			coord,

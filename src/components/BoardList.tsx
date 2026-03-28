@@ -16,12 +16,11 @@ const BoardList = ({ onSelectBoard }: { onSelectBoard: (board: Board) => void })
 		}
 	}, [boardsJSON, setBoard]);
 
-	const allBoards = getBoards();
-	const boardArray = Object.values(allBoards);
+	const boards = getBoards();
 	return (
 		<div className="flex flex-col gap-4">
-			{boardArray.length > 0 ? (
-				boardArray.map((board) => (
+			{boards.length > 0 ? (
+				boards.map((board) => (
 					<Button
 						key={board.name}
 						variant="outline"

@@ -18,7 +18,7 @@ const DecisionPage = () => {
 		}
 	}, [gamesJSON, setGame]);
 
-	const games = Object.values(getGames());
+	const games = getGames();
 
 	const onStartGame = (game: Game) => {
 		const instance = game.createInstance()

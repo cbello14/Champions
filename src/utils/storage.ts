@@ -28,13 +28,13 @@ interface StorageState {
 	setInstance: (instance: Instance) => void;
 
 	// retrieve
-	getPieces: () => Record<string, Piece>;
+	getPieces: () => Piece[];
 	getPiece: (id: string) => Piece | null;
-	getBoards: () => Record<string, Board>;
+	getBoards: () => Board[];
 	getBoard: (id: string) => Board | null;
-	getGames: () => Record<string, Game>;
+	getGames: () => Game[];
 	getGame: (id: string) => Game | null;
-	getInstances: () => Record<string, Instance>;
+	getInstances: () => Instance[];
 	getInstance: (id: string) => Instance | null;
 
 	// delete
@@ -90,11 +90,7 @@ export const useStore = create<StorageState>()(
 
 			getPieces: () => {
 				const pieces = get().pieces;
-				const result: Record<string, Piece> = {};
-				for (const key in pieces) {
-					result[key] = Piece.fromJSON(pieces[key]);
-				}
-				return result;
+				return Object.values(pieces).map((pieceJSON) => Piece.fromJSON(pieceJSON))
 			},
 			getPiece: (id) => {
 				const json = get().pieces[id];
@@ -102,11 +98,7 @@ export const useStore = create<StorageState>()(
 			},
 			getBoards: () => {
 				const boards = get().boards;
-				const result: Record<string, Board> = {};
-				for (const key in boards) {
-					result[key] = Board.fromJSON(boards[key]);
-				}
-				return result;
+				return Object.values(boards).map((boardJSON) => Board.fromJSON(boardJSON))
 			},
 			getBoard: (id) => {
 				const json = get().boards[id];
@@ -114,11 +106,7 @@ export const useStore = create<StorageState>()(
 			},
 			getGames: () => {
 				const games = get().games;
-				const result: Record<string, Game> = {};
-				for (const key in games) {
-					result[key] = Game.fromJSON(games[key]);
-				}
-				return result;
+				return Object.values(games).map((gameJSON) => Game.fromJSON(gameJSON))
 			},
 			getGame: (id) => {
 				const json = get().games[id];
@@ -126,11 +114,7 @@ export const useStore = create<StorageState>()(
 			},
 			getInstances: () => {
 				const instances = get().instances;
-				const result: Record<string, Instance> = {};
-				for (const key in instances) {
-					result[key] = Instance.fromJSON(instances[key]);
-				}
-				return result;
+				return Object.values(instances).map((instanceJSON) => Instance.fromJSON(instanceJSON))
 			},
 			getInstance: (id) => {
 				const json = get().instances[id];

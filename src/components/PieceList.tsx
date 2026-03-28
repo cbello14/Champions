@@ -19,12 +19,11 @@ const PieceList = ({ onSelectPiece }: { onSelectPiece: (piece: Piece) => void })
 		}
 	}, [piecesJSON, setPiece]);
 
-	const allPieces = getPieces();
-	const pieceArray = Object.values(allPieces);
+	const pieces = getPieces();
 	return (
 		<div className="flex flex-col gap-4">
-			{pieceArray.length > 0 ? (
-				pieceArray.map((piece) => (
+			{pieces.length > 0 ? (
+				pieces.map((piece) => (
 					<Button
 						key={piece.name}
 						variant="outline"
