@@ -13,7 +13,7 @@ const PiecePage = () => {
 	const location: coordinate = [4, 4]
 	const [piecesOpen, setPiecesOpen] = useState<boolean>(true);
 	const moves = calculateMovesRect(piece, location, [8, 8], [], [1, -1], false)
-	
+
 	const piecesJSON = useStore((state) => state.pieces);
 	const pieces = Object.fromEntries(
 		Object.entries(piecesJSON).map(([k, v]) => [k, Piece.fromJSON(v)])
@@ -66,23 +66,23 @@ const PiecePage = () => {
 
 	return <>
 		<div className="flex flex-row justify-between gap-4 p-4 items-start">
-			<SideBar 
-				isOpen={piecesOpen} 
-				setIsOpen={(state: boolean) => { setPiecesOpen(state) }} 
-				name={"Pieces"} 
+			<SideBar
+				isOpen={piecesOpen}
+				setIsOpen={(state: boolean) => { setPiecesOpen(state) }}
+				name={"Pieces"}
 				content={
 					<div className="flex flex-col center">
-						<Button 
-							key="add-piece" 
+						<Button
+							key="add-piece"
 							className="m-1"
 							onClick={() => { setPiece(new Piece()) }}
-						> 
-							Add Piece 
+						>
+							Add Piece
 						</Button>
 						{
 							Object.values(pieces).map((p) => (
 								<Button
-									key={p.name}
+									key={p.id}
 									className="m-1"
 									onClick={() => { setPiece(p) }}
 								>
@@ -91,8 +91,8 @@ const PiecePage = () => {
 							))
 						}
 					</div>
-				} 
-				align={"left"} 
+				}
+				align={"left"}
 			/>
 			<main className="flex grow-5 items-center justify-center">
 				<div className="flex flex-col center">
@@ -115,7 +115,7 @@ const PiecePage = () => {
 					{
 						piece.moves.map((move, index) => (
 							<div key={index} className="border p-2 m-2">
-								
+
 								<div>
 									<label>Type:</label>
 									<select
@@ -215,7 +215,7 @@ const PiecePage = () => {
 														setPiece(new Piece(piece.name, piece.image, newMoves, piece.captures));
 													}}
 												/>
-												<br/>
+												<br />
 												<label>Direction:</label>
 												<select
 													value={movement.direction}

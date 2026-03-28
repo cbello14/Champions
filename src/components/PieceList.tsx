@@ -25,7 +25,7 @@ const PieceList = ({ onSelectPiece }: { onSelectPiece: (piece: Piece) => void })
 			{pieces.length > 0 ? (
 				pieces.map((piece) => (
 					<Button
-						key={piece.name}
+						key={piece.id}
 						variant="outline"
 						className="h-20 flex flex-col items-center justify-center gap-2 hover:bg-accent"
 						onClick={() => { onSelectPiece(piece) }}

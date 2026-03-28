@@ -30,7 +30,7 @@ const DecisionPage = () => {
 		<h2 className="text-lg font-semibold">Choose Game</h2>
 		{games.length === 0 ? <p>No games found. Create one first.</p> :
 			games.map((game) => (
-				<Button key={game.name} onClick={() => { onStartGame(game); }}>
+				<Button key={game.id} onClick={() => { onStartGame(game); }}>
 					Start {game.name}
 				</Button>
 			))

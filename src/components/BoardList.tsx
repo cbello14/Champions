@@ -22,7 +22,7 @@ const BoardList = ({ onSelectBoard }: { onSelectBoard: (board: Board) => void })
 			{boards.length > 0 ? (
 				boards.map((board) => (
 					<Button
-						key={board.name}
+						key={board.id}
 						variant="outline"
 						className="h-20 flex flex-col items-center justify-center gap-2 hover:bg-accent"
 						onClick={() => { onSelectBoard(board) }}
