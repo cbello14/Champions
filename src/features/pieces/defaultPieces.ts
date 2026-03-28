@@ -1,11 +1,12 @@
+import { moveDirection, moveMovementType, moveReflect } from "@/types/move";
 import { Piece } from "./piece";
 
 export const pawn = new Piece(
 	'Pawn',
 	'',
 	[
-		{ attributes: { type: '$', initialMove: true }, movements: [{ distance: 2, direction: '^' }] },
-		{ attributes: { type: '$' }, movements: [{ distance: 1, direction: '^' }] }
+		{ attributes: { type: moveMovementType.slide, initialMove: true }, movements: [{ distance: 2, direction: moveDirection.up }] },
+		{ attributes: { type: moveMovementType.slide }, movements: [{ distance: 1, direction: moveDirection.up }] }
 	],
 	[]
 );
@@ -15,12 +16,12 @@ export const knight = new Piece(
 	'',
 	[
 		{
-			attributes: { type: '~', reflection: 'hv' },
-			movements: [{ distance: 2, direction: '^' }, { distance: 1, direction: '>' }]
+			attributes: { type: moveMovementType.jump, reflection: moveReflect.horizontalvertical },
+			movements: [{ distance: 2, direction: moveDirection.up }, { distance: 1, direction: moveDirection.right }]
 		},
 		{
-			attributes: { type: '~', reflection: 'hv' },
-			movements: [{ distance: 1, direction: '^' }, { distance: 2, direction: '>' }]
+			attributes: { type: moveMovementType.jump, reflection: moveReflect.horizontalvertical },
+			movements: [{ distance: 1, direction: moveDirection.up }, { distance: 2, direction: moveDirection.right }]
 		}
 	],
 	[]
@@ -29,7 +30,7 @@ export const knight = new Piece(
 export const bishop = new Piece(
 	'Bishop',
 	'',
-	[{ attributes: { type: '$', reflection: 'hv' }, movements: [{ distance: 'n', direction: '/^' }] }],
+	[{ attributes: { type: moveMovementType.slide, reflection: moveReflect.horizontalvertical }, movements: [{ distance: 'n', direction: moveDirection.upright }] }],
 	[]
 );
 
@@ -37,8 +38,8 @@ export const rook = new Piece(
 	'Rook',
 	'',
 	[
-		{ attributes: { type: '$', reflection: 'hv' }, movements: [{ distance: 'n', direction: '^' }] },
-		{ attributes: { type: '$', reflection: 'hv' }, movements: [{ distance: 'n', direction: '>' }] }
+		{ attributes: { type: moveMovementType.slide, reflection: moveReflect.horizontalvertical }, movements: [{ distance: 'n', direction: moveDirection.up }] },
+		{ attributes: { type: moveMovementType.slide, reflection: moveReflect.horizontalvertical }, movements: [{ distance: 'n', direction: moveDirection.right }] }
 	],
 	[]
 );
@@ -47,9 +48,9 @@ export const queen = new Piece(
 	'Queen',
 	'',
 	[
-		{ attributes: { type: '$', reflection: 'hv' }, movements: [{ distance: 'n', direction: '^' }] },
-		{ attributes: { type: '$', reflection: 'hv' }, movements: [{ distance: 'n', direction: '>' }] },
-		{ attributes: { type: '$', reflection: 'hv' }, movements: [{ distance: 'n', direction: '/^' }] }
+		{ attributes: { type: moveMovementType.slide, reflection: moveReflect.horizontalvertical }, movements: [{ distance: 'n', direction: moveDirection.up }] },
+		{ attributes: { type: moveMovementType.slide, reflection: moveReflect.horizontalvertical }, movements: [{ distance: 'n', direction: moveDirection.right }] },
+		{ attributes: { type: moveMovementType.slide, reflection: moveReflect.horizontalvertical }, movements: [{ distance: 'n', direction: moveDirection.upright }] }
 	],
 	[]
 );
@@ -58,9 +59,9 @@ export const king = new Piece(
 	'King',
 	'',
 	[
-		{ attributes: { type: '$', reflection: 'hv' }, movements: [{ distance: 1, direction: '^' }] },
-		{ attributes: { type: '$', reflection: 'hv' }, movements: [{ distance: 1, direction: '>' }] },
-		{ attributes: { type: '$', reflection: 'hv' }, movements: [{ distance: 1, direction: '/^' }] }
+		{ attributes: { type: moveMovementType.slide, reflection: moveReflect.horizontalvertical }, movements: [{ distance: 1, direction: moveDirection.up }] },
+		{ attributes: { type: moveMovementType.slide, reflection: moveReflect.horizontalvertical }, movements: [{ distance: 1, direction: moveDirection.right }] },
+		{ attributes: { type: moveMovementType.slide, reflection: moveReflect.horizontalvertical }, movements: [{ distance: 1, direction: moveDirection.upright }] }
 	],
 	[]
 );

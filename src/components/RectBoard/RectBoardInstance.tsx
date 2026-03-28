@@ -5,6 +5,7 @@ import type { RectBoardDrawingParams } from "@/types/boardDrawing.ts"
 import { useCallback, useState } from "react";
 import { calculateMovesRect } from "@/types/moveCalculation";
 import type { Instance } from "@/features/instances/instance";
+import { moveDirection } from "@/types/move";
 
 
 const RectBoardInstance = ({ cellWidth, instance, currentTeam, nextTeam }:
@@ -15,7 +16,7 @@ const RectBoardInstance = ({ cellWidth, instance, currentTeam, nextTeam }:
 		if (selected && newSelected) {
 			const prevSelectedPiece = instance.piecesRecord.getInstancePiece(selected)
 			if (prevSelectedPiece?.team === currentTeam) {
-				const direction = prevSelectedPiece.team === 1 ? [1, 1] : [-1, -1]
+				const direction = prevSelectedPiece.team === 1 ? moveDirection.up : moveDirection.down
 				const gamePieces = [...instance.piecesRecord.getKeys()].filter((value): value is coordinate => (value[0] !== selected[0] || value[1] !== selected[1]))
 				const blocked = [...gamePieces, ...instance.board.blocked]
 				const moves = calculateMovesRect(prevSelectedPiece.piece, selected, instance.board.dimensions, blocked, direction, !instance.hasPieceMoved(prevSelectedPiece))
@@ -38,7 +39,7 @@ const RectBoardInstance = ({ cellWidth, instance, currentTeam, nextTeam }:
 		let moves: coordinate[] = []
 		if (selected) {
 			const selectedPiece = instance.piecesRecord.getInstancePiece(selected)
-			const direction = selectedPiece?.team === 1 ? [1, 1] : [-1, -1]
+			const direction = selectedPiece?.team === 1 ? moveDirection.up : moveDirection.down
 			const gamePieces = [...instance.piecesRecord.getKeys()].filter((value): value is coordinate => (value[0] !== selected[0] || value[1] !== selected[1]))
 			const blocked = [...gamePieces, ...instance.board.blocked]
 			moves = selectedPiece ? calculateMovesRect(selectedPiece.piece, selected, instance.board.dimensions, blocked, direction, !instance.hasPieceMoved(selectedPiece)) : [];

@@ -2,9 +2,7 @@ import { Board } from "@/features/boards/board"
 import { InstancePieceMap, type instancePiece, type instancePieceId, type InstancePieceMapJSON } from "@/types/instancePiece"
 import type { coordinate } from "@/features/boards/board"
 import type { BoardJSON } from "@/features/boards/board"
-
-export type turn = number
-export type team = number
+import type { turn } from "@/types/team"
 
 
 

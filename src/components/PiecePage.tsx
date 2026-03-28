@@ -6,13 +6,13 @@ import { Piece } from "@/features/pieces/piece";
 import { calculateMovesRect } from "@/types/moveCalculation";
 import type { coordinate } from "@/features/boards/board";
 import { useStore } from "@/utils/storage";
-import type { direction, distance, movementType, reflect } from "@/types/move";
+import { moveDirection, moveMovementType, moveReflect, type direction, type distance, type movementType, type reflect } from "@/types/move";
 
 const PiecePage = () => {
 	const [piece, setPiece] = useState<Piece>(new Piece());
 	const location: coordinate = [4, 4]
 	const [piecesOpen, setPiecesOpen] = useState<boolean>(true);
-	const moves = calculateMovesRect(piece, location, [8, 8], [], [1, -1], false)
+	const moves = calculateMovesRect(piece, location, [8, 8], [], moveDirection.up, false)
 
 	const piecesJSON = useStore((state) => state.pieces);
 	const pieces = Object.fromEntries(
@@ -32,8 +32,8 @@ const PiecePage = () => {
 		const newMoves = [...piece.moves];
 		newMoves.push({
 			attributes: {
-				type: '$',
-				reflection: 'h',
+				type: moveMovementType.slide,
+				reflection: moveReflect.horizontal,
 				initialMove: false,
 				capturing: false
 			},
@@ -50,7 +50,7 @@ const PiecePage = () => {
 		const newMoves = [...piece.moves];
 		newMoves[ind].movements.push({
 			distance: 1,
-			direction: '^'
+			direction: moveDirection.up
 		});
 		setPiece(new Piece(piece.name, piece.image, newMoves, piece.captures));
 	};

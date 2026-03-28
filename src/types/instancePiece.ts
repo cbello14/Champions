@@ -1,7 +1,7 @@
 import type { coordinateString, coordinate } from "@/features/boards/board";
 import { coordinateToString, coordinateStringToCoordinate } from "@/features/boards/board";
-import type { team } from "@/features/instances/instance";
 import { Piece, type PieceJSON } from "@/features/pieces/piece";
+import type { team } from "./team";
 
 export type instancePieceId = number
 

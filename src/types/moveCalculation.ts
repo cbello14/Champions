@@ -1,30 +1,34 @@
 import { Piece } from "@/features/pieces/piece";
-import type { movement, move, direction } from "./move";
+import { type movement, type move, type direction, moveReflect, moveDirection, moveMovementType } from "./move";
 import type { coordinate, dimension } from "@/features/boards/board";
+import { rectTeamDirection } from "./team";
 
 interface attributeParams { isJump: boolean, flippedHorizontally: boolean, flippedVertically: boolean }
 
-const calculateMovesRect = (piece: Piece, location: coordinate, boardSize: dimension, blocking: coordinate[], teamDirection: coordinate, isFirstMove: boolean) => {
+const calculateMovesRect = (piece: Piece, location: coordinate, boardSize: dimension, blocking: coordinate[], teamDirection: direction, isFirstMove: boolean) => {
 	const possibleMoves: coordinate[] = [];
 	piece.moves.forEach((move: move) => {
-		const isJump = move.attributes.type == '~'
+		const isJump = move.attributes.type ===  moveMovementType.jump
 		const requiresFirstMove = !!move.attributes.initialMove
 		if (requiresFirstMove && !isFirstMove) {
 			return;
 		}
 		const attributes = { isJump: isJump, flippedHorizontally: false, flippedVertically: false };
 		possibleMoves.push(...calculateMoveRect(location, move, boardSize, blocking, attributes, teamDirection));
-		if (move.attributes.reflection?.includes('h')) {
+		const horizontal = move.attributes.reflection === moveReflect.horizontal
+		const vertical = move.attributes.reflection === moveReflect.vertical
+		const horizontalvertical = move.attributes.reflection === moveReflect.horizontalvertical
+		if (horizontal || horizontalvertical) {
 			attributes.flippedVertically = false;
 			attributes.flippedHorizontally = true;
 			possibleMoves.push(...calculateMoveRect(location, move, boardSize, blocking, attributes, teamDirection));
 		}
-		if (move.attributes.reflection?.includes('v')) {
+		if (vertical || horizontalvertical) {
 			attributes.flippedVertically = true;
 			attributes.flippedHorizontally = false;
 			possibleMoves.push(...calculateMoveRect(location, move, boardSize, blocking, attributes, teamDirection));
 		}
-		if (move.attributes.reflection?.includes('hv')) {
+		if (horizontalvertical) {
 			attributes.flippedVertically = true;
 			attributes.flippedHorizontally = true;
 			possibleMoves.push(...calculateMoveRect(location, move, boardSize, blocking, attributes, teamDirection));
@@ -34,7 +38,7 @@ const calculateMovesRect = (piece: Piece, location: coordinate, boardSize: dimen
 	return possibleMoves;
 }
 
-const calculateMoveRect = (location: coordinate, move: move, boardSize: dimension, blocking: coordinate[], attributes: attributeParams, teamDirection: coordinate) => {
+const calculateMoveRect = (location: coordinate, move: move, boardSize: dimension, blocking: coordinate[], attributes: attributeParams, teamDirection: direction) => {
 	if (attributes.isJump) {
 		return calculateMoveRectJump(location, move, boardSize, blocking, attributes, teamDirection)
 	} else {
@@ -42,7 +46,7 @@ const calculateMoveRect = (location: coordinate, move: move, boardSize: dimensio
 	}
 }
 
-const calculateMoveRectJump = (location: coordinate, move: move, boardSize: dimension, blocking: coordinate[], attributes: attributeParams, teamDirection: coordinate) => {
+const calculateMoveRectJump = (location: coordinate, move: move, boardSize: dimension, blocking: coordinate[], attributes: attributeParams, teamDirection: direction) => {
 	let landingLocation: coordinate = location;
 	move.movements.forEach((movement: movement) => {
 		landingLocation = calculateMovementRectJump(landingLocation, movement, boardSize, attributes, teamDirection)
@@ -57,7 +61,7 @@ const calculateMoveRectJump = (location: coordinate, move: move, boardSize: dime
 	return [landingLocation];
 }
 
-const calculateMoveRectNoJump = (location: coordinate, move: move, boardSize: dimension, blocking: coordinate[], attributes: attributeParams, teamDirection: coordinate) => {
+const calculateMoveRectNoJump = (location: coordinate, move: move, boardSize: dimension, blocking: coordinate[], attributes: attributeParams, teamDirection: direction) => {
 	const possibleMoves: coordinate[] = [];
 	let startingLocation = location;
 	move.movements.forEach((movement: movement) => {
@@ -71,7 +75,7 @@ const calculateMoveRectNoJump = (location: coordinate, move: move, boardSize: di
 	return possibleMoves;
 }
 
-const calculateMovementRectNoJump = (location: coordinate, movement: movement, boardSize: dimension, blocking: coordinate[], attributes: attributeParams, teamDirection: coordinate) => {
+const calculateMovementRectNoJump = (location: coordinate, movement: movement, boardSize: dimension, blocking: coordinate[], attributes: attributeParams, teamDirection: direction) => {
 	const possibleMoves: coordinate[] = [];
 	const movementDirection = parseDirectionRect(movement.direction, teamDirection);
 	movementDirection[0] *= attributes.flippedHorizontally ? -1 : 1
@@ -92,7 +96,7 @@ const calculateMovementRectNoJump = (location: coordinate, movement: movement, b
 	return possibleMoves;
 }
 
-const calculateMovementRectJump = (location: coordinate, movement: movement, boardSize: dimension, attributes: attributeParams, teamDirection: coordinate) => {
+const calculateMovementRectJump = (location: coordinate, movement: movement, boardSize: dimension, attributes: attributeParams, teamDirection: direction) => {
 	let currentLocation: coordinate = location;
 	const movementDirection = parseDirectionRect(movement.direction, teamDirection);
 	movementDirection[0] *= attributes.flippedHorizontally ? -1 : 1
@@ -105,38 +109,38 @@ const calculateMovementRectJump = (location: coordinate, movement: movement, boa
 
 }
 
-const parseDirectionRect = (direction: direction, teamDirection: coordinate) => {
+const parseDirectionRect = (direction: direction, teamDirection: direction) => {
 	let coordinateDirection;
 
 	switch (direction) {
-		case '>':
+		case moveDirection.right:
 			coordinateDirection = [1, 0]
 			break;
-		case '<':
+		case moveDirection.left:
 			coordinateDirection = [-1, 0]
 			break;
-		case 'v':
+		case moveDirection.down:
 			coordinateDirection = [0, 1]
 			break;
-		case '^':
+		case moveDirection.up:
 			coordinateDirection = [0, -1]
 			break;
-		case '/v':
+		case moveDirection.downleft:
 			coordinateDirection = [-1, 1]
 			break;
-		case '/^':
+		case moveDirection.upright:
 			coordinateDirection = [1, -1]
 			break;
-		case '\v':
+		case moveDirection.downright:
 			coordinateDirection = [1, 1]
 			break;
-		case '\\^':
+		case moveDirection.upleft:
 			coordinateDirection = [-1, -1]
 			break;
 		default:
 			coordinateDirection = [0, 0]
 	}
-	return [coordinateDirection[0] * teamDirection[0], coordinateDirection[1] * teamDirection[1]];
+	return rectTeamDirection[teamDirection](coordinateDirection);
 }
 
 export { calculateMovesRect }
