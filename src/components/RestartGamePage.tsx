@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button"
 import { useNavigate } from "react-router";
 import { useStore } from "@/utils/storage";
-import RectBoardSnapshot from "./RectBoard/RectBoardSnapshot";
 import { Instance } from "@/features/instances/instance";
+import SnapshotButton from "./snapshotButton";
 
 const RestartGamePage = () => {
 	const navigate = useNavigate();
@@ -27,10 +27,7 @@ const RestartGamePage = () => {
 				const instance = Instance.fromJSON(instanceJSOn)
 
 				return <div key={instance.id} className="p-4">
-					<RectBoardSnapshot cellWidth={25} board={instance.board} pieces={instance.piecesRecord} />
-					<Button onClick={() => { void navigate(`/play/${instance.id}`); }}>
-						Resume Game
-					</Button>
+					<SnapshotButton snapshotItem={instance} onClick={() => { void navigate(`/play/${instance.id}`); }} text={"Resume Game"} />
 				</div>
 			})}
 		</div>
