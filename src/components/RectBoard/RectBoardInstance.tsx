@@ -1,6 +1,5 @@
-
 import RectBoardGeneric from "@/components/RectBoard/RectBoardGeneric"
-import { checkCoordinateEquality, type coordinate } from "@/types/board";
+import { checkCoordinateEquality, type coordinate } from "@/features/boards/board";
 import { RectBoardDrawing } from "@/types/boardDrawing.ts";
 import type { RectBoardDrawingParams } from "@/types/boardDrawing.ts"
 import { useCallback, useState } from "react";

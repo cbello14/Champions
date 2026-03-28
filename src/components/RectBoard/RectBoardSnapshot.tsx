@@ -1,11 +1,9 @@
-
 import RectBoardGeneric from "@/components/RectBoard/RectBoardGeneric"
 import { RectBoardDrawing } from "@/types/boardDrawing.ts";
 import type { RectBoardDrawingParams } from "@/types/boardDrawing.ts"
 import { useCallback } from "react";
-import type { Board } from "@/features/boards/board";
-import type { coordinate } from "@/types/board";
-import type { InstancePieceMap } from "@/types/instancePieceMap";
+import type { Board, coordinate } from "@/features/boards/board";
+import type { InstancePieceMap } from "@/types/instancePiece";
 
 
 const RectBoardSnapshot = ({ cellWidth, board, pieces }:

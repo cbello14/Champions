@@ -1,9 +1,15 @@
-import { Board } from "@/features/boards/board"
-import type { coordinate } from "@/types/board";
-import { InstancePieceMap } from "@/types/instancePieceMap";
-import type { GameJSON } from "@/types/game";
+import { Board, type BoardJSON } from "@/features/boards/board"
+import { InstancePieceMap, type InstancePieceMapJSON } from "@/types/instancePiece";
 import { Instance } from "../instances/instance";
+import type { coordinate } from "@/features/boards/board";
 
+
+export interface GameJSON {
+	id: string
+	name: string;
+	board: BoardJSON,
+	pieces: InstancePieceMapJSON
+}
 
 export class Game {
 	id: string

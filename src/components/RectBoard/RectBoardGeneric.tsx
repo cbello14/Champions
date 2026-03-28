@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react"
 import type { RectBoardDrawingFunction, RectBoardDrawingParams } from "@/types/boardDrawing"
-import type { coordinate } from "@/types/board";
+import type { coordinate } from "@/features/boards/board";
 
 
 const RectBoardGeneric =

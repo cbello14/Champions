@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { useNavigate } from "react-router";
 import { useStore } from "@/utils/storage";
-import { Instance } from "@/features/instances/instance";
+import { Instance, type InstanceJSON } from "@/features/instances/instance";
 import SnapshotButton from "./snapshotButton";
 
 const RestartGamePage = () => {
@@ -23,8 +23,8 @@ const RestartGamePage = () => {
 		<h2 className="text-lg font-semibold">Current Games</h2>
 		<p>Saved games found.</p>
 		<div className="flex flex-row">
-			{instances.map((instanceJSOn) => {
-				const instance = Instance.fromJSON(instanceJSOn)
+			{instances.map((instanceJSON: InstanceJSON) => {
+				const instance = Instance.fromJSON(instanceJSON)
 
 				return <div key={instance.id} className="p-4">
 					<SnapshotButton snapshotItem={instance} onClick={() => { void navigate(`/play/${instance.id}`); }} text={"Resume Game"} />

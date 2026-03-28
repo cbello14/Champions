@@ -1,7 +1,14 @@
 //I have made these seperate for future scaling - like sometimes this move captures sometimes it doesn't etc etc
 import type { move } from "@/types/move"
 import type { capture } from "@/types/capture";
-import type { PieceJSON } from "@/types/piece";
+
+export interface PieceJSON {
+	id: string
+	name: string;
+	image: string;
+	moves: move[];
+	captures: capture[];
+}
 
 export class Piece {
 	id: string

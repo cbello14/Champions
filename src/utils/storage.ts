@@ -9,10 +9,10 @@ import { pawn, knight, bishop, rook, queen, king } from "@/features/pieces/defau
 import { basic } from "@/features/boards/defaultBoards";
 import { basicGame } from "@/features/games/defaultGames";
 
-import type { PieceJSON } from "@/types/piece";
-import type { BoardJSON } from "@/types/board";
-import type { GameJSON } from "@/types/game";
-import type { InstanceJSON } from "@/types/instance";
+import type { BoardJSON } from "@/features/boards/board.ts";
+import type { GameJSON } from "@/features/games/game.ts";
+import type { PieceJSON } from "@/features/pieces/piece.ts";
+import type { InstanceJSON } from "@/features/instances/instance.ts";
 
 
 interface StorageState {

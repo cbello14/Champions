@@ -4,7 +4,7 @@ import SideBar from "@/components/SideBar.tsx";
 import RectBoardPiece from "./RectBoard/RectBoardPiece";
 import { Piece } from "@/features/pieces/piece";
 import { calculateMovesRect } from "@/types/moveCalculation";
-import type { coordinate } from "@/types/board";
+import type { coordinate } from "@/features/boards/board";
 import { useStore } from "@/utils/storage";
 import type { direction, distance, movementType, reflect } from "@/types/move";
 

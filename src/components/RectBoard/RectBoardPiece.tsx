@@ -1,5 +1,5 @@
 import RectBoardGeneric from "@/components/RectBoard/RectBoardGeneric"
-import type { coordinate } from "@/types/board";
+import type { coordinate } from "@/features/boards/board";
 import { Piece } from "@/features/pieces/piece";
 import { RectBoardDrawing } from "@/types/boardDrawing.ts";
 import type { RectBoardDrawingParams } from "@/types/boardDrawing.ts"

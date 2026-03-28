@@ -1,6 +1,6 @@
-import type { coordinate, dimension } from "@/types/board";
 import { Piece } from "@/features/pieces/piece";
 import type { movement, move, direction } from "./move";
+import type { coordinate, dimension } from "@/features/boards/board";
 
 interface attributeParams { isJump: boolean, flippedHorizontally: boolean, flippedVertically: boolean }
 

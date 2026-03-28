@@ -1,6 +1,25 @@
 import { Board } from "@/features/boards/board"
-import type { info, instancePiece, InstanceJSON, instancePieceId } from "@/types/instance"
-import { InstancePieceMap } from "@/types/instancePieceMap"
+import { InstancePieceMap, type instancePiece, type instancePieceId, type InstancePieceMapJSON } from "@/types/instancePiece"
+import type { coordinate } from "@/features/boards/board"
+import type { BoardJSON } from "@/features/boards/board"
+
+export type turn = number
+export type team = number
+
+
+
+export interface info {
+	captured?: [coordinate, turn],
+	hasMoved: boolean,
+	movesMade: number,
+}
+
+export interface InstanceJSON {
+	id: string,
+	board: BoardJSON,
+	piecesRecord: InstancePieceMapJSON,
+	data: [instancePieceId, info][]
+}
 
 export class Instance {
 	id: string

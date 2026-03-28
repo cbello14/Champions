@@ -1,8 +1,8 @@
-import { type coordinate, type dimension } from "./board"
-import { Piece } from "@/features/pieces/piece"
+import type { dimension, coordinate } from "@/features/boards/board"
 import type { Game } from "@/features/games/game"
 import type { Instance } from "@/features/instances/instance"
-import type { InstancePieceMap } from "./instancePieceMap"
+import type { Piece } from "@/features/pieces/piece"
+import type { InstancePieceMap } from "./instancePiece"
 
 interface RectBoardDrawingParams { boardSize: dimension, cellWidth: number, ctx: CanvasRenderingContext2D }
 type RectBoardDrawingFunction = (params: RectBoardDrawingParams) => void

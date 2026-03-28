@@ -1,6 +1,21 @@
-import type { instancePiece, InstancePieceJSON, instancePieceId } from "@/types/instance"
-import { type coordinateString, coordinateStringToCoordinate, coordinateToString, type coordinate } from "@/types/board"
-import { Piece } from "@/features/pieces/piece";
+import type { coordinateString, coordinate } from "@/features/boards/board";
+import { coordinateToString, coordinateStringToCoordinate } from "@/features/boards/board";
+import type { team } from "@/features/instances/instance";
+import { Piece, type PieceJSON } from "@/features/pieces/piece";
+
+export type instancePieceId = number
+
+export interface instancePiece {
+	id: instancePieceId,
+	piece: Piece,
+	team: team
+}
+
+export interface InstancePieceJSON {
+	id: instancePieceId,
+	piece: PieceJSON,
+	team: team
+}
 
 export type InstancePieceMapJSON = [coordinateString, InstancePieceJSON][];
 
