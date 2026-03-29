@@ -12,7 +12,7 @@ const PiecePage = () => {
 	const [piece, setPiece] = useState<Piece>(new Piece());
 	const location: coordinate = [4, 4]
 	const [piecesOpen, setPiecesOpen] = useState<boolean>(true);
-	const moves = calculateMovesRect(piece, location, [8, 8], [], moveDirection.up, false)
+	const moves = calculateMovesRect(piece, location, [8, 8], [], [], moveDirection.up, false)
 
 	const piecesJSON = useStore((state) => state.pieces);
 	const pieces = Object.fromEntries(

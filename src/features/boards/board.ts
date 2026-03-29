@@ -23,6 +23,11 @@ export const coordinateStringToCoordinate: (string: coordinateString) => coordin
 		return null
 	}
 }
+
+export const checkCoordinateArrayIncludes = (coordinateArray: coordinate[], coordinateToCheck: coordinate) => {
+	return coordinateArray.some((coord) => checkCoordinateEquality(coord, coordinateToCheck))
+}
+
 export class Board {
 	id: string
 	name: string

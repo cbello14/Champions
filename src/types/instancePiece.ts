@@ -71,6 +71,12 @@ export class InstancePieceMap {
 			.map(coordString => coordinateStringToCoordinate(coordString))
 			.filter((coord): coord is coordinate => coord !== null);
 	};
+	getFriendlyPieces(team: team) {
+		return this.getKeys().filter((value): value is coordinate => (this.getInstancePiece(value)?.team === team))
+	}
+	getEnemyPieces(team: team) {
+		return this.getKeys().filter((value): value is coordinate => (this.getInstancePiece(value)?.team !== team))
+	}
 	toJSON(): InstancePieceMapJSON {
 		return Array.from(this.map.entries()).map(([coord, inst]) => [
 			coord,

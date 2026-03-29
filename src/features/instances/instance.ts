@@ -1,8 +1,10 @@
-import { Board } from "@/features/boards/board"
+import { Board, checkCoordinateEquality } from "@/features/boards/board"
 import { InstancePieceMap, type instancePiece, type instancePieceId, type InstancePieceMapJSON } from "@/types/instancePiece"
 import type { coordinate } from "@/features/boards/board"
 import type { BoardJSON } from "@/features/boards/board"
-import type { turn } from "@/types/team"
+import type { team, turn } from "@/types/team"
+import { calculateMovesRect } from "@/types/moveCalculation"
+import type { direction } from "@/types/move"
 
 
 
@@ -46,7 +48,26 @@ export class Instance {
 		}
 		return pieceData.hasMoved
 	}
-
+	getFriendlyPieces(team: team) {
+		return this.piecesRecord.getKeys().filter((value): value is coordinate => (this.piecesRecord.getInstancePiece(value)?.team === team))
+	}
+	getEnemyPieces(team: team) {
+		return this.piecesRecord.getKeys().filter((value): value is coordinate => (this.piecesRecord.getInstancePiece(value)?.team !== team))
+	}
+	calculateMoves(pieceLocation: coordinate, teamDirection: direction) {
+		const piece = this.piecesRecord.getInstancePiece(pieceLocation)
+		if (!piece) {
+			return []
+		}
+		const team = piece.team
+		if (this.board.shape === 'rect') {
+			const friendlyPieces = this.getFriendlyPieces(team).filter((coordinate) => !checkCoordinateEquality(coordinate, pieceLocation))
+			const enemyPieces = this.getEnemyPieces(team)
+			const blocked = [...friendlyPieces, ...this.board.blocked]
+			return calculateMovesRect(piece.piece, pieceLocation, this.board.dimensions, blocked, enemyPieces, teamDirection, !this.hasPieceMoved(piece))
+		}
+		return []
+	}
 	toJSON(): InstanceJSON {
 		return {
 			id: this.id,
