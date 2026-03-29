@@ -4,14 +4,14 @@ import { RectBoardDrawing } from "@/types/boardDrawing.ts";
 import type { RectBoardDrawingParams } from "@/types/boardDrawing.ts"
 import { useCallback, useState } from "react";
 import { Game } from "@/features/games/game";
-import {  type moveCalculationResult } from "@/types/moveCalculation";
+import { type moveCalculationResult } from "@/types/moveCalculation";
 import type { Piece } from "@/features/pieces/piece";
 import { moveDirection } from "@/types/move";
 
 type gameCreationActions = Piece | "erase" | "team" | null
 
-const RectBoardGame = ({ cellWidth, game, onClickAction }:
-	{ cellWidth: number; game: Game; onClickAction: gameCreationActions }) => {
+const RectBoardGame = ({ cellWidth, game, setGame, onClickAction }:
+	{ cellWidth: number; game: Game; setGame: (game: Game) => void; onClickAction: gameCreationActions }) => {
 
 	const [selected, changeSelected] = useState<coordinate | null>(null)
 
@@ -20,13 +20,12 @@ const RectBoardGame = ({ cellWidth, game, onClickAction }:
 			if (onClickAction === "team") {
 				const pieceClicked = game.pieces.getInstancePiece(newSelected)
 				if (pieceClicked) {
-					pieceClicked.team = pieceClicked.team === 0 ? 1 : 0
-					game.pieces.setInstancePiece(newSelected, pieceClicked)
+					setGame(game.setTeam(newSelected, pieceClicked.team === 0 ? 1 : 0))
 				}
 			} else if (onClickAction === "erase") {
-				game.pieces.removeInstancePiece(newSelected)
+				setGame(game.removeInstancePiece(newSelected))
 			} else {
-				game.pieces.setPiece(newSelected, onClickAction)
+				setGame(game.addPiece(newSelected, onClickAction, 1))
 			}
 		}
 		changeSelected(newSelected)
@@ -45,7 +44,6 @@ const RectBoardGame = ({ cellWidth, game, onClickAction }:
 	}, [game, onClickAction, selected]);
 
 	return (<RectBoardGeneric dimensions={game.board.dimensions} cellWidth={cellWidth} drawingFunction={drawingFunction} selected={selected} setSelected={setSelected} />)
-
 }
 
 export default RectBoardGame

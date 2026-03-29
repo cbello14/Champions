@@ -38,7 +38,7 @@ const GamePage = () => {
 
 			<div className="flex flex-col center">
 				<Input type="text" defaultValue={name} onChange={(e) => { onNameChange(e.target.value) }} />
-				<RectBoardGame cellWidth={100} game={game} onClickAction={action} />
+				<RectBoardGame cellWidth={100} game={game} onClickAction={action} setGame={(game: Game) => { setGame(game); }} />
 				<div className="flex flex-row justify-center">
 					<Button className="m-5" onClick={() => { setAction("team") }}> Flip Team </Button>
 					<Button className="m-5" onClick={() => { setAction("erase") }}> Delete Pieces </Button>

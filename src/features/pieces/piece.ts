@@ -1,9 +1,8 @@
-//I have made these seperate for future scaling - like sometimes this move captures sometimes it doesn't etc etc
-import type { move } from "@/types/move"
+import type { move } from "@/types/move";
 import type { capture } from "@/types/capture";
 
 export interface PieceJSON {
-	id: string
+	id: string;
 	name: string;
 	image: string;
 	moves: move[];
@@ -11,44 +10,47 @@ export interface PieceJSON {
 }
 
 export class Piece {
-	id: string
-	name: string;
-	image: string;//html
-	moves: move[];
-	captures: capture[];
+	readonly id: string;
+	readonly name: string;
+	readonly image: string;
+	readonly moves: readonly move[];
+	readonly captures: readonly capture[];
+
 	constructor(name = "", image = "", m: move[] = [], c: capture[] = [], id?: string) {
-		this.id = id ?? crypto.randomUUID()
+		this.id = id ?? crypto.randomUUID();
 		this.name = name;
-		this.image = image
+		this.image = image;
 		this.moves = m;
 		this.captures = c;
 	}
-	addMove(move: move) {
-		this.moves.push(move)
+	addMove(move: move, capture: capture = 'direct'): Piece {
+		return new Piece(this.name, this.image, [...this.moves, move], [...this.captures, capture], this.id);
 	}
-	removeMoveAt(index: number) {
-		this.moves.splice(index, 1)
+	removeMoveAt(index: number): Piece {
+		const newMoves = [...this.moves];
+		newMoves.splice(index, 1);
+		const newCaptures = [...this.captures]
+		newCaptures.splice(index, 1)
+		return new Piece(this.name, this.image, newMoves, newCaptures, this.id);
 	}
-	removeMove(move: move) {
-		const index = this.moves.indexOf(move)
-		if (index != -1)
-			this.moves.splice(index)
+	removeMove(move: move): Piece {
+		const index = this.moves.indexOf(move);
+		return this.removeMoveAt(index)
 	}
-	replaceMove(move: move, index: number) {
-		this.moves[index] = move
+	replaceMoveAt(move: move, index: number): Piece {
+		const newMoves = [...this.moves];
+		newMoves[index] = move;
+		return new Piece(this.name, this.image, newMoves, [...this.captures], this.id);
 	}
-
+	replaceCaptureAt(capture: capture, index: number) {
+		const newCaptures = [...this.captures];
+		newCaptures[index] = capture;
+		return new Piece(this.name, this.image, [...this.moves], newCaptures, this.id);
+	}
 	toJSON(): PieceJSON {
-		return {
-			id: this.id,
-			name: this.name,
-			image: this.image,
-			moves: this.moves,
-			captures: this.captures,
-		};
+		return { id: this.id, name: this.name, image: this.image, moves: [...this.moves], captures: [...this.captures], };
 	}
 	static fromJSON(data: PieceJSON): Piece {
 		return new Piece(data.name, data.image, data.moves, data.captures, data.id);
 	}
-};
-
+}

@@ -8,8 +8,8 @@ import type { Instance } from "@/features/instances/instance";
 import { moveDirection } from "@/types/move";
 
 
-const RectBoardInstance = ({ cellWidth, instance, currentTeam, nextTeam }:
-	{ cellWidth: number; instance: Instance; currentTeam: number, nextTeam: () => void }) => {
+const RectBoardInstance = ({ cellWidth, instance, setInstance, currentTeam, nextTeam }:
+	{ cellWidth: number; instance: Instance; setInstance: (instance: Instance) => void; currentTeam: number, nextTeam: () => void }) => {
 	const [selected, changeSelected] = useState<coordinate | null>(null)
 
 	const setSelected = (newSelected: coordinate | null) => {
@@ -20,11 +20,8 @@ const RectBoardInstance = ({ cellWidth, instance, currentTeam, nextTeam }:
 				const moves = instance.calculateMoves(selected, direction)
 				const selectedMove = moves.map((moveResult) => moveResult.landing).some((moveLocation: coordinate) => { return checkCoordinateEquality(moveLocation, newSelected) })
 				if (selectedMove) {
-					instance.piecesRecord.removeInstancePiece(selected)
-					instance.piecesRecord.setInstancePiece(newSelected, prevSelectedPiece)
+					setInstance(instance.movePiece(selected, newSelected))
 					nextTeam()
-					instance.recordPieceMove(prevSelectedPiece)
-					changeSelected(null)
 					return
 				}
 			}

@@ -1,10 +1,11 @@
 import { Board, checkCoordinateEquality, type BoardJSON } from "@/features/boards/board"
-import { InstancePieceMap, type InstancePieceMapJSON } from "@/types/instancePiece";
+import { InstancePieceMap, type instancePiece, type InstancePieceMapJSON } from "@/types/instancePiece";
 import { Instance } from "../instances/instance";
 import type { coordinate } from "@/features/boards/board";
 import type { team } from "@/types/team";
 import type { direction } from "@/types/move";
 import { calculateMovesRect } from "@/types/moveCalculation";
+import type { Piece } from "../pieces/piece";
 
 
 export interface GameJSON {
@@ -15,55 +16,91 @@ export interface GameJSON {
 }
 
 export class Game {
-	id: string
-	name: string;
-	board: Board;
-	pieces: InstancePieceMap //keys have got to be a string to be hashable
-	constructor(n: string, b: Board = new Board(), r: InstancePieceMap = new InstancePieceMap(), id?: string) {
-		this.id = id ?? crypto.randomUUID()
-		this.name = n;
-		this.board = b
-		this.pieces = r
-	}
+	readonly id: string;
+	readonly name: string;
+	readonly board: Board;
+	readonly pieces: InstancePieceMap;
 
+	constructor(n: string, b: Board = new Board(), r: InstancePieceMap = new InstancePieceMap(), id?: string) {
+		this.id = id ?? crypto.randomUUID();
+		this.name = n;
+		this.board = b;
+		this.pieces = r;
+	}
+	movePiece(from: coordinate, to: coordinate) {
+		const piece = this.pieces.getInstancePiece(from);
+
+		if (!piece) {
+			return this;
+		}
+		let newPieces = this.pieces
+		newPieces = newPieces.removeInstancePiece(from);
+		newPieces = newPieces.setPiece(to, piece.piece, piece.team);
+		return new Game(this.name, this.board, newPieces, this.id);
+	}
+	addPiece(coordinate: coordinate, piece: Piece, team: team) {
+		let newPieces = this.pieces
+		newPieces = newPieces.setPiece(coordinate, piece, team)
+		return new Game(this.name, this.board, newPieces, this.id)
+	}
+	addInstancePiece(coordinate: coordinate, instancePiece: instancePiece) {
+		let newPieces = this.pieces
+		newPieces = newPieces.setInstancePiece(coordinate, instancePiece)
+		return new Game(this.name, this.board, newPieces, this.id)
+	}
+	removeInstancePiece(coordinate: coordinate) {
+		let newPieces = this.pieces
+		newPieces = newPieces.removeInstancePiece(coordinate)
+		return new Game(this.name, this.board, newPieces, this.id)
+	}
+	setTeam(coordinate: coordinate, team: team) {
+		let newPieces = this.pieces
+		const piece = this.pieces.getInstancePiece(coordinate)
+		if (!piece) {
+			return this
+		}
+		piece.team = team
+		newPieces = newPieces.removeInstancePiece(coordinate)
+		newPieces = newPieces.setInstancePiece(coordinate, piece)
+		return new Game(this.name, this.board, newPieces, this.id)
+
+	}
+	getFriendlyPieces(team: team) {
+		return this.pieces.getFriendlyPieces(team);
+	}
+	getEnemyPieces(team: team) {
+		return this.pieces.getEnemyPieces(team);
+	}
+	calculateMoves(pieceLocation: coordinate, teamDirection: direction) {
+		const piece = this.pieces.getInstancePiece(pieceLocation);
+		if (!piece) return [];
+
+		const team = piece.team;
+		if (this.board.shape === 'rect') {
+			const friendlyPieces = this.getFriendlyPieces(team).filter((coord) => !checkCoordinateEquality(coord, pieceLocation));
+			const enemyPieces = this.getEnemyPieces(team);
+			const blocked = [...friendlyPieces, ...this.board.blocked];
+			return calculateMovesRect(piece.piece, pieceLocation, this.board.dimensions as number[], blocked as number[][], enemyPieces as number[][], teamDirection, true);
+		}
+		return [];
+	}
+	verifyPieces(): Game {
+		let nextPieces = this.pieces;
+		this.pieces.getKeys().forEach((coordinate: coordinate) => {
+			if (!this.board.isLocationValid(coordinate)) {
+				nextPieces = nextPieces.removeInstancePiece(coordinate);
+			}
+		});
+		if (nextPieces === this.pieces) return this;
+		return new Game(this.name, this.board, nextPieces, this.id);
+	}
+	createInstance() {
+		return new Instance(this.board, this.pieces);
+	}
 	toJSON(): GameJSON {
-		return {
-			id: this.id,
-			name: this.name,
-			board: this.board.toJSON(),
-			pieces: this.pieces.toJSON()
-		};
+		return { id: this.id, name: this.name, board: this.board.toJSON(), pieces: this.pieces.toJSON() };
 	}
 	static fromJSON(data: GameJSON): Game {
 		return new Game(data.name, Board.fromJSON(data.board), InstancePieceMap.fromJSON(data.pieces), data.id);
-	}
-	getFriendlyPieces(team: team) {
-		return this.pieces.getFriendlyPieces(team)
-	}
-	getEnemyPieces(team: team) {
-		return this.pieces.getEnemyPieces(team)
-	}
-	calculateMoves(pieceLocation: coordinate, teamDirection: direction) {
-		const piece = this.pieces.getInstancePiece(pieceLocation)
-		if (!piece) {
-			return []
-		}
-		const team = piece.team
-		if (this.board.shape === 'rect') {
-			const friendlyPieces = this.getFriendlyPieces(team).filter((coordinate) => !checkCoordinateEquality(coordinate, pieceLocation))
-			const enemyPieces = this.getEnemyPieces(team)
-			const blocked = [...friendlyPieces, ...this.board.blocked]
-			return calculateMovesRect(piece.piece, pieceLocation, this.board.dimensions, blocked, enemyPieces, teamDirection, true)
-		}
-		return []
-	}
-	verifyPieces() {
-		this.pieces.getKeys().forEach((coordinate: coordinate) => {
-			if (!this.board.isLocationValid(coordinate)) { this.pieces.removeInstancePiece(coordinate) }
-		})
-	}
-	createInstance() {
-		const instance = new Instance(this.board, this.pieces)
-		return instance
 	}
 }
