@@ -1,7 +1,9 @@
-import { type coordinate, type dimension } from "./board"
-import { Piece } from "@/features/pieces/piece"
+import { type dimension, type coordinate, checkCoordinateEquality } from "@/features/boards/board"
 import type { Game } from "@/features/games/game"
 import type { Instance } from "@/features/instances/instance"
+import type { Piece } from "@/features/pieces/piece"
+import type { InstancePieceMap } from "./instancePiece"
+import type { moveCalculationResult } from "./moveCalculation"
 
 interface RectBoardDrawingParams { boardSize: dimension, cellWidth: number, ctx: CanvasRenderingContext2D }
 type RectBoardDrawingFunction = (params: RectBoardDrawingParams) => void
@@ -21,20 +23,24 @@ const RectBoardDrawing = {
 		}
 	},
 
-	rectBoardMoveCaptures: (params: RectBoardDrawingParams, moves: coordinate[], captures: coordinate[]) => {
+	rectBoardMoveCaptures: (params: RectBoardDrawingParams, calculationResults: moveCalculationResult[]) => {
 		const { cellWidth, ctx } = params
 		const radius = cellWidth / 2
-		ctx.fillStyle = "Green"
-		moves.forEach((move: dimension) => {
-			const pixelX = move[0] * cellWidth + radius
-			const pixelY = move[1] * cellWidth + radius
-			drawCircle(ctx, pixelX, pixelY, radius)
-		})
-		ctx.fillStyle = "Red"
-		captures.forEach((capture: dimension) => {
-			const pixelX = capture[0] * cellWidth + radius
-			const pixelY = capture[1] * cellWidth + radius
-			drawCross(ctx, pixelX, pixelY, radius)
+		calculationResults.forEach((result: moveCalculationResult) => {
+			ctx.fillStyle = "Green"
+			const moveX = result.landing[0] * cellWidth + radius
+			const moveY = result.landing[1] * cellWidth + radius
+			drawCircle(ctx, moveX, moveY, radius)
+			if (result.capturing) {
+				ctx.fillStyle = "Red"
+				const captureX = result.capturing[0] * cellWidth + radius
+				const captureY = result.capturing[1] * cellWidth + radius
+				if (!checkCoordinateEquality(result.landing, result.capturing)) {
+					ctx.lineWidth = 10
+					drawLine(ctx, moveX, moveY, captureX, captureY)
+				}
+				drawCross(ctx, captureX, captureY, radius)
+			}
 		})
 	},
 
@@ -60,6 +66,14 @@ const RectBoardDrawing = {
 
 	rectBoardPiece: (params: RectBoardDrawingParams, piece: Piece, location: coordinate, team: number) => {
 		rectBoardDrawPiece(params, piece, location, team)
+	},
+	rectBoardPieces: (params: RectBoardDrawingParams, piecesRecord: InstancePieceMap) => {
+		piecesRecord.getKeys().forEach((coordinate: coordinate) => {
+			const instancePiece = piecesRecord.getInstancePiece(coordinate)
+			if (instancePiece) {
+				rectBoardDrawPiece(params, instancePiece.piece, coordinate, instancePiece.team)
+			}
+		})
 	}
 }
 
@@ -67,6 +81,13 @@ const drawCircle = (ctx: CanvasRenderingContext2D, centerX: number, centerY: num
 	ctx.beginPath();
 	ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI); // Define the circle path
 	ctx.fill();
+}
+
+const drawLine = (ctx: CanvasRenderingContext2D, fromX: number, fromY: number, toX: number, toY: number) => {
+	ctx.beginPath();
+	ctx.moveTo(fromX, fromY);
+	ctx.lineTo(toX, toY);
+	ctx.stroke();
 }
 
 const rectBoardDrawPiece = (params: RectBoardDrawingParams, piece: Piece, location: coordinate, team: number) => {

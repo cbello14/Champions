@@ -1,24 +1,23 @@
-import type { movement, movementVerbose } from "./move"
+import type { movement } from "./move"
 
-type capture = 'x' | '' | movement[]
-type captureVerbose = 'direct' | 'no-capture' | movementVerbose[]
+type capture = 'direct' | 'no-capture' | movement[]
 
-export type { capture, captureVerbose }
+export type { capture }
 
 
 /*
 Possible class version
 
 export class Capture {
-    direction: string;
-    condition: boolean;
-    static genericConstruct(){
-        return new Move("$o|1^",true);
-    }
-    constructor(directions: string,conditions: boolean){
-        this.direction=directions
-        this.condition=conditions
-    }
+	direction: string;
+	condition: boolean;
+	static genericConstruct(){
+		return new Move("$o|1^",true);
+	}
+	constructor(directions: string,conditions: boolean){
+		this.direction=directions
+		this.condition=conditions
+	}
 };
 
 */

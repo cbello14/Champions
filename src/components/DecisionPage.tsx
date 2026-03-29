@@ -18,18 +18,19 @@ const DecisionPage = () => {
 		}
 	}, [gamesJSON, setGame]);
 
-	const games = Object.values(getGames());
+	const games = getGames();
 
 	const onStartGame = (game: Game) => {
-		setInstance(game.createInstance());
-		void navigate("/play");
+		const instance = game.createInstance()
+		setInstance(instance)
+		void navigate(`/play/${instance.id}`);
 	};
 
 	return <main className="p-4 flex flex-col gap-4">
 		<h2 className="text-lg font-semibold">Choose Game</h2>
 		{games.length === 0 ? <p>No games found. Create one first.</p> :
 			games.map((game) => (
-				<Button key={game.name} onClick={() => { onStartGame(game); }}>
+				<Button key={game.id} onClick={() => { onStartGame(game); }}>
 					Start {game.name}
 				</Button>
 			))
