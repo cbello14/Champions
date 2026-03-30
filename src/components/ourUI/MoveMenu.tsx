@@ -39,8 +39,8 @@ const MoveMenu = ({ index, piece, move, setPiece, handleDeleteMovement, handleAd
                     </SelectTrigger>
                     <SelectContent >
                         <SelectGroup>
-                            <SelectItem value="$">Slide</SelectItem>
-                            <SelectItem value="~">Jump</SelectItem>
+                            <SelectItem value="slide">Slide</SelectItem>
+                            <SelectItem value="jump">Jump</SelectItem>
                         </SelectGroup>
                     </SelectContent>
                 </Select>
