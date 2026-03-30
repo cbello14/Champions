@@ -1,8 +1,9 @@
 import RectBoardGeneric from "@/components/RectBoard/RectBoardGeneric"
-import type { coordinate } from "@/types/board";
+import type { coordinate } from "@/features/boards/board";
 import { Piece } from "@/features/pieces/piece";
 import { RectBoardDrawing } from "@/types/boardDrawing.ts";
 import type { RectBoardDrawingParams } from "@/types/boardDrawing.ts"
+import type { moveCalculationResult } from "@/types/moveCalculation";
 import { useCallback, useState } from "react";
 
 const RectBoardPiece = ({ cellWidth, moves, captures, piece, location }:
@@ -12,11 +13,14 @@ const RectBoardPiece = ({ cellWidth, moves, captures, piece, location }:
 
 	const setSelected = (newSelected: coordinate | null) => { changeSelected(newSelected) }
 
+	// TODO: create a move calculation method, that will provide us the proper captures for these moves even without there being pieces
+	const moveResults: moveCalculationResult[] = moves.map((move, index) => { return { landing: move, capturing: captures[index] } })
+
 	const drawingFunction = useCallback((params: RectBoardDrawingParams) => {
 		RectBoardDrawing.rectBoardColoring(params, "white", "black", selected);
-		RectBoardDrawing.rectBoardMoveCaptures(params, moves, captures)
+		RectBoardDrawing.rectBoardMoveCaptures(params, moveResults)
 		RectBoardDrawing.rectBoardPiece(params, piece, location, 1)
-	}, [captures, location, moves, piece, selected]);
+	}, [location, moveResults, piece, selected]);
 
 	return (<RectBoardGeneric dimensions={[8, 8]} cellWidth={cellWidth} drawingFunction={drawingFunction} selected={selected} setSelected={setSelected} />)
 

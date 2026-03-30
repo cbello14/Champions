@@ -22,7 +22,7 @@ createRoot(document.getElementById('root')!).render(
 					<Route path="boards" element={<BoardPage />} />
 					<Route path="start" element={<DecisionPage />} />
 					<Route path="current-games" element={<RestartGamePage />} />
-					<Route path="play" element={<InstancePage />} />
+					<Route path="play/:instanceId" element={<InstancePage />} />
 				</Route>
 			</Routes>
 		</BrowserRouter>

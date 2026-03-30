@@ -1,11 +1,11 @@
 import { useEffect, useRef } from "react"
 import type { RectBoardDrawingFunction, RectBoardDrawingParams } from "@/types/boardDrawing"
-import type { coordinate } from "@/types/board";
+import type { coordinate } from "@/features/boards/board";
 
 
 const RectBoardGeneric =
 	({ dimensions, cellWidth, drawingFunction, selected, setSelected }:
-		{ dimensions: number[]; cellWidth: number; drawingFunction: RectBoardDrawingFunction, selected: coordinate | null, setSelected: (newSelected: coordinate | null) => void }) => {
+		{ dimensions: readonly number[]; cellWidth: number; drawingFunction: RectBoardDrawingFunction, selected: coordinate | null, setSelected: (newSelected: coordinate | null) => void }) => {
 		const canvasRef = useRef<HTMLCanvasElement>(null);
 		const handleCanvasClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
 			const canvas = canvasRef.current;
@@ -38,7 +38,7 @@ const RectBoardGeneric =
 
 				if (context) {
 					context.clearRect(0, 0, canvas.width, canvas.height);
-					const params: RectBoardDrawingParams = { boardSize: dimensions, cellWidth: cellWidth, ctx: context }
+					const params: RectBoardDrawingParams = { boardSize: [...dimensions], cellWidth: cellWidth, ctx: context }
 					drawingFunction(params)
 				}
 			}

@@ -1,9 +1,8 @@
 import { Game } from "./game";
 import { basic } from "../boards/defaultBoards";
 import { pawn, rook, knight, bishop, queen, king } from "../pieces/defaultPieces";
-import type { coordinateString } from "@/types/board";
-import type { instancePiece } from "@/types/instance";
-import { InstancePieceMap } from "@/types/instancePieceMap";
+import { InstancePieceMap, type instancePiece } from "@/types/instancePiece";
+import type { coordinateString } from "../boards/board";
 
 const map =
 	new Map<coordinateString, instancePiece>([

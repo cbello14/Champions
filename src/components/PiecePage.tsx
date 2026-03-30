@@ -6,16 +6,16 @@ import SideBar from "@/components/SideBar.tsx";
 import RectBoardPiece from "./RectBoard/RectBoardPiece";
 import { Piece } from "@/features/pieces/piece";
 import { calculateMovesRect } from "@/types/moveCalculation";
-import type { coordinate } from "@/types/board";
+import type { coordinate } from "@/features/boards/board";
 import { useStore } from "@/utils/storage";
-import type { direction, distance, movementType, reflect } from "@/types/move";
+import { moveDirection, moveMovementType, moveReflect, type direction, type distance, type movementType, type reflect } from "@/types/move";
 import { Checkbox } from "./ui/checkbox";
 
 const PiecePage = () => {
 	const [piece, setPiece] = useState<Piece>(new Piece());
 	const location: coordinate = [4, 4]
 	const [piecesOpen, setPiecesOpen] = useState<boolean>(true);
-	const moves = calculateMovesRect(piece, location, [8, 8], [], [1, 1], false)
+	const moves = calculateMovesRect(piece, location, [8, 8], [], [], moveDirection.up, false)
 
 	const piecesJSON = useStore((state) => state.pieces);
 	const pieces = Object.fromEntries(
@@ -32,30 +32,28 @@ const PiecePage = () => {
 	};
 
 	const handleAddMove = () => {
-		const newMoves = [...piece.moves];
-		newMoves.push({
+		setPiece(piece.addMove({
 			attributes: {
-				type: '$',
-				reflection: 'h',
+				type: moveMovementType.slide,
+				reflection: moveReflect.horizontal,
 				initialMove: false,
 				capturing: false
 			},
 			movements: []
-		});
-		setPiece(new Piece(piece.name, piece.image, newMoves, piece.captures));
+		}))	
 	};
-	const handleDeleteMove = (ind: number) => {
-		const newMoves = piece.moves.filter((_, i) => i != ind);
-		setPiece(new Piece(piece.name, piece.image, newMoves, piece.captures));
+	const handleDeleteMove = (index: number) => {		
+		setPiece(piece.removeMoveAt(index))		
 	};
 
 	const handleAddMovement = (ind: number) => {
 		const newMoves = [...piece.moves];
 		newMoves[ind].movements.push({
 			distance: 1,
-			direction: '^'
+			direction: moveDirection.up
 		});
 		setPiece(new Piece(piece.name, piece.image, newMoves, piece.captures));
+		
 	};
 	const handleDeleteMovement = (moveInd: number, movementInd: number) => {
 		const newMovements = piece.moves[moveInd].movements.filter((_, i) => i != movementInd);
@@ -85,7 +83,7 @@ const PiecePage = () => {
 						{
 							Object.values(pieces).map((p) => (
 								<Button
-									key={p.name}
+									key={p.id}
 									className="m-1"
 									onClick={() => { setPiece(p) }}
 								>
