@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button";
 import { Input } from "./ui/input";
-import {Select,  SelectContent,  SelectGroup,  SelectItem,  SelectTrigger,  SelectValue,} from "./ui/select"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue, } from "./ui/select"
 import SideBar from "@/components/SideBar.tsx";
 import RectBoardPiece from "./RectBoard/RectBoardPiece";
 import { Piece } from "@/features/pieces/piece";
@@ -9,13 +9,14 @@ import { calculateMovesRect } from "@/types/moveCalculation";
 import type { coordinate } from "@/types/board";
 import { useStore } from "@/utils/storage";
 import type { direction, distance, movementType, reflect } from "@/types/move";
+import { Checkbox } from "./ui/checkbox";
 
 const PiecePage = () => {
 	const [piece, setPiece] = useState<Piece>(new Piece());
 	const location: coordinate = [4, 4]
 	const [piecesOpen, setPiecesOpen] = useState<boolean>(true);
-	const moves = calculateMovesRect(piece, location, [8, 8], [], [1, -1], false)
-	
+	const moves = calculateMovesRect(piece, location, [8, 8], [], [1, 1], false)
+
 	const piecesJSON = useStore((state) => state.pieces);
 	const pieces = Object.fromEntries(
 		Object.entries(piecesJSON).map(([k, v]) => [k, Piece.fromJSON(v)])
@@ -68,18 +69,18 @@ const PiecePage = () => {
 
 	return <>
 		<div className="flex flex-row justify-between gap-4 p-4 items-start">
-			<SideBar 
-				isOpen={piecesOpen} 
-				setIsOpen={(state: boolean) => { setPiecesOpen(state) }} 
-				name={"Pieces"} 
+			<SideBar
+				isOpen={piecesOpen}
+				setIsOpen={(state: boolean) => { setPiecesOpen(state) }}
+				name={"Pieces"}
 				content={
 					<div className="flex flex-col center">
-						<Button 
-							key="add-piece" 
+						<Button
+							key="add-piece"
 							className="m-1"
 							onClick={() => { setPiece(new Piece()) }}
-						> 
-							Add Piece 
+						>
+							Add Piece
 						</Button>
 						{
 							Object.values(pieces).map((p) => (
@@ -93,8 +94,8 @@ const PiecePage = () => {
 							))
 						}
 					</div>
-				} 
-				align={"left"} 
+				}
+				align={"left"}
 			/>
 			<main className="flex grow-5 items-center justify-center">
 				<div className="flex flex-col center">
@@ -107,8 +108,8 @@ const PiecePage = () => {
 				<div className="flex flex-col center">
 					<div>
 						<label className="pr-4">Name:</label>
-						<Input 
-							placeholder="Default Name"						
+						<Input
+							placeholder="Default Name"
 							type="text"
 							value={piece.name}
 							onChange={(e) => {
@@ -116,31 +117,31 @@ const PiecePage = () => {
 							}}
 						/>
 					</div>
-					
-					
+
+
 					<img src={piece.image} />
 					{
 						piece.moves.map((move, index) => (
 							<div key={index} className="border p-2 m-2">
-								
-								<div>
+
+								<div className="flex flex-row" >
 									<label>Type:</label>
 									<Select onValueChange={(e) => {
-											const newMoves = [...piece.moves];
-											newMoves[index] = {
-												...move,
-												attributes: {
-													...move.attributes,
-													type: e as movementType
-												}
-												
-											};
-											console.log(e);
-											setPiece(new Piece(piece.name, piece.image, newMoves, piece.captures));
-										}}>
+										const newMoves = [...piece.moves];
+										newMoves[index] = {
+											...move,
+											attributes: {
+												...move.attributes,
+												type: e as movementType
+											}
+
+										};
+										console.log(e);
+										setPiece(new Piece(piece.name, piece.image, newMoves, piece.captures));
+									}}>
 										<SelectTrigger>
-            								<SelectValue />
-          								</SelectTrigger>
+											<SelectValue />
+										</SelectTrigger>
 										<SelectContent >
 											<SelectGroup>
 												<SelectItem value="$">Slide</SelectItem>
@@ -150,24 +151,25 @@ const PiecePage = () => {
 									</Select>
 								</div>
 
-								<div>
+								<div className="flex flex-row">
 									<label>Reflection:</label>
 									<Select onValueChange={(e) => {
-											const newMoves = [...piece.moves];
-											newMoves[index] = {
-												...move,
-												attributes: {
-													...move.attributes,
-													reflection: e as reflect
-												}
-											};
-											setPiece(new Piece(piece.name, piece.image, newMoves, piece.captures));
-										}}>
+										const newMoves = [...piece.moves];
+										newMoves[index] = {
+											...move,
+											attributes: {
+												...move.attributes,
+												reflection: e as reflect
+											}
+										};
+										setPiece(new Piece(piece.name, piece.image, newMoves, piece.captures));
+									}}>
 										<SelectTrigger>
-            								<SelectValue />
-          								</SelectTrigger>
+											<SelectValue />
+										</SelectTrigger>
 										<SelectContent >
 											<SelectGroup>
+												<SelectItem value="none">None</SelectItem>
 												<SelectItem value="h">Horizontal</SelectItem>
 												<SelectItem value="v">Vertical</SelectItem>
 												<SelectItem value="hv">Horizontal-Vertical </SelectItem>
@@ -178,40 +180,55 @@ const PiecePage = () => {
 
 								<div>
 									<label>Initial Move:</label>
-									<Input
-										type="checkbox"
-										checked={move.attributes.initialMove}
-										onChange={(e) => {
+
+									<Checkbox
+										defaultChecked={move.attributes.initialMove}
+										onCheckedChange={(e) => {
 											const newMoves = [...piece.moves];
+											console.log(e)
+											var initial = true;
+											if (typeof e === "boolean") {
+												initial = e
+											}
+											else {
+												initial = false
+											}//if its bad, assume not a first move
 											newMoves[index] = {
 												...move,
 												attributes: {
 													...move.attributes,
-													initialMove: e.target.checked
+													initialMove: initial
 												}
 											};
 											setPiece(new Piece(piece.name, piece.image, newMoves, piece.captures));
-										}}
-									/>
+											console.log
+										}} />
 								</div>
 
 								<div>
 									<label>Capturing:</label>
-									<Input
-										type="checkbox"
-										checked={move.attributes.capturing}
-										onChange={(e) => {
+									<Checkbox
+
+										defaultChecked={move.attributes.capturing}
+										onCheckedChange={(e) => {
 											const newMoves = [...piece.moves];
+											console.log(e)
+											var cap = true;
+											if (typeof e === "boolean") {
+												cap = e
+											}
+											else {
+												cap = true
+											}//if its bad, assume it is a capturing move
 											newMoves[index] = {
 												...move,
 												attributes: {
 													...move.attributes,
-													capturing: e.target.checked
+													capturing: cap
 												}
 											};
 											setPiece(new Piece(piece.name, piece.image, newMoves, piece.captures));
-										}}
-									/>
+										}} />
 								</div>
 
 								<div className="flex flex-col center">
@@ -219,22 +236,23 @@ const PiecePage = () => {
 									{
 										move.movements.map((movement, movementIndex) => (
 											<div>
-												<label>Distance:</label>
-												<Input
-													type="text"
-													value={movement.distance}
-													onChange={(e) => {
-														const newMoves = [...piece.moves];
-														newMoves[index].movements[movementIndex] = {
-															...newMoves[index].movements[movementIndex],
-															distance: e.target.value as distance
-														};
-														setPiece(new Piece(piece.name, piece.image, newMoves, piece.captures));
-													}}
-												/>
-												<br/>
-												<label>Direction:</label>
-												<Select onValueChange={(e) => {
+												<div className="flex flex-row"><label>Distance:</label>
+													<Input
+														type="text"
+														value={movement.distance}
+														onChange={(e) => {
+															const newMoves = [...piece.moves];
+															newMoves[index].movements[movementIndex] = {
+																...newMoves[index].movements[movementIndex],
+																distance: e.target.value as distance
+															};
+															setPiece(new Piece(piece.name, piece.image, newMoves, piece.captures));
+														}}
+													/>
+												</div>												
+												<div className="flex flex-row">
+													<label>Direction:</label>
+													<Select onValueChange={(e) => {
 														const newMoves = [...piece.moves];
 														newMoves[index].movements[movementIndex] = {
 															...newMoves[index].movements[movementIndex],
@@ -243,18 +261,25 @@ const PiecePage = () => {
 														console.log(e)
 														setPiece(new Piece(piece.name, piece.image, newMoves, piece.captures));
 													}}>
-													<SelectTrigger>
-														<SelectValue />
-													</SelectTrigger>
-													<SelectContent >
-														<SelectGroup>
-															<SelectItem value="h">Horizontal</SelectItem>
-															<SelectItem value="v">Vertical</SelectItem>
-															<SelectItem value="hv">Horizontal-Vertical </SelectItem>
-														</SelectGroup>
-													</SelectContent>
-												</Select>
+														<SelectTrigger>
+															<SelectValue />
+														</SelectTrigger>
+														<SelectContent >
+															<SelectGroup>
+																<SelectItem value="^">Up</SelectItem>
+																<SelectItem value="/^">Up-Right</SelectItem>
+																<SelectItem value=">">Right</SelectItem>
+																<SelectItem value="\>">Down-Right</SelectItem>
+																<SelectItem value="v">Down</SelectItem>
+																<SelectItem value="/v">Down-Left</SelectItem>
+																<SelectItem value="<">Left</SelectItem>
+																<SelectItem value="\\^">Up-Left</SelectItem>
+															</SelectGroup>
+														</SelectContent>
+													</Select>
+												</div>
 												<Button onClick={() => { handleDeleteMovement(index, movementIndex) }}> Delete Movement </Button>
+												<br />
 											</div>
 										))
 									}
