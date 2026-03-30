@@ -1,4 +1,4 @@
-import type { move } from "@/types/move";
+import type { move, movement } from "@/types/move";
 import type { capture } from "@/types/capture";
 
 export interface PieceJSON {
@@ -41,6 +41,16 @@ export class Piece {
 		const newMoves = [...this.moves];
 		newMoves[index] = move;
 		return new Piece(this.name, this.image, newMoves, [...this.captures], this.id);
+	}
+	addMovement(moveIndex: number, movement: movement): Piece{
+		const newMoves= [... this.moves]
+		newMoves[moveIndex].movements.push(movement)
+		return new Piece(this.name, this.image,newMoves, [...this.captures], this.id)
+	}
+	removeMovementAt(moveIndex:number, movementIndex: number):Piece{
+		const newMoves= [... this.moves]
+		newMoves[moveIndex].movements.splice(movementIndex,1)
+		return new Piece(this.name, this.image,newMoves, [...this.captures], this.id)
 	}
 	replaceCaptureAt(capture: capture, index: number) {
 		const newCaptures = [...this.captures];
