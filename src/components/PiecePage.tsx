@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button";
+import { Input } from "./ui/input";
 import SideBar from "@/components/SideBar.tsx";
 import RectBoardPiece from "./RectBoard/RectBoardPiece";
 import { Piece } from "@/features/pieces/piece";
@@ -7,6 +8,8 @@ import { calculateMovesRect } from "@/types/moveCalculation";
 import type { coordinate } from "@/features/boards/board";
 import { useStore } from "@/utils/storage";
 import { moveDirection, moveMovementType, moveReflect, type direction, type distance, type movementType, type reflect } from "@/types/move";
+import PieceSideBar from "./ourUI/PieceSideBar";
+import MoveMenu from "./ourUI/MoveMenu";
 
 const PiecePage = () => {
 	const [piece, setPiece] = useState<Piece>(new Piece());
@@ -29,8 +32,7 @@ const PiecePage = () => {
 	};
 
 	const handleAddMove = () => {
-		const newMoves = [...piece.moves];
-		newMoves.push({
+		setPiece(piece.addMove({
 			attributes: {
 				type: moveMovementType.slide,
 				reflection: moveReflect.horizontal,
@@ -38,12 +40,10 @@ const PiecePage = () => {
 				capturing: false
 			},
 			movements: []
-		});
-		setPiece(new Piece(piece.name, piece.image, newMoves, piece.captures));
+		}))
 	};
-	const handleDeleteMove = (ind: number) => {
-		const newMoves = piece.moves.filter((_, i) => i != ind);
-		setPiece(new Piece(piece.name, piece.image, newMoves, piece.captures));
+	const handleDeleteMove = (index: number) => {
+		setPiece(piece.removeMoveAt(index))
 	};
 
 	const handleAddMovement = (ind: number) => {
@@ -52,7 +52,8 @@ const PiecePage = () => {
 			distance: 1,
 			direction: moveDirection.up
 		});
-		setPiece(new Piece(piece.name, piece.image, newMoves, piece.captures));
+		setPiece(new Piece(piece.name, piece.image, newMoves, [...piece.captures]));
+
 	};
 	const handleDeleteMovement = (moveInd: number, movementInd: number) => {
 		const newMovements = piece.moves[moveInd].movements.filter((_, i) => i != movementInd);
@@ -61,7 +62,7 @@ const PiecePage = () => {
 			...newMoves[moveInd],
 			movements: newMovements
 		};
-		setPiece(new Piece(piece.name, piece.image, newMoves, piece.captures));
+		setPiece(new Piece(piece.name, piece.image, newMoves, [...piece.captures]));
 	};
 
 	return <>
@@ -70,183 +71,48 @@ const PiecePage = () => {
 				isOpen={piecesOpen}
 				setIsOpen={(state: boolean) => { setPiecesOpen(state) }}
 				name={"Pieces"}
-				content={
-					<div className="flex flex-col center">
-						<Button
-							key="add-piece"
-							className="m-1"
-							onClick={() => { setPiece(new Piece()) }}
-						>
-							Add Piece
-						</Button>
-						{
-							Object.values(pieces).map((p) => (
-								<Button
-									key={p.id}
-									className="m-1"
-									onClick={() => { setPiece(p) }}
-								>
-									{p.name}
-								</Button>
-							))
-						}
-					</div>
+				content={<PieceSideBar
+					pieces={Object.values(pieces)}
+					setPiece={setPiece}
+				/>
 				}
 				align={"left"}
 			/>
+
 			<main className="flex grow-5 items-center justify-center">
 				<div className="flex flex-col center">
-					<RectBoardPiece cellWidth={100} moves={moves} captures={[]} piece={piece} location={location} />
+					<RectBoardPiece cellWidth={100} moves={moves.map(result => result.landing)} captures={[]} piece={piece} location={location} />
 					<Button className="m-5" onClick={handleSave}> Save </Button>
 					<Button className="m-5" onClick={handleDelete}> Delete </Button>
 				</div>
 			</main>
 			<div className="flex grow-2 items-center justify-center">
 				<div className="flex flex-col center">
-					<label>Name:</label>
-					<input
-						type="text"
-						value={piece.name}
-						onChange={(e) => {
-							setPiece(new Piece(e.target.value, piece.image, piece.moves, piece.captures));
-						}}
-					/>
+					<div className="flex flex-row">
+						<label className="pr-4">Name:</label>
+						<Input
+							placeholder="Default Name"
+							type="text"
+							value={piece.name}
+							onChange={(e) => {
+								setPiece(new Piece(e.target.value, piece.image, [...piece.moves], [...piece.captures]));
+							}}
+						/>
+					</div>
+
+
 					<img src={piece.image} />
 					{
 						piece.moves.map((move, index) => (
-							<div key={index} className="border p-2 m-2">
-
-								<div>
-									<label>Type:</label>
-									<select
-										value={move.attributes.type}
-										onChange={(e) => {
-											const newMoves = [...piece.moves];
-											newMoves[index] = {
-												...move,
-												attributes: {
-													...move.attributes,
-													type: e.target.value as movementType
-												}
-											};
-											setPiece(new Piece(piece.name, piece.image, newMoves, piece.captures));
-										}}
-									>
-										<option value="$">Slide</option>
-										<option value="~">Jump</option>
-									</select>
-								</div>
-
-								<div>
-									<label>Reflection:</label>
-									<select
-										value={move.attributes.reflection}
-										onChange={(e) => {
-											const newMoves = [...piece.moves];
-											newMoves[index] = {
-												...move,
-												attributes: {
-													...move.attributes,
-													reflection: e.target.value as reflect
-												}
-											};
-											setPiece(new Piece(piece.name, piece.image, newMoves, piece.captures));
-										}}
-									>
-										<option value="h">Horizontal</option>
-										<option value="v">Vertical</option>
-										<option value="hv">Horizontal-Vertical</option>
-									</select>
-								</div>
-
-								<div>
-									<label>Initial Move:</label>
-									<input
-										type="checkbox"
-										checked={move.attributes.initialMove}
-										onChange={(e) => {
-											const newMoves = [...piece.moves];
-											newMoves[index] = {
-												...move,
-												attributes: {
-													...move.attributes,
-													initialMove: e.target.checked
-												}
-											};
-											setPiece(new Piece(piece.name, piece.image, newMoves, piece.captures));
-										}}
-									/>
-								</div>
-
-								<div>
-									<label>Capturing:</label>
-									<input
-										type="checkbox"
-										checked={move.attributes.capturing}
-										onChange={(e) => {
-											const newMoves = [...piece.moves];
-											newMoves[index] = {
-												...move,
-												attributes: {
-													...move.attributes,
-													capturing: e.target.checked
-												}
-											};
-											setPiece(new Piece(piece.name, piece.image, newMoves, piece.captures));
-										}}
-									/>
-								</div>
-
-								<div className="flex flex-col center">
-									Movements:
-									{
-										move.movements.map((movement, movementIndex) => (
-											<div>
-												<label>Distance:</label>
-												<input
-													type="text"
-													value={movement.distance}
-													onChange={(e) => {
-														const newMoves = [...piece.moves];
-														newMoves[index].movements[movementIndex] = {
-															...newMoves[index].movements[movementIndex],
-															distance: e.target.value as distance
-														};
-														setPiece(new Piece(piece.name, piece.image, newMoves, piece.captures));
-													}}
-												/>
-												<br />
-												<label>Direction:</label>
-												<select
-													value={movement.direction}
-													onChange={(e) => {
-														const newMoves = [...piece.moves];
-														newMoves[index].movements[movementIndex] = {
-															...newMoves[index].movements[movementIndex],
-															direction: e.target.value as direction
-														};
-														setPiece(new Piece(piece.name, piece.image, newMoves, piece.captures));
-													}}
-												>
-													<option value="^">Up</option>
-													<option value="/^">Up-Right</option>
-													<option value=">">Right</option>
-													<option value="\>">Down-Right</option>
-													<option value="v">Down</option>
-													<option value="/v">Down-Left</option>
-													<option value="<">Left</option>
-													<option value="\\^">Up-Left</option>
-												</select>
-												<Button onClick={() => { handleDeleteMovement(index, movementIndex) }}> Delete Movement </Button>
-											</div>
-										))
-									}
-									<Button onClick={() => { handleAddMovement(index) }}> Add Movement </Button>
-								</div>
-
-								<Button onClick={() => { handleDeleteMove(index) }}> Delete Move </Button>
-
-							</div>
+							<MoveMenu
+								index={index}
+								piece={piece}
+								move={move}
+								setPiece={setPiece}
+								handleDeleteMovement={handleDeleteMovement}
+								handleAddMovement={handleAddMovement}
+								handleDeleteMove={handleAddMove}
+							/>
 						))
 					}
 					<Button onClick={handleAddMove}> Add Move </Button>
