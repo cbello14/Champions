@@ -30,7 +30,7 @@ const RectBoardInstance = ({ cellWidth, instance, setInstance, currentTeam, next
 	}
 
 	const drawingFunction = useCallback((params: RectBoardDrawingParams) => {
-		RectBoardDrawing.rectBoardColoring(params, "white", "black", selected);
+		RectBoardDrawing.rectBoardColoring(params, "tan", "green", selected);
 		let moves: moveCalculationResult[] = []
 		if (selected) {
 			const selectedPiece = instance.piecesRecord.getInstancePiece(selected)
