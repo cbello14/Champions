@@ -19,8 +19,27 @@ const InstancePage = () => {
 
 	const nextTeam = () => {
 		if (!instance) return
-		setCurrentTeam((team) => team === 0 ? 1 : 0);
+		console.log("!!!!!!!!!!!!!!!!!!");
+		console.log(instance.numTeams);
+		setCurrentTeam((team) => (team + 1) % instance.numTeams);
 		saveInstance(instance);
+		console.log(currentTeam);
+	}
+
+	const teamName = (n: number) => {
+		switch (n) {
+			case 1:
+				return "White"
+
+			case 2:
+				return "Orange"
+
+			case 3:
+				return "Purple"
+
+			default:
+				return "Black"
+		}
 	}
 
 	return <>
@@ -36,16 +55,16 @@ const InstancePage = () => {
 								<PopoverTitle>Play Another?</PopoverTitle>
 							</PopoverHeader>
 							<Button> Rematch </Button>
-							<br/>						
+							<br />
 							<Button> Another </Button>
-							<br/>
+							<br />
 							<Button> Quit </Button>
-							<br/>
+							<br />
 						</PopoverContent>
 					</Popover>
 					<Card className="m-5">
 						<CardHeader className="flex flex-row items-center">
-							<h3>{currentTeam === 0 ? "Black" : "White"} Teams Turn</h3>
+							<h3>{teamName(currentTeam)} Teams Turn</h3>
 						</CardHeader>
 					</Card>
 					{instance ? <RectBoardInstance cellWidth={100} instance={instance} currentTeam={currentTeam} nextTeam={nextTeam} setInstance={(instance) => { setInstance(instance); }} /> : <div>Could not find game</div>}

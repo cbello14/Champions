@@ -27,7 +27,7 @@ const GamePage = () => {
 
 	const onNameChange = (name: string) => {
 		setName(name)
-		const newGame = new Game(name, game.board, game.pieces)
+		const newGame = new Game(name, game.board, game.pieces, game.numTeams)
 		setGame(newGame)
 	}
 
@@ -36,6 +36,10 @@ const GamePage = () => {
 		setGame(newGame)
 	}
 
+	const onTeamChange = (n: number)=>{
+		const newGame = new Game(name, game.board, game.pieces, n)			
+		setGame(newGame)
+	}
 	return <>
 		<div className="flex flex-row justify-between h-full gap-4 p-4">
 			<SideBar isOpen={boardsOpen} setIsOpen={(state: boolean) => { setBoardsOpen(state) }} name={"Boards"} content={<BoardList onSelectBoard={(board) => { onBoardChange(board); }} />} align={"left"} />
@@ -44,7 +48,8 @@ const GamePage = () => {
 			<Select
 				onValueChange={(e) => {
 					console.log(e);
-					setPlayerCount(Number.parseInt(e))					
+					setPlayerCount(Number.parseInt(e))	
+					onTeamChange(Number.parseInt(e))
 				}}
 				defaultValue={numPlayer.toString()}
 				>
