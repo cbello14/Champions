@@ -13,7 +13,7 @@ const RectBoardSnapshot = ({ cellWidth, board, pieces }:
 	const ignoreSelected = (newSelected: coordinate | null) => { newSelected === null; return }
 
 	const drawingFunction = useCallback((params: RectBoardDrawingParams) => {
-		RectBoardDrawing.rectBoardColoring(params, "white", "black", null);
+		RectBoardDrawing.rectBoardColoring(params, "tan", "blue", null);
 		if (pieces)
 			RectBoardDrawing.rectBoardPieces(params, pieces)
 	}, [pieces]);

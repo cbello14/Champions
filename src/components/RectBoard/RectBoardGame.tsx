@@ -10,8 +10,8 @@ import { moveDirection } from "@/types/move";
 
 type gameCreationActions = Piece | "erase" | "team" | null
 
-const RectBoardGame = ({ cellWidth, game, setGame, onClickAction }:
-	{ cellWidth: number; game: Game; setGame: (game: Game) => void; onClickAction: gameCreationActions }) => {
+const RectBoardGame = ({ cellWidth, game, setGame, onClickAction, numPlayer }:
+	{ cellWidth: number; game: Game; setGame: (game: Game) => void; onClickAction: gameCreationActions; numPlayer:number }) => {
 
 	const [selected, changeSelected] = useState<coordinate | null>(null)
 
@@ -20,7 +20,11 @@ const RectBoardGame = ({ cellWidth, game, setGame, onClickAction }:
 			if (onClickAction === "team") {
 				const pieceClicked = game.pieces.getInstancePiece(newSelected)
 				if (pieceClicked) {
-					setGame(game.setTeam(newSelected, pieceClicked.team === 0 ? 1 : 0))
+					//in here, have a +1 and modulus
+					setGame(game.setTeam(newSelected, (pieceClicked.team +1)% numPlayer))
+					console.log("assigned to team ")
+					console.log(pieceClicked.team)
+					//setGame(game.setTeam(newSelected, pieceClicked.team === 0 ? 1 : 0))
 				}
 			} else if (onClickAction === "erase") {
 				setGame(game.removeInstancePiece(newSelected))
@@ -32,7 +36,7 @@ const RectBoardGame = ({ cellWidth, game, setGame, onClickAction }:
 	}
 
 	const drawingFunction = useCallback((params: RectBoardDrawingParams) => {
-		RectBoardDrawing.rectBoardColoring(params, "tan", "green", selected);
+		RectBoardDrawing.rectBoardColoring(params, "tan", "blue", selected);
 		let moves: moveCalculationResult[] = []
 		if (selected && !onClickAction) {
 			const selectedPiece = game.pieces.getInstancePiece(selected)

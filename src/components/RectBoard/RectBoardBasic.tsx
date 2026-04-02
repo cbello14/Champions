@@ -4,7 +4,7 @@ import { RectBoardDrawing } from "@/types/boardDrawing.ts";
 import type { RectBoardDrawingParams } from "@/types/boardDrawing.ts"
 import { useCallback, useState } from "react";
 
-const RectBoardBasic = ({ dimensions, cellWidth, primaryColor = "white", alternateColor = "black", selectedColor, outlineColor }:
+const RectBoardBasic = ({ dimensions, cellWidth, primaryColor = "tan", alternateColor = "blue", selectedColor, outlineColor }:
 	{ dimensions: number[]; cellWidth: number; primaryColor?: string; alternateColor?: string; selectedColor?: string; outlineColor?: string }) => {
 
 	const [selected, changeSelected] = useState<coordinate | null>(null)

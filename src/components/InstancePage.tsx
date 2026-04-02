@@ -15,6 +15,7 @@ const InstancePage = () => {
 	const saveInstance = useStore((state) => state.setInstance);
 	const [instance, setInstance] = useState<Instance | null>(instanceJSON ? Instance.fromJSON(instanceJSON) : null)
 	const [currentTeam, setCurrentTeam] = useState<number>(1);
+	const [gameState, setState] = useState<number>(1);
 
 	const nextTeam = () => {
 		if (!instance) return
@@ -27,8 +28,8 @@ const InstancePage = () => {
 			<main className="flex grow-5 items-center justify-center">
 				<div className="flex flex-col center">
 					<Popover>
-						<PopoverTrigger asChild>
-							<Button variant="outline">Open Popover</Button>
+						<PopoverTrigger asChild >
+
 						</PopoverTrigger>
 						<PopoverContent className="w-64" align="start">
 							<PopoverHeader>
