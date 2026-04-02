@@ -32,7 +32,7 @@ const RectBoardGame = ({ cellWidth, game, setGame, onClickAction }:
 	}
 
 	const drawingFunction = useCallback((params: RectBoardDrawingParams) => {
-		RectBoardDrawing.rectBoardColoring(params, "white", "black", selected);
+		RectBoardDrawing.rectBoardColoring(params, "tan", "green", selected);
 		let moves: moveCalculationResult[] = []
 		if (selected && !onClickAction) {
 			const selectedPiece = game.pieces.getInstancePiece(selected)
