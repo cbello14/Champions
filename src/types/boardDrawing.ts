@@ -90,6 +90,32 @@ const drawLine = (ctx: CanvasRenderingContext2D, fromX: number, fromY: number, t
 	ctx.stroke();
 }
 
+const tColor =(t:number)=>{
+	switch (t){
+		case 1:
+			return 'white'
+		case 2:
+			return 'orange'
+		case 3:
+			return 'purple'
+		default:
+			return 'black'
+	}
+}
+
+const oColor=(t:number)=>{
+	switch (t){
+		case 1:
+			return 'black'
+		case 2:
+			return 'purple'
+		case 3:
+			return 'orange'
+		default:
+			return 'white'
+	}
+}
+
 const rectBoardDrawPiece = (params: RectBoardDrawingParams, piece: Piece, location: coordinate, team: number) => {
 	const { cellWidth, ctx } = params
 	const pixelX = location[0] * cellWidth
@@ -97,8 +123,8 @@ const rectBoardDrawPiece = (params: RectBoardDrawingParams, piece: Piece, locati
 	const radius = cellWidth / 2
 	const centerX = pixelX + radius
 	const centerY = pixelY + radius
-	const teamColor = (team ===1) ? 'white' : (team===2? 'orange': (team===3?'purple':'black'	))
-	const teamOutline =(team ===1) ? 'black' : (team===2? 'purple': (team===3?'orange':'white'	))
+	const teamColor = tColor(team)
+	const teamOutline = oColor(team) 
 	// When we implement pieces having an image
 	if (piece.image) {
 		const image = new Image()
