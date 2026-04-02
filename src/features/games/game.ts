@@ -95,7 +95,7 @@ export class Game {
 		return new Game(this.name, this.board, nextPieces, this.id);
 	}
 	createInstance() {
-		return new Instance(this.board, this.pieces);
+		return new Instance(this.board, this.pieces, this.pieces);
 	}
 	toJSON(): GameJSON {
 		return { id: this.id, name: this.name, board: this.board.toJSON(), pieces: this.pieces.toJSON() };
