@@ -16,7 +16,7 @@ const RectBoardInstance = ({ cellWidth, instance, setInstance, currentTeam, next
 		if (selected && newSelected) {
 			const prevSelectedPiece = instance.piecesRecord.getInstancePiece(selected)
 			if (prevSelectedPiece?.team === currentTeam) {
-				const direction = prevSelectedPiece.team === 1 ? moveDirection.up : moveDirection.down
+				const direction = directional(prevSelectedPiece.team)
 				const moves = instance.calculateMoves(selected, direction)
 				const selectedMove = moves.map((moveResult) => moveResult.landing).some((moveLocation: coordinate) => { return checkCoordinateEquality(moveLocation, newSelected) })
 				if (selectedMove) {
@@ -29,12 +29,28 @@ const RectBoardInstance = ({ cellWidth, instance, setInstance, currentTeam, next
 		changeSelected(newSelected)
 	}
 
+
+	const directional =(teamNumber: number|undefined )=>{
+		if(!teamNumber)
+			return moveDirection.down;
+		switch (teamNumber){
+			case 1:
+				return moveDirection.up;
+			case 2:
+				return moveDirection.right;
+			case 3:
+				return moveDirection.left;
+			default:
+				return moveDirection.down;
+		}
+	}
+
 	const drawingFunction = useCallback((params: RectBoardDrawingParams) => {
-		RectBoardDrawing.rectBoardColoring(params, "white", "black", selected);
+		RectBoardDrawing.rectBoardColoring(params, "tan", "blue", selected);
 		let moves: moveCalculationResult[] = []
 		if (selected) {
 			const selectedPiece = instance.piecesRecord.getInstancePiece(selected)
-			const direction = selectedPiece?.team === 1 ? moveDirection.up : moveDirection.down
+			const direction = directional(selectedPiece?.team)
 			moves = instance.calculateMoves(selected, direction)
 		}
 		RectBoardDrawing.rectBoardMoveCaptures(params, moves)

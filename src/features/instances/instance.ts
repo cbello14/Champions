@@ -1,4 +1,4 @@
-import { Board, checkCoordinateEquality } from "@/features/boards/board"
+import { Board, checkCoordinateEquality, coordinateToString } from "@/features/boards/board"
 import { InstancePieceMap, type instancePiece, type instancePieceId, type InstancePieceMapJSON } from "@/types/instancePiece"
 import type { coordinate } from "@/features/boards/board"
 import type { BoardJSON } from "@/features/boards/board"
@@ -6,6 +6,7 @@ import type { team, turn } from "@/types/team"
 import { calculateMovesRect } from "@/types/moveCalculation"
 import type { direction } from "@/types/move"
 import type { Piece } from "../pieces/piece"
+import type { Game } from "../games/game"
 
 
 
@@ -19,7 +20,9 @@ export interface InstanceJSON {
 	id: string,
 	board: BoardJSON,
 	piecesRecord: InstancePieceMapJSON,
+	initialPieces: InstancePieceMapJSON,
 	data: [instancePieceId, info][]
+	numTeams: number
 }
 
 export class Instance {
@@ -27,12 +30,16 @@ export class Instance {
 	readonly board: Board;
 	readonly piecesRecord: InstancePieceMap;
 	readonly data: ReadonlyMap<instancePieceId, info>;
+	readonly initialPieces: InstancePieceMap;
+	readonly numTeams:number
 
-	constructor(b: Board = new Board(), r: InstancePieceMap = new InstancePieceMap(), d: ReadonlyMap<instancePieceId, info> = new Map(), id?: string) {
+	constructor(b: Board = new Board(), n:number=2, r: InstancePieceMap = new InstancePieceMap(), i: InstancePieceMap = new InstancePieceMap(), d: ReadonlyMap<instancePieceId, info> = new Map(), id?: string) {
 		this.id = id ?? crypto.randomUUID();
 		this.board = b;
 		this.piecesRecord = r;
 		this.data = d;
+		this.initialPieces=i;
+		this.numTeams=n
 	}
 	movePiece(from: coordinate, to: coordinate) {
 		const piece = this.piecesRecord.getInstancePiece(from);
@@ -41,9 +48,18 @@ export class Instance {
 			return this;
 		}
 		let newPieces = this.piecesRecord
+		//check to see if the piece on to is a king?
+		if(this.piecesRecord.map.get(coordinateToString(to))?.piece.name == "King"  ){
+			//END GAME GOES HERE
+			//bandaid fix is to make it just spawn that game again
+			//WE NEED INITIAL PIECES????
+			console.log("checkmate should occur")
+			return new Instance(this.board,this.numTeams,this.initialPieces, this.initialPieces)//something
+			
+		}
 		newPieces = newPieces.removeInstancePiece(from);
 		newPieces = newPieces.setPiece(to, piece.piece, piece.team);
-		return new Instance(this.board, newPieces, this.data, this.id).recordPieceMove(piece);
+		return new Instance(this.board,this.numTeams, newPieces,this.initialPieces, this.data, this.id).recordPieceMove(piece);
 	}
 	recordPieceMove(piece: instancePiece): Instance {
 		const newData = new Map(this.data);
@@ -53,7 +69,7 @@ export class Instance {
 		} else {
 			newData.set(piece.id, { hasMoved: true, movesMade: pieceData.movesMade + 1 });
 		}
-		return new Instance(this.board, this.piecesRecord, newData, this.id);
+		return new Instance(this.board, this.numTeams,this.piecesRecord,this.initialPieces, newData, this.id);
 	}
 	hasPieceMoved(piece: instancePiece): boolean {
 		const pieceData = this.data.get(piece.id);
@@ -62,17 +78,17 @@ export class Instance {
 	addPiece(coordinate: coordinate, piece: Piece, team: team) {
 		let newPieces = this.piecesRecord
 		newPieces = newPieces.setPiece(coordinate, piece, team)
-		return new Instance(this.board, newPieces, this.data, this.id)
+		return new Instance(this.board,this.numTeams, newPieces,this.initialPieces, this.data, this.id)
 	}
 	addInstancePiece(coordinate: coordinate, instancePiece: instancePiece) {
 		let newPieces = this.piecesRecord
 		newPieces = newPieces.setInstancePiece(coordinate, instancePiece)
-		return new Instance(this.board, newPieces, this.data, this.id)
+		return new Instance(this.board,this.numTeams, newPieces,this.initialPieces, this.data, this.id)
 	}
 	removeInstancePiece(coordinate: coordinate) {
 		let newPieces = this.piecesRecord
 		newPieces = newPieces.removeInstancePiece(coordinate)
-		return new Instance(this.board, newPieces, this.data, this.id)
+		return new Instance(this.board, this.numTeams,newPieces,this.initialPieces, this.data, this.id)
 	}
 	setTeam(coordinate: coordinate, team: team) {
 		let newPieces = this.piecesRecord
@@ -83,7 +99,7 @@ export class Instance {
 		piece.team = team
 		newPieces = newPieces.removeInstancePiece(coordinate)
 		newPieces = newPieces.setInstancePiece(coordinate, piece)
-		return new Instance(this.board, newPieces, this.data, this.id)
+		return new Instance(this.board,this.numTeams, newPieces,this.initialPieces, this.data, this.id)
 
 	}
 	getFriendlyPieces(team: team) {
@@ -105,10 +121,10 @@ export class Instance {
 		return [];
 	}
 	toJSON(): InstanceJSON {
-		return { id: this.id, board: this.board.toJSON(), piecesRecord: this.piecesRecord.toJSON(), data: Array.from(this.data.entries()) };
+		return { id: this.id, numTeams: this.numTeams, board: this.board.toJSON(),initialPieces:this.initialPieces.toJSON(), piecesRecord: this.piecesRecord.toJSON(), data: Array.from(this.data.entries()) };
 	}
 	static fromJSON(data: InstanceJSON): Instance {
 		const instanceData = new Map<instancePieceId, info>(data.data);
-		return new Instance(Board.fromJSON(data.board), InstancePieceMap.fromJSON(data.piecesRecord), instanceData, data.id);
+		return new Instance(Board.fromJSON(data.board), data.numTeams, InstancePieceMap.fromJSON(data.piecesRecord), InstancePieceMap.fromJSON(data.initialPieces), instanceData, data.id);
 	}
 }

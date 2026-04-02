@@ -67,28 +67,30 @@ const PiecePage = () => {
 
 	return <>
 		<div className="flex flex-row justify-between gap-4 p-4 items-start">
-			<SideBar
-				isOpen={piecesOpen}
-				setIsOpen={(state: boolean) => { setPiecesOpen(state) }}
-				name={"Pieces"}
-				content={<PieceSideBar
-					pieces={Object.values(pieces)}
-					setPiece={setPiece}
+
+				<SideBar
+					isOpen={piecesOpen}
+					setIsOpen={(state: boolean) => { setPiecesOpen(state) }}
+					name={"Pieces"}
+					content={<PieceSideBar
+						pieces={Object.values(pieces)}
+						setPiece={setPiece}
+					/>
+					}
+					align={"left"}
 				/>
-				}
-				align={"left"}
-			/>
 
 			<main className="flex grow-5 items-center justify-center">
 				<div className="flex flex-col center">
 					<RectBoardPiece cellWidth={100} moves={moves.map(result => result.landing)} captures={[]} piece={piece} location={location} />
-					<Button className="m-5" onClick={handleSave}> Save </Button>
-					<Button className="m-5" onClick={handleDelete}> Delete </Button>
+
 				</div>
 			</main>
 			<div className="flex grow-2 items-center justify-center">
 				<div className="flex flex-col center">
 					<div className="flex flex-row">
+						<Button className="m-5" onClick={handleSave} > Save Piece </Button>
+						<Button className="m-5" onClick={handleDelete}> Delete Piece</Button>
 						<label className="pr-4">Name:</label>
 						<Input
 							placeholder="Default Name"

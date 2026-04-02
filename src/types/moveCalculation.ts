@@ -63,6 +63,24 @@ const calculateMoveRect = (location: coordinate, move: move, boardSize: dimensio
 	}
 }
 
+
+//concept for maybe later - what if we do it when a king is taken instead?
+const checkCheckmate = () =>{
+	//determines if a position is checkmate
+	//how do we determine checkmate?
+	//no matter what, the king is boned
+	//2 parts
+	//king moves
+	//check all king moves, and if any piece on an opposing team can get them
+
+	//get list of all king positions
+
+	//not king moves
+	//
+
+
+}
+
 const calculateMoveRectJump = (location: coordinate, move: move, boardSize: dimension, blocking: coordinate[], enemyPieces: coordinate[], attributes: attributeParams, teamDirection: direction) => {
 	//landing location is the final destionation of the jump
 	let landingLocation: coordinate = location;
@@ -110,7 +128,10 @@ const calculateCaptureMovement = (location: coordinate, movements: movement[], b
 	// if landed on enemy return that spot, success
 	const landedOnEnemy = checkCoordinateArrayIncludes(enemyPieces, landingLocation)
 	if (landedOnEnemy) {
+		//also check if the enemy is a king, if so, idk do something with it
+		
 		return landingLocation
+		//ASDF
 	}
 	//otherwise we failed for some other reason so return null
 	return null
