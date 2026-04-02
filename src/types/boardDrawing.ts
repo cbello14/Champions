@@ -97,8 +97,8 @@ const rectBoardDrawPiece = (params: RectBoardDrawingParams, piece: Piece, locati
 	const radius = cellWidth / 2
 	const centerX = pixelX + radius
 	const centerY = pixelY + radius
-	const teamColor = team === 1 ? 'white' : 'black'
-	const teamOutline = team === 1 ? 'black' : 'white'
+	const teamColor = (team ===1) ? 'white' : (team===2? 'orange': (team===3?'red':'black'	))
+	const teamOutline =(team ===1) ? 'black' : (team===2? 'red': (team===3?'orance':'white'	))
 	// When we implement pieces having an image
 	if (piece.image) {
 		const image = new Image()
