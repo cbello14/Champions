@@ -63,13 +63,28 @@ export class Game {
 		newPieces = newPieces.removeInstancePiece(coordinate)
 		newPieces = newPieces.setInstancePiece(coordinate, piece)
 		return new Game(this.name, this.board, newPieces, this.id)
-
 	}
 	getFriendlyPieces(team: team) {
 		return this.pieces.getFriendlyPieces(team);
 	}
 	getEnemyPieces(team: team) {
 		return this.pieces.getEnemyPieces(team);
+	}
+	getBlockedTiles(piece: Piece): coordinate[] {
+		const blockedSpecialTiles: coordinate[] = [];
+		for (const [coord, tile] of this.board.specialTiles) {
+			let canMove = false;
+			for (const move of piece.moves) {
+				if (tile.isValidInboundMove(move)) {
+					canMove = true;
+					break;
+				}
+			}
+			if (!canMove) {
+				blockedSpecialTiles.push(coord);
+			}
+		}
+		return blockedSpecialTiles;
 	}
 	calculateMoves(pieceLocation: coordinate, teamDirection: direction) {
 		const piece = this.pieces.getInstancePiece(pieceLocation);
@@ -79,7 +94,9 @@ export class Game {
 		if (this.board.shape === 'rect') {
 			const friendlyPieces = this.getFriendlyPieces(team).filter((coord) => !checkCoordinateEquality(coord, pieceLocation));
 			const enemyPieces = this.getEnemyPieces(team);
-			const blocked = [...friendlyPieces, ...this.board.blocked];
+			// add tile if piece can't move into it (and maybe check if it can move out of it? idk)
+			const blockedSpecialTiles: coordinate[] = this.getBlockedTiles(piece.piece);
+			const blocked = [...friendlyPieces, ...blockedSpecialTiles];
 			return calculateMovesRect(piece.piece, pieceLocation, this.board.dimensions as number[], blocked as number[][], enemyPieces as number[][], teamDirection, true);
 		}
 		return [];

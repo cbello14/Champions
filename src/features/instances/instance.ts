@@ -91,6 +91,22 @@ export class Instance {
 	getEnemyPieces(team: team) {
 		return this.piecesRecord.getKeys().filter((value): value is coordinate => (this.piecesRecord.getInstancePiece(value)?.team !== team));
 	}
+	getBlockedTiles(piece: Piece): coordinate[] {
+		const blockedSpecialTiles: coordinate[] = [];
+		for (const [coord, tile] of this.board.specialTiles) {
+			let canMove = false;
+			for (const move of piece.moves) {
+				if (tile.isValidInboundMove(move)) {
+					canMove = true;
+					break;
+				}
+			}
+			if (!canMove) {
+				blockedSpecialTiles.push(coord);
+			}
+		}
+		return blockedSpecialTiles;
+	}
 	calculateMoves(pieceLocation: coordinate, teamDirection: direction) {
 		const piece = this.piecesRecord.getInstancePiece(pieceLocation);
 		if (!piece) return [];
@@ -99,19 +115,7 @@ export class Instance {
 			const friendlyPieces = this.getFriendlyPieces(team).filter((coordinate) => !checkCoordinateEquality(coordinate, pieceLocation));
 			const enemyPieces = this.getEnemyPieces(team);
 			// add tile if piece can't move into it (and maybe check if it can move out of it? idk)
-			const blockedSpecialTiles: coordinate[] = [];
-			for (const [coord, tile] of this.board.specialTiles) {
-				let canMove = false;
-				for (const move of piece.piece.moves) {
-					if (tile.isValidInboundMove(move)) {
-						canMove = true;
-						break;
-					}
-				}
-				if (!canMove) {
-					blockedSpecialTiles.push(coord);
-				}
-			}
+			const blockedSpecialTiles: coordinate[] = this.getBlockedTiles(piece.piece);
 			const blocked = [...friendlyPieces, ...blockedSpecialTiles];
 			return calculateMovesRect(piece.piece, pieceLocation, this.board.dimensions as number[], blocked as number[][], enemyPieces as number[][], teamDirection, !this.hasPieceMoved(piece));
 		}
