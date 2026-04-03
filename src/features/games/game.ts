@@ -50,7 +50,7 @@ export class Game {
 		return new Game(this.name, this.board, newPieces, this.id)
 	}
 	addTile(coordinate: coordinate, tile: Tile) {
-		let newBoard = this.board;
+		const newBoard = this.board;
 		newBoard.addTile(coordinate, tile);
 		return new Game(this.name, newBoard, this.pieces, this.id);
 	}
@@ -60,7 +60,7 @@ export class Game {
 		return new Game(this.name, this.board, newPieces, this.id)
 	}
 	removeTile(coordinate: coordinate): Game {
-		let newBoard = this.board;
+		const newBoard = this.board;
 		newBoard.removeTile(coordinate);
 		return new Game(this.name, newBoard, this.pieces, this.id);
 	}

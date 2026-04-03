@@ -48,7 +48,7 @@ const BoardPage = () => {
 						</div>
 					</CardHeader>
 				</Card>
-				<RectBoardBasic dimensions={dimensions} cellWidth={100} board={board} setBoard={(board: Board) => setBoard(board)} onClickAction={action} />
+				<RectBoardBasic dimensions={dimensions} cellWidth={100} board={board} setBoard={(board: Board) => { setBoard(board) }} onClickAction={action} />
 				<div className="flex flex-row justify-center">
 					<Button className="m-5" onClick={() => { setAction("tile") }}> Block / Unblock Tile </Button>
 					<Button className="m-5" onClick={() => { setAction(null) }}> Stop Editing </Button>

@@ -1,5 +1,4 @@
 import { Board, type coordinate } from "./board"
-import { fullBlocker } from "@/features/tiles/defaultTiles"
 import { Tile } from "@/features/tiles/tile"
 
 export const basic: Board = new Board(

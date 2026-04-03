@@ -14,21 +14,19 @@ const RectBoardBasic = ({ dimensions, cellWidth, primaryColor = "white", alterna
 
 	const setSelected = (newSelected: coordinate | null) => { 
 		if (onClickAction && newSelected) {
-			if (onClickAction == "tile") {
-				// problem: specialTiles key is a [number, number] but doing [number, number] == [number, number] compares by reference not value
-				const specialTilesArr = Array.from(board.specialTiles.entries());
-				let found = false;
-				for (const [coord, _] of specialTilesArr) {
-					if (coord[0] == newSelected[0] && coord[1] == newSelected[1]) {
-						found = true;
-						break;
-					}
+			// problem: specialTiles key is a [number, number] but doing [number, number] == [number, number] compares by reference not value
+			const specialTilesArr = Array.from(board.specialTiles.entries());
+			let found = false;
+			for (const [coord, _] of specialTilesArr) {
+				if (coord[0] == newSelected[0] && coord[1] == newSelected[1]) {
+					found = true;
+					break;
 				}
-				if (found) {
-					setBoard(board.removeTile(newSelected));
-				} else {
-					setBoard(board.addTile(newSelected, fullBlocker)); //HARD CODED: SHOULD CHANGE WHEN WE HAVE USER INPUTTED TILES IMPLEMENTED
-				}
+			}
+			if (found) {
+				setBoard(board.removeTile(newSelected));
+			} else {
+				setBoard(board.addTile(newSelected, fullBlocker)); //HARD CODED: SHOULD CHANGE WHEN WE HAVE USER INPUTTED TILES IMPLEMENTED
 			}
 		}
 		changeSelected(newSelected) 

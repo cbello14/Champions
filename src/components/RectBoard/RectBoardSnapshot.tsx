@@ -17,7 +17,7 @@ const RectBoardSnapshot = ({ cellWidth, board, pieces }:
 		RectBoardDrawing.rectBoardSpecialTiles(params, board);
 		if (pieces)
 			RectBoardDrawing.rectBoardPieces(params, pieces)
-	}, [pieces]);
+	}, [board, pieces]);
 
 	return (<RectBoardGeneric dimensions={board.dimensions} cellWidth={cellWidth} drawingFunction={drawingFunction} selected={null} setSelected={ignoreSelected} />)
 
