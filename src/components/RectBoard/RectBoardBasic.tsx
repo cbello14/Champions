@@ -15,18 +15,26 @@ const RectBoardBasic = ({ dimensions, cellWidth, primaryColor = "white", alterna
 	const setSelected = (newSelected: coordinate | null) => { 
 		if (onClickAction && newSelected) {
 			if (onClickAction == "tile") {
-				const tile = board.specialTiles.get(newSelected);
-				console.log(board.specialTiles);
-				console.log(newSelected);
-				console.log(tile);
 				// problem: specialTiles key is a [number, number] but doing [number, number] == [number, number] compares by reference not value
-				if (tile) {
+				const specialTilesArr = Array.from(board.specialTiles.entries());
+				let found = false;
+				for (const [coord, _] of specialTilesArr) {
+					if (coord[0] == newSelected[0] && coord[1] == newSelected[1]) {
+						found = true;
+						break;
+					}
+				}
+				if (found) {
+					console.log("call remove tile");
+					const newBoard = board.removeTile(newSelected);
+					console.log(newBoard.specialTiles);
 					setBoard(board.removeTile(newSelected));
 				} else {
 					setBoard(board.addTile(newSelected, fullBlocker)); //HARD CODED: SHOULD CHANGE WHEN WE HAVE USER INPUTTED TILES IMPLEMENTED
 				}
 			}
 		}
+		console.log(board.specialTiles);
 		changeSelected(newSelected) 
 	}
 

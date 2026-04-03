@@ -61,8 +61,17 @@ export class Board {
 		if (!this.isLocationValid(coordinate)) {
 			return this;
 		}
-		const newTiles = this.specialTiles;
-		newTiles.delete(coordinate);
+		// const newTiles = this.specialTiles;
+		// newTiles.delete(coordinate);
+		const newTilesArr: [coordinate, Tile][] = Array.from(this.specialTiles.entries());
+		for (let i = 0; i < newTilesArr.length; i++) {
+			const currCoord = newTilesArr[i][0];
+			if (currCoord[0] == coordinate[0] && currCoord[1] == coordinate[1]) {
+				newTilesArr.splice(i, 1);
+				break;
+			}
+		}
+		const newTiles = new Map<coordinate, Tile>(newTilesArr);
 		return new Board(this.name, this.shape, this.dimensions, newTiles, this.id);
 	}
 
