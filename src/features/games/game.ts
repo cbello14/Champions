@@ -40,7 +40,12 @@ export class Game {
 		return new Game(this.name, this.board, newPieces, this.id);
 	}
 	addPiece(coordinate: coordinate, piece: Piece, team: team) {
-		let newPieces = this.pieces
+		let newPieces = this.pieces;
+		const blockedSpecialTiles = this.getBlockedTiles(piece);
+		console.log(blockedSpecialTiles);
+		if (blockedSpecialTiles.find((c) => c[0] == coordinate[0] && c[1] == coordinate[1])) {
+			return this;
+		}
 		newPieces = newPieces.setPiece(coordinate, piece, team)
 		return new Game(this.name, this.board, newPieces, this.id)
 	}
@@ -84,14 +89,7 @@ export class Game {
 	getBlockedTiles(piece: Piece): coordinate[] {
 		const blockedSpecialTiles: coordinate[] = [];
 		for (const [coord, tile] of this.board.specialTiles) {
-			let canMove = false;
-			for (const move of piece.moves) {
-				if (tile.isValidInboundMove(move)) {
-					canMove = true;
-					break;
-				}
-			}
-			if (!canMove) {
+			if (piece.moves.find((m) => !tile.isValidInboundMove(m))) {
 				blockedSpecialTiles.push(coord);
 			}
 		}
