@@ -8,7 +8,6 @@ import type { direction } from "@/types/move"
 import type { Piece } from "../pieces/piece"
 
 
-
 export interface info {
 	captured?: [coordinate, turn],
 	hasMoved: boolean,
@@ -99,7 +98,21 @@ export class Instance {
 		if (this.board.shape === 'rect') {
 			const friendlyPieces = this.getFriendlyPieces(team).filter((coordinate) => !checkCoordinateEquality(coordinate, pieceLocation));
 			const enemyPieces = this.getEnemyPieces(team);
-			const blocked = [...friendlyPieces, ...this.board.blocked];
+			// add tile if piece can't move into it (and maybe check if it can move out of it? idk)
+			const blockedSpecialTiles: coordinate[] = [];
+			for (const [coord, tile] of this.board.specialTiles) {
+				let canMove = false;
+				for (const move of piece.piece.moves) {
+					if (tile.isValidInboundMove(move)) {
+						canMove = true;
+						break;
+					}
+				}
+				if (!canMove) {
+					blockedSpecialTiles.push(coord);
+				}
+			}
+			const blocked = [...friendlyPieces, ...blockedSpecialTiles];
 			return calculateMovesRect(piece.piece, pieceLocation, this.board.dimensions as number[], blocked as number[][], enemyPieces as number[][], teamDirection, !this.hasPieceMoved(piece));
 		}
 		return [];
