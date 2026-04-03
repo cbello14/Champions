@@ -39,6 +39,7 @@ const RectBoardGame = ({ cellWidth, game, setGame, onClickAction }:
 			const direction = selectedPiece?.team === 1 ? moveDirection.up : moveDirection.down
 			moves = game.calculateMoves(selected, direction)
 		}
+		RectBoardDrawing.rectBoardSpecialTiles(params, game.board);
 		RectBoardDrawing.rectBoardMoveCaptures(params, moves)
 		RectBoardDrawing.rectBoardGame(params, game)
 	}, [game, onClickAction, selected]);

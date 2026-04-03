@@ -25,22 +25,19 @@ const RectBoardBasic = ({ dimensions, cellWidth, primaryColor = "white", alterna
 					}
 				}
 				if (found) {
-					console.log("call remove tile");
-					const newBoard = board.removeTile(newSelected);
-					console.log(newBoard.specialTiles);
 					setBoard(board.removeTile(newSelected));
 				} else {
 					setBoard(board.addTile(newSelected, fullBlocker)); //HARD CODED: SHOULD CHANGE WHEN WE HAVE USER INPUTTED TILES IMPLEMENTED
 				}
 			}
 		}
-		console.log(board.specialTiles);
 		changeSelected(newSelected) 
 	}
 
 	const drawingFunction = useCallback((params: RectBoardDrawingParams) => {
 		RectBoardDrawing.rectBoardColoring(params, primaryColor, alternateColor, selected, selectedColor, outlineColor);
-	}, [primaryColor, alternateColor, selectedColor, selected, outlineColor]);
+		RectBoardDrawing.rectBoardSpecialTiles(params, board);
+	}, [board, primaryColor, alternateColor, selectedColor, selected, outlineColor]);
 
 
 	return (<RectBoardGeneric dimensions={dimensions} cellWidth={cellWidth} drawingFunction={drawingFunction} selected={selected} setSelected={setSelected} />)

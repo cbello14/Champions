@@ -14,6 +14,7 @@ const RectBoardSnapshot = ({ cellWidth, board, pieces }:
 
 	const drawingFunction = useCallback((params: RectBoardDrawingParams) => {
 		RectBoardDrawing.rectBoardColoring(params, "white", "black", null);
+		RectBoardDrawing.rectBoardSpecialTiles(params, board);
 		if (pieces)
 			RectBoardDrawing.rectBoardPieces(params, pieces)
 	}, [pieces]);

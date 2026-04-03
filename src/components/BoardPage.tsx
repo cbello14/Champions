@@ -54,11 +54,6 @@ const BoardPage = () => {
 					<Button className="m-5" onClick={() => { setAction(null) }}> Stop Editing </Button>
 				</div>
 				<Button className="m-5" type="submit" onClick={() => { saveBoard(board) }}> Save </Button>
-				{
-					Array.from(board.specialTiles.entries()).map(([c, t]) =>
-						<div>Coord: {c} Tile: {t.name}</div>
-					)
-				}
 			</div>
 		</main>
 	</>
