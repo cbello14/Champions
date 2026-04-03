@@ -31,7 +31,9 @@ const BoardList = ({ onSelectBoard }: { onSelectBoard: (board: Board) => void })
 							{board.name}
 						</span>
 						<span className="text-xs font-semibold truncate w-full">
-							{board.dimensions}
+							{board.dimensions[0]}
+							{" by "}
+							{board.dimensions[1]}
 						</span>
 					</Button>
 				))

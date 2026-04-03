@@ -17,7 +17,7 @@ const RectBoardPiece = ({ cellWidth, moves, captures, piece, location }:
 	const moveResults: moveCalculationResult[] = moves.map((move, index) => { return { landing: move, capturing: captures[index] } })
 
 	const drawingFunction = useCallback((params: RectBoardDrawingParams) => {
-		RectBoardDrawing.rectBoardColoring(params, "white", "black", selected);
+		RectBoardDrawing.rectBoardColoring(params, "tan", "blue", selected);
 		RectBoardDrawing.rectBoardMoveCaptures(params, moveResults)
 		RectBoardDrawing.rectBoardPiece(params, piece, location, 1)
 	}, [location, moveResults, piece, selected]);

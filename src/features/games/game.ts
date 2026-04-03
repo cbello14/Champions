@@ -14,6 +14,7 @@ export interface GameJSON {
 	name: string;
 	board: BoardJSON,
 	pieces: InstancePieceMapJSON
+	numTeams: number
 }
 
 export class Game {
@@ -21,12 +22,14 @@ export class Game {
 	readonly name: string;
 	readonly board: Board;
 	readonly pieces: InstancePieceMap;
+	readonly numTeams: number
 
-	constructor(n: string, b: Board = new Board(), r: InstancePieceMap = new InstancePieceMap(), id?: string) {
+	constructor(n: string, b: Board = new Board(), r: InstancePieceMap = new InstancePieceMap(), t:number=2, id?: string) {
 		this.id = id ?? crypto.randomUUID();
 		this.name = n;
 		this.board = b;
 		this.pieces = r;
+		this.numTeams = t;
 	}
 	movePiece(from: coordinate, to: coordinate) {
 		const piece = this.pieces.getInstancePiece(from);
@@ -37,7 +40,7 @@ export class Game {
 		let newPieces = this.pieces
 		newPieces = newPieces.removeInstancePiece(from);
 		newPieces = newPieces.setPiece(to, piece.piece, piece.team);
-		return new Game(this.name, this.board, newPieces, this.id);
+		return new Game(this.name, this.board, newPieces,this.numTeams, this.id);
 	}
 	addPiece(coordinate: coordinate, piece: Piece, team: team) {
 		let newPieces = this.pieces;
@@ -47,12 +50,12 @@ export class Game {
 			return this;
 		}
 		newPieces = newPieces.setPiece(coordinate, piece, team)
-		return new Game(this.name, this.board, newPieces, this.id)
+		return new Game(this.name, this.board, newPieces,this.numTeams, this.id)
 	}
 	addInstancePiece(coordinate: coordinate, instancePiece: instancePiece) {
 		let newPieces = this.pieces
 		newPieces = newPieces.setInstancePiece(coordinate, instancePiece)
-		return new Game(this.name, this.board, newPieces, this.id)
+		return new Game(this.name, this.board, newPieces,this.numTeams, this.id)
 	}
 	addTile(coordinate: coordinate, tile: Tile) {
 		const newBoard = this.board;
@@ -62,7 +65,7 @@ export class Game {
 	removeInstancePiece(coordinate: coordinate) {
 		let newPieces = this.pieces
 		newPieces = newPieces.removeInstancePiece(coordinate)
-		return new Game(this.name, this.board, newPieces, this.id)
+		return new Game(this.name, this.board, newPieces,this.numTeams, this.id)
 	}
 	removeTile(coordinate: coordinate): Game {
 		const newBoard = this.board;
@@ -78,7 +81,7 @@ export class Game {
 		piece.team = team
 		newPieces = newPieces.removeInstancePiece(coordinate)
 		newPieces = newPieces.setInstancePiece(coordinate, piece)
-		return new Game(this.name, this.board, newPieces, this.id)
+		return new Game(this.name, this.board, newPieces, this.numTeams, this.id)
 	}
 	getFriendlyPieces(team: team) {
 		return this.pieces.getFriendlyPieces(team);
@@ -118,15 +121,17 @@ export class Game {
 			}
 		});
 		if (nextPieces === this.pieces) return this;
-		return new Game(this.name, this.board, nextPieces, this.id);
+		return new Game(this.name, this.board, nextPieces,this.numTeams, this.id);
 	}
 	createInstance() {
-		return new Instance(this.board, this.pieces);
+		console.log("instance made with teams")
+		console.log(this.numTeams)
+		return new Instance(this.board,this.numTeams, this.pieces, this.pieces);
 	}
 	toJSON(): GameJSON {
-		return { id: this.id, name: this.name, board: this.board.toJSON(), pieces: this.pieces.toJSON() };
+		return { id: this.id,numTeams:this.numTeams, name: this.name, board: this.board.toJSON(), pieces: this.pieces.toJSON() };
 	}
 	static fromJSON(data: GameJSON): Game {
-		return new Game(data.name, Board.fromJSON(data.board), InstancePieceMap.fromJSON(data.pieces), data.id);
+		return new Game(data.name, Board.fromJSON(data.board), InstancePieceMap.fromJSON(data.pieces),data.numTeams,data.id);
 	}
 }

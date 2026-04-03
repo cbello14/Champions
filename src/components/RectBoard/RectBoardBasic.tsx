@@ -7,7 +7,7 @@ import { useCallback, useState } from "react";
 
 type boardCreationActions = "tile" | null;
 
-const RectBoardBasic = ({ dimensions, cellWidth, primaryColor = "white", alternateColor = "black", selectedColor, outlineColor, board, setBoard, onClickAction }:
+const RectBoardBasic = ({ dimensions, cellWidth, primaryColor = "tan", alternateColor = "blue", selectedColor, outlineColor, board, setBoard, onClickAction }:
 	{ dimensions: number[]; cellWidth: number; primaryColor?: string; alternateColor?: string; selectedColor?: string; outlineColor?: string; board: Board; setBoard: (board: Board) => void; onClickAction: boardCreationActions }) => {
 
 	const [selected, changeSelected] = useState<coordinate | null>(null)
