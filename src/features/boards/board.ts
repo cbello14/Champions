@@ -1,4 +1,5 @@
 import { Tile } from "@/features/tiles/tile"
+import type { TileJSON } from "@/features/tiles/tile"
 
 export type shape = 'rect' | 'tri' | 'hex'
 export type dimension = number[]
@@ -10,6 +11,7 @@ export interface BoardJSON {
 	name: string;
 	shape: shape;
 	dimensions: number[];
+	specialTiles: [coordinate, TileJSON][];
 	//blocked: coordinate[];
 }
 
@@ -78,12 +80,14 @@ export class Board {
 			name: this.name,
 			shape: this.shape,
 			dimensions: [...this.dimensions],
+			specialTiles: Array.from(this.specialTiles.entries()).map(([c, t]) => [c, t.toJSON()])
 			//blocked: this.blocked.map(c => [...c])
 		};
 	}
 
 	static fromJSON(data: BoardJSON): Board {
-		return new Board(data.name);
+		const specialTiles = new Map<coordinate, Tile>(data.specialTiles.map(([c, t]) => [c, Tile.fromJSON(t)]));
+		return new Board(data.name, data.shape, data.dimensions, specialTiles, data.id);
 		//return new Board(data.name, data.shape, data.dimensions, data.blocked, data.id);
 	}
 }

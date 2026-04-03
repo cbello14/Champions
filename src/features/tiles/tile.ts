@@ -3,6 +3,8 @@ import type { move } from "@/types/move";
 export interface TileJSON {
     id: string;
     name: string;
+    inboundMoves: move[];
+    outboundMoves: move[];
     //effect: function?
 }
 
@@ -27,5 +29,12 @@ export class Tile {
     }
     isValidOutboundMove(move: move): boolean {
         return this.outboundMoves.includes(move);
+    }
+
+    toJSON(): TileJSON {
+        return { id: this.id, name: this.name, inboundMoves: [...this.inboundMoves], outboundMoves: [...this.outboundMoves] }
+    }
+    static fromJSON(data: TileJSON): Tile {
+        return new Tile(data.name, data.inboundMoves, data.outboundMoves, data.id);
     }
 }
