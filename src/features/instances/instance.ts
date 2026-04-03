@@ -87,10 +87,10 @@ export class Instance {
 
 	}
 	getFriendlyPieces(team: team) {
-		return this.piecesRecord.getKeys().filter((value): value is coordinate => (this.piecesRecord.getInstancePiece(value)?.team === team));
+		return this.piecesRecord.getKeys().filter((value): value is coordinate => (this.piecesRecord.getInstancePiece(value)?.team.teamId === team.teamId));
 	}
 	getEnemyPieces(team: team) {
-		return this.piecesRecord.getKeys().filter((value): value is coordinate => (this.piecesRecord.getInstancePiece(value)?.team !== team));
+		return this.piecesRecord.getKeys().filter((value): value is coordinate => (this.piecesRecord.getInstancePiece(value)?.team.teamId !== team.teamId));
 	}
 	calculateMoves(pieceLocation: coordinate, teamDirection: direction) {
 		const piece = this.piecesRecord.getInstancePiece(pieceLocation);

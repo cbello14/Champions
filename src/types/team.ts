@@ -1,9 +1,14 @@
 import type { coordinate } from "@/features/boards/board"
-import { moveDirection } from "./move"
+import { moveDirection } from "@/types/move"
+import type { direction } from "@/types/move"
 
 export type turn = number
-export type team = number
 export type teamDirection = (coordinate: coordinate) => coordinate
+export interface team {
+	teamId: number,
+	color: string,
+	direction: direction
+}
 
 
 export const rectTeamDirection: Record<string, teamDirection> = {

@@ -6,7 +6,7 @@ import { useCallback, useState } from "react";
 import { Game } from "@/features/games/game";
 import { type moveCalculationResult } from "@/types/moveCalculation";
 import type { Piece } from "@/features/pieces/piece";
-import { moveDirection } from "@/types/move";
+import type { team } from "@/types/team";
 
 type gameCreationActions = Piece | "erase" | "team" | null
 
@@ -20,12 +20,19 @@ const RectBoardGame = ({ cellWidth, game, setGame, onClickAction }:
 			if (onClickAction === "team") {
 				const pieceClicked = game.pieces.getInstancePiece(newSelected)
 				if (pieceClicked) {
-					setGame(game.setTeam(newSelected, pieceClicked.team === 0 ? 1 : 0))
+					const teamIds = Object.keys(game.teams).map(Number).sort();
+					for (let i = 0; i < teamIds.length; i++) {
+						if (teamIds[i] == pieceClicked.team.teamId) {
+							setGame(game.setTeam(newSelected, teamIds[(i + 1) % teamIds.length]));
+							break;
+						}
+					}
 				}
 			} else if (onClickAction === "erase") {
 				setGame(game.removeInstancePiece(newSelected))
 			} else {
-				setGame(game.addPiece(newSelected, onClickAction, 1))
+				const teamIds = Object.keys(game.teams).map(Number).sort();
+				setGame(game.addPiece(newSelected, onClickAction, teamIds[0]))
 			}
 		}
 		changeSelected(newSelected)
@@ -36,8 +43,9 @@ const RectBoardGame = ({ cellWidth, game, setGame, onClickAction }:
 		let moves: moveCalculationResult[] = []
 		if (selected && !onClickAction) {
 			const selectedPiece = game.pieces.getInstancePiece(selected)
-			const direction = selectedPiece?.team === 1 ? moveDirection.up : moveDirection.down
-			moves = game.calculateMoves(selected, direction)
+			if (selectedPiece) {
+				moves = game.calculateMoves(selected, selectedPiece.team.direction)
+			}
 		}
 		RectBoardDrawing.rectBoardMoveCaptures(params, moves)
 		RectBoardDrawing.rectBoardGame(params, game)

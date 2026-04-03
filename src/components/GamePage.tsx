@@ -10,6 +10,7 @@ import BoardList from "./BoardList"
 import type { Board } from "@/features/boards/board"
 import { useStore } from "@/utils/storage"
 import { Input } from "./ui/input"
+import TeamMenu from "@/components/ourUI/TeamMenu"
 
 
 const GamePage = () => {
@@ -19,18 +20,25 @@ const GamePage = () => {
 	const [boardsOpen, setBoardsOpen] = useState<boolean>(true);
 	const [action, setAction] = useState<Piece | "team" | "erase" | null>(null)
 	const [name, setName] = useState<string>(basicGame.name)
+	const teamIds = Object.keys(game.teams).map(Number);
+	teamIds.sort();
+	const [teamId, setTeamId] = useState<number>(teamIds[0]);
 	const saveGame = useStore((state) => state.setGame)
 
 	const onNameChange = (name: string) => {
 		setName(name)
-		const newGame = new Game(name, game.board, game.pieces)
+		const newGame = new Game(name, game.teams, game.board, game.pieces)
 		setGame(newGame)
 	}
 
 	const onBoardChange = (board: Board) => {
-		const newGame = new Game(game.name, board)
+		const newGame = new Game(game.name, game.teams, board)
 		setGame(newGame)
 	}
+
+	// drop down menu to select team
+	// inputs to change current team's color and direction
+	// buttons to add a team and remove currently selected team
 
 	return <>
 		<div className="flex flex-row justify-between h-full gap-4 p-4">
@@ -40,7 +48,7 @@ const GamePage = () => {
 				<Input type="text" defaultValue={name} onChange={(e) => { onNameChange(e.target.value) }} />
 				<RectBoardGame cellWidth={100} game={game} onClickAction={action} setGame={(game: Game) => { setGame(game); }} />
 				<div className="flex flex-row justify-center">
-					<Button className="m-5" onClick={() => { setAction("team") }}> Flip Team </Button>
+					<TeamMenu game={game} teamId={teamId} setTeamId={(id: number) => { setTeamId(id) }} />
 					<Button className="m-5" onClick={() => { setAction("erase") }}> Delete Pieces </Button>
 					<Button className="m-5" onClick={() => { setAction(null) }}> Stop Editing </Button>
 				</div>
