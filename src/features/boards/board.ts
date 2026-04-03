@@ -57,6 +57,15 @@ export class Board {
 		return new Board(this.name, this.shape, this.dimensions, newTiles, this.id);
 	}
 
+	removeTile(coordinate: coordinate): Board {
+		if (!this.isLocationValid(coordinate)) {
+			return this;
+		}
+		const newTiles = this.specialTiles;
+		newTiles.delete(coordinate);
+		return new Board(this.name, this.shape, this.dimensions, newTiles, this.id);
+	}
+
 	changeDimensions(newDimensions: readonly number[]): Board {
 		const tempBoard = new Board(this.name, this.shape, newDimensions);
 		const newTiles = this.specialTiles;

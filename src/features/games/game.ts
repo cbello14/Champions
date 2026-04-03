@@ -6,6 +6,7 @@ import type { team } from "@/types/team";
 import type { direction } from "@/types/move";
 import { calculateMovesRect } from "@/types/moveCalculation";
 import type { Piece } from "../pieces/piece";
+import type { Tile } from "../tiles/tile";
 
 
 export interface GameJSON {
@@ -48,10 +49,20 @@ export class Game {
 		newPieces = newPieces.setInstancePiece(coordinate, instancePiece)
 		return new Game(this.name, this.board, newPieces, this.id)
 	}
+	addTile(coordinate: coordinate, tile: Tile) {
+		let newBoard = this.board;
+		newBoard.addTile(coordinate, tile);
+		return new Game(this.name, newBoard, this.pieces, this.id);
+	}
 	removeInstancePiece(coordinate: coordinate) {
 		let newPieces = this.pieces
 		newPieces = newPieces.removeInstancePiece(coordinate)
 		return new Game(this.name, this.board, newPieces, this.id)
+	}
+	removeTile(coordinate: coordinate): Game {
+		let newBoard = this.board;
+		newBoard.removeTile(coordinate);
+		return new Game(this.name, newBoard, this.pieces, this.id);
 	}
 	setTeam(coordinate: coordinate, team: team) {
 		let newPieces = this.pieces
