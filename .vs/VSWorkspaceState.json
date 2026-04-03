@@ -1,0 +1,16 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\src",
+    "\\src\\components",
+    "\\src\\components\\RectBoard",
+    "\\src\\features",
+    "\\src\\features\\boards",
+    "\\src\\features\\games",
+    "\\src\\features\\instances",
+    "\\src\\features\\tiles",
+    "\\src\\types"
+  ],
+  "SelectedNode": "\\src\\components\\BoardPage.tsx",
+  "PreviewInSolutionExplorer": false
+}
