@@ -1,0 +1,8 @@
+- tiles map in board needs a different key / need a special map class for maps with 
+  coordinate as a key
+- need to update removeTile in board.ts to not convert map into array and then remove 
+  tile at coord along with any other methods
+- need to update RectBoardBasic.tsx to properly use map instead of converting to array
+- update rectBoardSpecialTiles in boardDrawing.ts to use new map and allow for custom 
+  tile colors and stuff
+- tile class should contain a color string
