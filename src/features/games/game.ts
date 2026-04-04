@@ -6,6 +6,7 @@ import type { team } from "@/types/team";
 import type { direction } from "@/types/move";
 import { calculateMovesRect } from "@/types/moveCalculation";
 import type { Piece } from "../pieces/piece";
+import type { Tile } from "../tiles/tile";
 
 
 export interface GameJSON {
@@ -42,7 +43,12 @@ export class Game {
 		return new Game(this.name, this.board, newPieces,this.numTeams, this.id);
 	}
 	addPiece(coordinate: coordinate, piece: Piece, team: team) {
-		let newPieces = this.pieces
+		let newPieces = this.pieces;
+		const blockedSpecialTiles = this.getBlockedTiles(piece);
+		console.log(blockedSpecialTiles);
+		if (blockedSpecialTiles.find((c) => c[0] == coordinate[0] && c[1] == coordinate[1])) {
+			return this;
+		}
 		newPieces = newPieces.setPiece(coordinate, piece, team)
 		return new Game(this.name, this.board, newPieces,this.numTeams, this.id)
 	}
@@ -51,10 +57,20 @@ export class Game {
 		newPieces = newPieces.setInstancePiece(coordinate, instancePiece)
 		return new Game(this.name, this.board, newPieces,this.numTeams, this.id)
 	}
+	addTile(coordinate: coordinate, tile: Tile) {
+		const newBoard = this.board;
+		newBoard.addTile(coordinate, tile);
+		return new Game(this.name, newBoard, this.pieces, this.id);
+	}
 	removeInstancePiece(coordinate: coordinate) {
 		let newPieces = this.pieces
 		newPieces = newPieces.removeInstancePiece(coordinate)
 		return new Game(this.name, this.board, newPieces,this.numTeams, this.id)
+	}
+	removeTile(coordinate: coordinate): Game {
+		const newBoard = this.board;
+		newBoard.removeTile(coordinate);
+		return new Game(this.name, newBoard, this.pieces, this.id);
 	}
 	setTeam(coordinate: coordinate, team: team) {
 		let newPieces = this.pieces
@@ -65,14 +81,22 @@ export class Game {
 		piece.team = team
 		newPieces = newPieces.removeInstancePiece(coordinate)
 		newPieces = newPieces.setInstancePiece(coordinate, piece)
-		return new Game(this.name, this.board, newPieces,this.numTeams, this.id)
-
+		return new Game(this.name, this.board, newPieces, this.numTeams, this.id)
 	}
 	getFriendlyPieces(team: team) {
 		return this.pieces.getFriendlyPieces(team);
 	}
 	getEnemyPieces(team: team) {
 		return this.pieces.getEnemyPieces(team);
+	}
+	getBlockedTiles(piece: Piece): coordinate[] {
+		const blockedSpecialTiles: coordinate[] = [];
+		for (const [coord, tile] of this.board.specialTiles) {
+			if (piece.moves.find((m) => !tile.isValidInboundMove(m))) {
+				blockedSpecialTiles.push(coord);
+			}
+		}
+		return blockedSpecialTiles;
 	}
 	calculateMoves(pieceLocation: coordinate, teamDirection: direction) {
 		const piece = this.pieces.getInstancePiece(pieceLocation);
@@ -82,7 +106,9 @@ export class Game {
 		if (this.board.shape === 'rect') {
 			const friendlyPieces = this.getFriendlyPieces(team).filter((coord) => !checkCoordinateEquality(coord, pieceLocation));
 			const enemyPieces = this.getEnemyPieces(team);
-			const blocked = [...friendlyPieces, ...this.board.blocked];
+			// add tile if piece can't move into it (and maybe check if it can move out of it? idk)
+			const blockedSpecialTiles: coordinate[] = this.getBlockedTiles(piece.piece);
+			const blocked = [...friendlyPieces, ...blockedSpecialTiles];
 			return calculateMovesRect(piece.piece, pieceLocation, this.board.dimensions as number[], blocked as number[][], enemyPieces as number[][], teamDirection, true);
 		}
 		return [];

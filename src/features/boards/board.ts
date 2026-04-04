@@ -1,3 +1,6 @@
+import { Tile } from "@/features/tiles/tile"
+import type { TileJSON } from "@/features/tiles/tile"
+
 export type shape = 'rect' | 'tri' | 'hex'
 export type dimension = number[]
 export type coordinate = number[]
@@ -8,7 +11,8 @@ export interface BoardJSON {
 	name: string;
 	shape: shape;
 	dimensions: number[];
-	blocked: coordinate[];
+	specialTiles: [coordinate, TileJSON][];
+	//blocked: coordinate[];
 }
 
 export const checkCoordinateEquality = (coordinateOne: coordinate, coordinateTwo: coordinate) => { return coordinateToString(coordinateOne) === coordinateToString(coordinateTwo) }
@@ -33,26 +37,53 @@ export class Board {
 	readonly name: string;
 	readonly shape: shape;
 	readonly dimensions: readonly number[];
-	readonly blocked: readonly coordinate[];
+	readonly specialTiles: Map<coordinate, Tile>; //not sure if this not being readonly will cause security issues or whatever
 
-	constructor(n = "basic", shap: shape = 'rect', dim: readonly number[] = [8, 8], b: readonly coordinate[] = [], id?: string) {
+	constructor(n = "basic", shap: shape = 'rect', dim: readonly number[] = [8, 8], t: Map<coordinate, Tile> = new Map<coordinate, Tile>(), id?: string) {
 		this.id = id ?? crypto.randomUUID();
 		this.name = n;
 		this.shape = shap;
 		this.dimensions = dim;
-		this.blocked = b;
+		this.specialTiles = t;
 	}
-	addBlocked(coordinate: coordinate): Board {
+
+	//NOTE: idk if maps copy by value or reference, if things break start here
+	addTile(coordinate: coordinate, tile: Tile): Board {
 		if (!this.isLocationValid(coordinate)) {
 			return this;
 		}
-		return new Board(this.name, this.shape, this.dimensions, [...this.blocked, coordinate], this.id);
+		const newTiles = this.specialTiles;
+		newTiles.set(coordinate, tile);
+		return new Board(this.name, this.shape, this.dimensions, newTiles, this.id);
+	}
+
+	removeTile(coordinate: coordinate): Board {
+		if (!this.isLocationValid(coordinate)) {
+			return this;
+		}
+		// const newTiles = this.specialTiles;
+		// newTiles.delete(coordinate);
+		const newTilesArr: [coordinate, Tile][] = Array.from(this.specialTiles.entries());
+		for (let i = 0; i < newTilesArr.length; i++) {
+			const currCoord = newTilesArr[i][0];
+			if (currCoord[0] == coordinate[0] && currCoord[1] == coordinate[1]) {
+				newTilesArr.splice(i, 1);
+				break;
+			}
+		}
+		const newTiles = new Map<coordinate, Tile>(newTilesArr);
+		return new Board(this.name, this.shape, this.dimensions, newTiles, this.id);
 	}
 
 	changeDimensions(newDimensions: readonly number[]): Board {
-		const tempBoard = new Board(this.name, this.shape, newDimensions, [], this.id);
-		const newBlocked = this.blocked.filter(cell => tempBoard.isLocationValid(cell));
-		return new Board(this.name, this.shape, newDimensions, newBlocked, this.id);
+		const tempBoard = new Board(this.name, this.shape, newDimensions);
+		const newTiles = this.specialTiles;
+		for (const coord of this.specialTiles.keys()) {
+			if (tempBoard.isLocationValid(coord)) {
+				newTiles.delete(coord);
+			}
+		}
+		return new Board(this.name, this.shape, newDimensions, newTiles, this.id);
 	}
 
 	isLocationValid(location: coordinate): boolean {
@@ -67,11 +98,14 @@ export class Board {
 			name: this.name,
 			shape: this.shape,
 			dimensions: [...this.dimensions],
-			blocked: this.blocked.map(c => [...c])
+			specialTiles: Array.from(this.specialTiles.entries()).map(([c, t]) => [c, t.toJSON()])
+			//blocked: this.blocked.map(c => [...c])
 		};
 	}
 
 	static fromJSON(data: BoardJSON): Board {
-		return new Board(data.name, data.shape, data.dimensions, data.blocked, data.id);
+		const specialTiles = new Map<coordinate, Tile>(data.specialTiles.map(([c, t]) => [c, Tile.fromJSON(t)]));
+		return new Board(data.name, data.shape, data.dimensions, specialTiles, data.id);
+		//return new Board(data.name, data.shape, data.dimensions, data.blocked, data.id);
 	}
 }

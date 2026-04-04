@@ -1,4 +1,4 @@
-import { type dimension, type coordinate, checkCoordinateEquality } from "@/features/boards/board"
+import { type dimension, type coordinate, checkCoordinateEquality, type Board } from "@/features/boards/board"
 import type { Game } from "@/features/games/game"
 import type { Instance } from "@/features/instances/instance"
 import type { Piece } from "@/features/pieces/piece"
@@ -20,6 +20,16 @@ const RectBoardDrawing = {
 				ctx.fillRect(pixelX, pixelY, cellWidth, cellWidth)
 				if (outlineColor) { ctx.strokeStyle = outlineColor; ctx.strokeRect(pixelX, pixelY, cellWidth, cellWidth) }
 			}
+		}
+	},
+
+	rectBoardSpecialTiles: (params: RectBoardDrawingParams, board: Board) => {
+		const { cellWidth, ctx } = params;
+		for (const [coord, _] of board.specialTiles) {
+			const pixelX = coord[0] * cellWidth;
+			const pixelY = coord[1] * cellWidth;
+			ctx.fillStyle = "red";
+			ctx.fillRect(pixelX, pixelY, cellWidth, cellWidth);
 		}
 	},
 

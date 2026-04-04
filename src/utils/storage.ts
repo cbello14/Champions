@@ -1,28 +1,33 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { Piece } from "@/features/pieces/piece.ts";
+import { Tile } from "@/features/tiles/tile";
 import { Board } from "@/features/boards/board.ts";
 import { Game } from "@/features/games/game.ts";
 import { Instance } from "@/features/instances/instance.ts";
 
 import { pawn, knight, bishop, rook, queen, king } from "@/features/pieces/defaultPieces";
+import { fullBlocker } from "@/features/tiles/defaultTiles";
 import { basic } from "@/features/boards/defaultBoards";
 import { basicGame } from "@/features/games/defaultGames";
 
+import type { PieceJSON } from "@/features/pieces/piece.ts";
+import type { TileJSON } from "@/features/tiles/tile.ts";
 import type { BoardJSON } from "@/features/boards/board.ts";
 import type { GameJSON } from "@/features/games/game.ts";
-import type { PieceJSON } from "@/features/pieces/piece.ts";
 import type { InstanceJSON } from "@/features/instances/instance.ts";
 
 
 interface StorageState {
 	pieces: Record<string, PieceJSON>,
+	tiles: Record<string, TileJSON>,
 	boards: Record<string, BoardJSON>,
 	games: Record<string, GameJSON>,
 	instances: Record<string, InstanceJSON>;
 
 	// create / update
 	setPiece: (piece: Piece) => void;
+	setTile: (tile: Tile) => void;
 	setBoard: (board: Board) => void;
 	setGame: (game: Game) => void;
 	setInstance: (instance: Instance) => void;
@@ -30,6 +35,8 @@ interface StorageState {
 	// retrieve
 	getPieces: () => Piece[];
 	getPiece: (id: string) => Piece | null;
+	getTiles: () => Tile[];
+	getTile: (id: string) => Tile | null;
 	getBoards: () => Board[];
 	getBoard: (id: string) => Board | null;
 	getGames: () => Game[];
@@ -39,6 +46,7 @@ interface StorageState {
 
 	// delete
 	deletePiece: (id: string) => boolean;
+	deleteTile: (id: string) => boolean;
 	deleteBoard: (id: string) => boolean;
 	deleteGame: (id: string) => boolean;
 	deleteInstance: (id: string) => boolean;
@@ -52,6 +60,9 @@ const defaultPieces = {
 	[queen.id]: queen.toJSON(),
 	[king.id]: king.toJSON(),
 };
+const defaultTiles = {
+	[fullBlocker.id]: fullBlocker.toJSON()
+};
 const defaultBoards = {
 	[basic.id]: basic.toJSON()
 };
@@ -63,6 +74,7 @@ export const useStore = create<StorageState>()(
 	persist(
 		(set, get) => ({
 			pieces: defaultPieces,
+			tiles: defaultTiles,
 			boards: defaultBoards,
 			games: defaultGames,
 			instances: {},
@@ -70,6 +82,11 @@ export const useStore = create<StorageState>()(
 			setPiece: (p) => {
 				set((state) => ({
 					pieces: { ...state.pieces, [p.id]: p.toJSON() }
+				}))
+			},
+			setTile: (t) => {
+				set((state) => ({
+					tiles: { ...state.tiles, [t.id]: t.toJSON() }
 				}))
 			},
 			setBoard: (b) => {
@@ -95,6 +112,14 @@ export const useStore = create<StorageState>()(
 			getPiece: (id) => {
 				const json = get().pieces[id];
 				return json ? Piece.fromJSON(json) : null;
+			},
+			getTiles: () => {
+				const tiles = get().tiles;
+				return Object.values(tiles).map((tileJSON) => Tile.fromJSON(tileJSON));
+			},
+			getTile: (id) => {
+				const json = get().tiles[id];
+				return json ? Tile.fromJSON(json) : null;
 			},
 			getBoards: () => {
 				const boards = get().boards;
@@ -127,6 +152,15 @@ export const useStore = create<StorageState>()(
 					const newPieces = { ...state.pieces };
 					delete newPieces[id];
 					return { pieces: newPieces };
+				});
+				return true;
+			},
+			deleteTile: (id) => {
+				if (!get().tiles[id]) return false;
+				set((state) => {
+					const newTiles = { ...state.tiles };
+					delete newTiles[id];
+					return { tiles: newTiles };
 				});
 				return true;
 			},
