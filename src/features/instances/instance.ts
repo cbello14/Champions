@@ -141,7 +141,12 @@ export class Instance {
 		return { id: this.id, numTeams: this.numTeams, board: this.board.toJSON(),initialPieces:this.initialPieces.toJSON(), piecesRecord: this.piecesRecord.toJSON(), data: Array.from(this.data.entries()) };
 	}
 	static fromJSON(data: InstanceJSON): Instance {
-		const instanceData = new Map<instancePieceId, info>(data.data);
-		return new Instance(Board.fromJSON(data.board), data.numTeams, InstancePieceMap.fromJSON(data.piecesRecord), InstancePieceMap.fromJSON(data.initialPieces), instanceData, data.id);
+		const board = data.board ? Board.fromJSON(data.board) : new Board();
+		const numTeams = data.numTeams ? data.numTeams : 2;
+		const piecesRecord = data.piecesRecord ? InstancePieceMap.fromJSON(data.piecesRecord) : new InstancePieceMap();
+		const initialPieces = data.initialPieces ? InstancePieceMap.fromJSON(data.initialPieces) : new InstancePieceMap();
+		const instanceData = data.data ? new Map<instancePieceId, info>(data.data) : new Map<instancePieceId, info>();
+		const id = data.id ? data.id : "";
+		return new Instance(board, numTeams, piecesRecord, initialPieces, instanceData, id);
 	}
 }
