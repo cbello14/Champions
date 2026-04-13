@@ -35,6 +35,10 @@ export class Tile {
         return { id: this.id, name: this.name, inboundMoves: [...this.inboundMoves], outboundMoves: [...this.outboundMoves] }
     }
     static fromJSON(data: TileJSON): Tile {
-        return new Tile(data.name, data.inboundMoves, data.outboundMoves, data.id);
+        const name = data.name ? data.name : "";
+        const inboundMoves = data.inboundMoves ? data.inboundMoves : [];
+        const outboundMoves = data.outboundMoves ? data.outboundMoves : [];
+        const id = data.id ? data.id : "";
+        return new Tile(name, inboundMoves, outboundMoves, id);
     }
 }
