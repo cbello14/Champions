@@ -99,13 +99,16 @@ export class Board {
 			shape: this.shape,
 			dimensions: [...this.dimensions],
 			specialTiles: Array.from(this.specialTiles.entries()).map(([c, t]) => [c, t.toJSON()])
-			//blocked: this.blocked.map(c => [...c])
 		};
 	}
 
 	static fromJSON(data: BoardJSON): Board {
-		const specialTiles = new Map<coordinate, Tile>(data.specialTiles.map(([c, t]) => [c, Tile.fromJSON(t)]));
-		return new Board(data.name, data.shape, data.dimensions, specialTiles, data.id);
-		//return new Board(data.name, data.shape, data.dimensions, data.blocked, data.id);
+		const name = data.name ? data.name : "";
+		const shape = data.shape ? data.shape : "rect";
+		const dim = data.dimensions ? data.dimensions : [];
+		const tiles = data.specialTiles ? new Map<coordinate, Tile>(data.specialTiles.map(([c, t]) => [c, Tile.fromJSON(t)])) : new Map<coordinate, Tile>();
+		const id = data.id ? data.id : "";
+		
+		return new Board(name, shape, dim, tiles, id);
 	}
 }

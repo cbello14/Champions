@@ -61,6 +61,11 @@ export class Piece {
 		return { id: this.id, name: this.name, image: this.image, moves: [...this.moves], captures: [...this.captures], };
 	}
 	static fromJSON(data: PieceJSON): Piece {
-		return new Piece(data.name, data.image, data.moves, data.captures, data.id);
+		const name = data.name ? data.name : "";
+		const image = data.image ? data.image : "";
+		const moves = data.moves ? data.moves : [];
+		const captures = data.captures ? data.captures : [];
+		const id = data.id ? data.id : "";
+		return new Piece(name, image, moves, captures, id);
 	}
 }

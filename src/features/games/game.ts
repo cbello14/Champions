@@ -129,6 +129,11 @@ export class Game {
 		return { id: this.id, numTeams: this.numTeams, name: this.name, board: this.board.toJSON(), pieces: this.pieces.toJSON() };
 	}
 	static fromJSON(data: GameJSON): Game {
-		return new Game(data.name, Board.fromJSON(data.board), InstancePieceMap.fromJSON(data.pieces), data.numTeams, data.id);
+		const name = data.name ? data.name : "";
+		const board = data.board ? Board.fromJSON(data.board) : new Board();
+		const pieces = data.pieces ? InstancePieceMap.fromJSON(data.pieces) : new InstancePieceMap();
+		const numTeams = data.numTeams ? data.numTeams : 2;
+		const id = data.id ? data.id : "";
+		return new Game(name, board, pieces, numTeams, id);
 	}
 }
