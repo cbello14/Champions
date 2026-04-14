@@ -25,7 +25,7 @@ const RectBoardDrawing = {
 
 	rectBoardSpecialTiles: (params: RectBoardDrawingParams, board: Board) => {
 		const { cellWidth, ctx } = params;
-		for (const [coord, _] of board.specialTiles) {
+		for (const [coord] of board.specialTiles) {
 			const pixelX = coord[0] * cellWidth;
 			const pixelY = coord[1] * cellWidth;
 			ctx.fillStyle = "red";
@@ -100,8 +100,8 @@ const drawLine = (ctx: CanvasRenderingContext2D, fromX: number, fromY: number, t
 	ctx.stroke();
 }
 
-const tColor =(t:number)=>{
-	switch (t){
+const tColor = (t: number) => {
+	switch (t) {
 		case 1:
 			return 'white'
 		case 2:
@@ -113,8 +113,8 @@ const tColor =(t:number)=>{
 	}
 }
 
-const oColor=(t:number)=>{
-	switch (t){
+const oColor = (t: number) => {
+	switch (t) {
 		case 1:
 			return 'black'
 		case 2:
@@ -134,7 +134,7 @@ const rectBoardDrawPiece = (params: RectBoardDrawingParams, piece: Piece, locati
 	const centerX = pixelX + radius
 	const centerY = pixelY + radius
 	const teamColor = tColor(team)
-	const teamOutline = oColor(team) 
+	const teamOutline = oColor(team)
 	// When we implement pieces having an image
 	if (piece.image) {
 		const image = new Image()

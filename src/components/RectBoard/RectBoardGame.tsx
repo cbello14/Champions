@@ -22,8 +22,6 @@ const RectBoardGame = ({ cellWidth, game, setGame, onClickAction, numPlayer }:
 				if (pieceClicked) {
 					//in here, have a +1 and modulus
 					setGame(game.setTeam(newSelected, (pieceClicked.team +1)% numPlayer))
-					console.log("assigned to team ")
-					console.log(pieceClicked.team)
 					//setGame(game.setTeam(newSelected, pieceClicked.team === 0 ? 1 : 0))
 				}
 			} else if (onClickAction === "erase") {

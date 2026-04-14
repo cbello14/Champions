@@ -45,7 +45,6 @@ export class Game {
 	addPiece(coordinate: coordinate, piece: Piece, team: team) {
 		let newPieces = this.pieces;
 		const blockedSpecialTiles = this.getBlockedTiles(piece);
-		console.log(blockedSpecialTiles);
 		if (blockedSpecialTiles.find((c) => c[0] == coordinate[0] && c[1] == coordinate[1])) {
 			return this;
 		}
@@ -124,8 +123,6 @@ export class Game {
 		return new Game(this.name, this.board, nextPieces, this.numTeams, this.id);
 	}
 	createInstance() {
-		console.log("instance made with teams")
-		console.log(this.numTeams)
 		return new Instance(this.board, this.numTeams, this.pieces, this.pieces);
 	}
 	toJSON(): GameJSON {
