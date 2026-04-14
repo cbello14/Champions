@@ -60,7 +60,7 @@ export class Game {
 	addTile(coordinate: coordinate, tile: Tile) {
 		const newBoard = this.board;
 		newBoard.addTile(coordinate, tile);
-		return new Game(this.name, newBoard, this.pieces, this.id);
+		return new Game(this.name, newBoard, this.pieces, this.numTeams, this.id);
 	}
 	removeInstancePiece(coordinate: coordinate) {
 		let newPieces = this.pieces
@@ -70,7 +70,7 @@ export class Game {
 	removeTile(coordinate: coordinate): Game {
 		const newBoard = this.board;
 		newBoard.removeTile(coordinate);
-		return new Game(this.name, newBoard, this.pieces, this.id);
+		return new Game(this.name, newBoard, this.pieces, this.numTeams, this.id);
 	}
 	setTeam(coordinate: coordinate, team: team) {
 		let newPieces = this.pieces
@@ -132,6 +132,11 @@ export class Game {
 		return { id: this.id,numTeams:this.numTeams, name: this.name, board: this.board.toJSON(), pieces: this.pieces.toJSON() };
 	}
 	static fromJSON(data: GameJSON): Game {
-		return new Game(data.name, Board.fromJSON(data.board), InstancePieceMap.fromJSON(data.pieces),data.numTeams,data.id);
+		const name = data.name ? data.name : "";
+		const board = data.board ? Board.fromJSON(data.board) : new Board();
+		const pieces = data.pieces ? InstancePieceMap.fromJSON(data.pieces) : new InstancePieceMap();
+		const numTeams = data.numTeams ? data.numTeams : 2;
+		const id = data.id ? data.id : "";
+		return new Game(name, board, pieces, numTeams, id);
 	}
 }
