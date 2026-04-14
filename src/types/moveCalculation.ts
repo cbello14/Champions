@@ -4,7 +4,7 @@ import { checkCoordinateArrayIncludes, checkCoordinateEquality, type coordinate,
 import { rectTeamDirection } from "./team";
 import type { capture } from "./capture";
 
-interface attributeParams { isJump: boolean, flippedHorizontally: boolean, flippedVertically: boolean, captureType: capture, requiresCapture?: boolean }
+export interface attributeParams { isJump: boolean, flippedHorizontally: boolean, flippedVertically: boolean, captureType: capture, requiresCapture?: boolean }
 
 export interface moveCalculationResult { landing: coordinate, capturing: coordinate | null }
 
