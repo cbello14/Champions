@@ -80,9 +80,13 @@ export const useStore = create<StorageState>()(
 			instances: {},
 
 			setPiece: (p) => {
-				set((state) => ({
-					pieces: { ...state.pieces, [p.id]: p.toJSON() }
-				}))
+
+				
+					set((state) => ({
+						pieces: { [p.id]: p.toJSON(), ...state.pieces, }
+					}))
+				
+
 			},
 			setTile: (t) => {
 				set((state) => ({

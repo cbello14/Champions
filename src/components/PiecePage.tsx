@@ -45,22 +45,14 @@ const PiecePage = () => {
 	};
 
 	const handleAddMovement = (ind: number) => {
-		const newMoves = [...piece.moves];
-		newMoves[ind].movements.push({
+		setPiece(piece.addMovement(ind,{
 			distance: 1,
 			direction: moveDirection.up
-		});
-		setPiece(new Piece(piece.name, piece.image, newMoves, [...piece.captures]));
-
+		}))
 	};
+	
 	const handleDeleteMovement = (moveInd: number, movementInd: number) => {
-		const newMovements = piece.moves[moveInd].movements.filter((_, i) => i != movementInd);
-		const newMoves = [...piece.moves];
-		newMoves[moveInd] = {
-			...newMoves[moveInd],
-			movements: newMovements
-		};
-		setPiece(new Piece(piece.name, piece.image, newMoves, [...piece.captures]));
+		setPiece(piece.removeMovementAt(moveInd,movementInd));
 	};
 
 	return <>
