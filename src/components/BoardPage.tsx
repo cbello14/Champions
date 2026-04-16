@@ -23,13 +23,13 @@ const BoardPage = () => {
 
 	const onXChange = (x: number) => {
 		setDimensions([x, dimensions[1]]);
-		const newBoard = new Board(name, board.shape, dimensions, board.specialTiles, board.id);
+		const newBoard = new Board(name, board.shape, [x, board.dimensions[1]], board.specialTiles, board.id);
 		setBoard(newBoard);
 	};
 
 	const onYChange = (y: number) => {
 		setDimensions([dimensions[0], y]);
-		const newBoard = new Board(name, board.shape, dimensions, board.specialTiles, board.id);
+		const newBoard = new Board(name, board.shape, [board.dimensions[0],y], board.specialTiles, board.id);
 		setBoard(newBoard);
 	};
 
