@@ -22,16 +22,17 @@ const MoveMenu = ({ index, piece, move, setPiece, handleDeleteMovement, handleAd
                 <Select
                     value={move.attributes.type}
                     onValueChange={(e) => {
-                        const newMoves = [...piece.moves];
-                        newMoves[index] = {
+
+                        const newMove = {
                             ...move,
                             attributes: {
                                 ...move.attributes,
                                 type: e as movementType
                             }
+                        }
+                        setPiece(piece.replaceMoveAt(newMove, index))
 
-                        };
-                        setPiece(new Piece(piece.name, piece.image, newMoves, [...piece.captures]));
+
                     }}>
                     <SelectTrigger>
                         <SelectValue />
@@ -47,18 +48,19 @@ const MoveMenu = ({ index, piece, move, setPiece, handleDeleteMovement, handleAd
 
             <div className="flex flex-row">
                 <label>Reflection:</label>
-                <Select                    
+                <Select
                     value={move.attributes.reflection ?? "none"}
                     onValueChange={(e) => {
-                        const newMoves = [...piece.moves];
-                        newMoves[index] = {
+                        
+                        const newMove = {
                             ...move,
                             attributes: {
                                 ...move.attributes,
                                 reflection: e as reflect
                             }
-                        };
-                        setPiece(new Piece(piece.name, piece.image, newMoves, [...piece.captures]));
+                        }
+                        setPiece(piece.replaceMoveAt(newMove, index))
+
                     }}>
                     <SelectTrigger>
                         <SelectValue />
@@ -80,7 +82,7 @@ const MoveMenu = ({ index, piece, move, setPiece, handleDeleteMovement, handleAd
                 <Checkbox
                     defaultChecked={move.attributes.initialMove}
                     onCheckedChange={(e) => {
-                        const newMoves = [...piece.moves];
+                        
                         let initial = true;
                         if (typeof e === "boolean") {
                             initial = e
@@ -88,14 +90,17 @@ const MoveMenu = ({ index, piece, move, setPiece, handleDeleteMovement, handleAd
                         else {
                             initial = false
                         }//if its bad, assume not a first move
-                        newMoves[index] = {
+                        
+
+                        
+                        const newMove = {
                             ...move,
                             attributes: {
                                 ...move.attributes,
                                 initialMove: initial
                             }
                         };
-                        setPiece(new Piece(piece.name, piece.image, newMoves, [...piece.captures]));
+                        setPiece(piece.replaceMoveAt(newMove, index))
                     }} />
             </div>
 
@@ -113,14 +118,17 @@ const MoveMenu = ({ index, piece, move, setPiece, handleDeleteMovement, handleAd
                         else {
                             cap = true
                         }//if its bad, assume it is a capturing move
-                        newMoves[index] = {
+                        
+                        const newMove = {
                             ...move,
                             attributes: {
                                 ...move.attributes,
                                 capturing: cap
                             }
                         };
-                        setPiece(new Piece(piece.name, piece.image, newMoves, [...piece.captures]));
+                        setPiece(piece.replaceMoveAt(newMove, index))
+
+                        
                     }} />
             </div>
 

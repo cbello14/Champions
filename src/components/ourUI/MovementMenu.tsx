@@ -17,13 +17,14 @@ const MovementMenu = ({ movement, piece, index, movementIndex, setPiece, handleD
                 <Input
                     type="text"
                     value={movement.distance}
-                    onChange={(e) => {
-                        const newMoves = [...piece.moves];
-                        newMoves[index].movements[movementIndex] = {
-                            ...newMoves[index].movements[movementIndex],
+                    onChange={(e) => {                        
+                        const newMovement= {
+                            ...piece.moves[index].movements[movementIndex],
                             distance: e.target.value as distance
                         };
-                        setPiece(new Piece(piece.name, piece.image, newMoves, [...piece.captures]));
+
+                        
+                        setPiece(piece.replaceMovementAt(index,movementIndex,newMovement))
                     }}
                 />
             </div>
@@ -32,12 +33,12 @@ const MovementMenu = ({ movement, piece, index, movementIndex, setPiece, handleD
                 <Select 
                 value={piece.moves[index].movements[movementIndex].direction}
                 onValueChange={(e) => {
-                    const newMoves = [...piece.moves];
-                    newMoves[index].movements[movementIndex] = {
-                        ...newMoves[index].movements[movementIndex],
+                    
+                    const newMovement={
+                        ...piece.moves[index].movements[movementIndex],
                         direction: e as direction
                     };
-                    setPiece(new Piece(piece.name, piece.image, newMoves, [...piece.captures]));
+                    setPiece(piece.replaceMovementAt(index,movementIndex,newMovement));
                 }}>
                     <SelectTrigger>
                         <SelectValue />

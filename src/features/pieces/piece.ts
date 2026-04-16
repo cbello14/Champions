@@ -52,6 +52,11 @@ export class Piece {
 		newMoves[moveIndex].movements.splice(movementIndex,1)
 		return new Piece(this.name, this.image,newMoves, [...this.captures], this.id)
 	}
+	replaceMovementAt(moveIndex:number, movementIndex:number, movement:movement){
+		const newMoves=[...this.moves]
+		newMoves[moveIndex].movements[movementIndex]=movement
+		return new Piece(this.name, this.image,newMoves, [...this.captures], this.id)
+	}
 	replaceCaptureAt(capture: capture, index: number) {
 		const newCaptures = [...this.captures];
 		newCaptures[index] = capture;
