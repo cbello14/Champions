@@ -28,7 +28,8 @@ const PiecePage = () => {
 		savePiece(piece);
 	};
 	const handleDelete = () => {
-		deletePiece(piece.name);
+		deletePiece(piece.id);
+		setPiece(new Piece("New Piece"))
 	};
 
 	const handleAddMove = () => {
