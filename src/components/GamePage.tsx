@@ -10,7 +10,6 @@ import BoardList from "./BoardList"
 import type { Board } from "@/features/boards/board"
 import { useStore } from "@/utils/storage"
 import { Input } from "./ui/input"
-import type { reflect } from "@/types/move"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectItem } from "./ui/select"
 import { Label } from "./ui/label"
 
@@ -36,8 +35,8 @@ const GamePage = () => {
 		setGame(newGame)
 	}
 
-	const onTeamChange = (n: number)=>{
-		const newGame = new Game(name, game.board, game.pieces, n)			
+	const onTeamChange = (n: number) => {
+		const newGame = new Game(name, game.board, game.pieces, n)
 		setGame(newGame)
 	}
 	return <>
@@ -45,26 +44,25 @@ const GamePage = () => {
 			<SideBar isOpen={boardsOpen} setIsOpen={(state: boolean) => { setBoardsOpen(state) }} name={"Boards"} content={<BoardList onSelectBoard={(board) => { onBoardChange(board); }} />} align={"left"} />
 			<div className="flec flex-col">
 				<Label> Number of Players </Label>
-			<Select
-				onValueChange={(e) => {
-					console.log(e);
-					setPlayerCount(Number.parseInt(e))	
-					onTeamChange(Number.parseInt(e))
-				}}
-				defaultValue={numPlayer.toString()}
+				<Select
+					onValueChange={(e) => {
+						setPlayerCount(Number.parseInt(e))
+						onTeamChange(Number.parseInt(e))
+					}}
+					defaultValue={numPlayer.toString()}
 				>
-				<SelectTrigger>
-					<SelectValue />
-				</SelectTrigger>
-				<SelectContent >
-					<SelectGroup>
-						<SelectItem value="2">2</SelectItem>
-						<SelectItem value="3">3</SelectItem>
-						<SelectItem value="4">4</SelectItem>
-					</SelectGroup>
-				</SelectContent>
-			</Select>
-</div>
+					<SelectTrigger>
+						<SelectValue />
+					</SelectTrigger>
+					<SelectContent >
+						<SelectGroup>
+							<SelectItem value="2">2</SelectItem>
+							<SelectItem value="3">3</SelectItem>
+							<SelectItem value="4">4</SelectItem>
+						</SelectGroup>
+					</SelectContent>
+				</Select>
+			</div>
 			<div className="flex flex-col center">
 				<Input type="text" defaultValue={name} onChange={(e) => { onNameChange(e.target.value) }} />
 				<RectBoardGame cellWidth={100} game={game} onClickAction={action} setGame={(game: Game) => { setGame(game); }} numPlayer={numPlayer} />

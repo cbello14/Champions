@@ -17,7 +17,7 @@ const RectBoardBasic = ({ dimensions, cellWidth, primaryColor = "tan", alternate
 			// problem: specialTiles key is a [number, number] but doing [number, number] == [number, number] compares by reference not value
 			const specialTilesArr = Array.from(board.specialTiles.entries());
 			let found = false;
-			for (const [coord, _] of specialTilesArr) {
+			for (const [coord] of specialTilesArr) {
 				if (coord[0] == newSelected[0] && coord[1] == newSelected[1]) {
 					found = true;
 					break;

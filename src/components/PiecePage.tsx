@@ -7,7 +7,7 @@ import { Piece } from "@/features/pieces/piece";
 import { calculateMovesRect } from "@/types/moveCalculation";
 import type { coordinate } from "@/features/boards/board";
 import { useStore } from "@/utils/storage";
-import { moveDirection, moveMovementType, moveReflect, type direction, type distance, type movementType, type reflect } from "@/types/move";
+import { moveDirection, moveMovementType, moveReflect } from "@/types/move";
 import PieceSideBar from "./ourUI/PieceSideBar";
 import MoveMenu from "./ourUI/MoveMenu";
 
@@ -42,9 +42,6 @@ const PiecePage = () => {
 			movements: []
 		}))
 	};
-	const handleDeleteMove = (index: number) => {
-		setPiece(piece.removeMoveAt(index))
-	};
 
 	const handleAddMovement = (ind: number) => {
 		const newMoves = [...piece.moves];
@@ -68,17 +65,17 @@ const PiecePage = () => {
 	return <>
 		<div className="flex flex-row justify-between gap-4 p-4 items-start">
 
-				<SideBar
-					isOpen={piecesOpen}
-					setIsOpen={(state: boolean) => { setPiecesOpen(state) }}
-					name={"Pieces"}
-					content={<PieceSideBar
-						pieces={Object.values(pieces)}
-						setPiece={setPiece}
-					/>
-					}
-					align={"left"}
+			<SideBar
+				isOpen={piecesOpen}
+				setIsOpen={(state: boolean) => { setPiecesOpen(state) }}
+				name={"Pieces"}
+				content={<PieceSideBar
+					pieces={Object.values(pieces)}
+					setPiece={setPiece}
 				/>
+				}
+				align={"left"}
+			/>
 
 			<main className="flex grow-5 items-center justify-center">
 				<div className="flex flex-col center">

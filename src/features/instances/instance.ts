@@ -52,7 +52,6 @@ export class Instance {
 			//END GAME GOES HERE
 			//bandaid fix is to make it just spawn that game again
 			//WE NEED INITIAL PIECES????
-			console.log("checkmate should occur")
 			return new Instance(this.board,this.numTeams,this.initialPieces, this.initialPieces)//something
 			
 		}

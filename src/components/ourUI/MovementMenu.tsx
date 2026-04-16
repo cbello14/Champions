@@ -37,7 +37,6 @@ const MovementMenu = ({ movement, piece, index, movementIndex, setPiece, handleD
                         ...newMoves[index].movements[movementIndex],
                         direction: e as direction
                     };
-                    console.log(e)
                     setPiece(new Piece(piece.name, piece.image, newMoves, [...piece.captures]));
                 }}>
                     <SelectTrigger>

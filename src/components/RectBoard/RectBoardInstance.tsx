@@ -30,10 +30,11 @@ const RectBoardInstance = ({ cellWidth, instance, setInstance, currentTeam, next
 	}
 
 
-	const directional =(teamNumber: number|undefined )=>{
-		if(!teamNumber)
+	// made this into a callback because it was causing a issue with drawingFunction, would be better to figure out a different solution
+	const directional = useCallback((teamNumber: number | undefined) => {
+		if (!teamNumber)
 			return moveDirection.down;
-		switch (teamNumber){
+		switch (teamNumber) {
 			case 1:
 				return moveDirection.up;
 			case 2:
@@ -43,7 +44,7 @@ const RectBoardInstance = ({ cellWidth, instance, setInstance, currentTeam, next
 			default:
 				return moveDirection.down;
 		}
-	}
+	}, [])
 
 	const drawingFunction = useCallback((params: RectBoardDrawingParams) => {
 		RectBoardDrawing.rectBoardColoring(params, "tan", "blue", selected);
@@ -56,7 +57,7 @@ const RectBoardInstance = ({ cellWidth, instance, setInstance, currentTeam, next
 		}
 		RectBoardDrawing.rectBoardMoveCaptures(params, moves)
 		RectBoardDrawing.RectBoardInstance(params, instance)
-	}, [instance, selected]);
+	}, [directional, instance, selected]);
 
 	return (<RectBoardGeneric dimensions={instance.board.dimensions} cellWidth={cellWidth} drawingFunction={drawingFunction} selected={selected} setSelected={setSelected} />)
 

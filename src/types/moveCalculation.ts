@@ -4,7 +4,7 @@ import { checkCoordinateArrayIncludes, checkCoordinateEquality, type coordinate,
 import { rectTeamDirection } from "./team";
 import type { capture } from "./capture";
 
-interface attributeParams { isJump: boolean, flippedHorizontally: boolean, flippedVertically: boolean, captureType: capture, requiresCapture?: boolean }
+export interface attributeParams { isJump: boolean, flippedHorizontally: boolean, flippedVertically: boolean, captureType: capture, requiresCapture?: boolean }
 
 export interface moveCalculationResult { landing: coordinate, capturing: coordinate | null }
 
@@ -65,21 +65,21 @@ const calculateMoveRect = (location: coordinate, move: move, boardSize: dimensio
 
 
 //concept for maybe later - what if we do it when a king is taken instead?
-const checkCheckmate = () =>{
-	//determines if a position is checkmate
-	//how do we determine checkmate?
-	//no matter what, the king is boned
-	//2 parts
-	//king moves
-	//check all king moves, and if any piece on an opposing team can get them
-
-	//get list of all king positions
-
-	//not king moves
-	//
-
-
-}
+// const checkCheckmate = () =>{
+// 	//determines if a position is checkmate
+// 	//how do we determine checkmate?
+// 	//no matter what, the king is boned
+// 	//2 parts
+// 	//king moves
+// 	//check all king moves, and if any piece on an opposing team can get them
+//
+// 	//get list of all king positions
+//
+// 	//not king moves
+// 	//
+//
+//
+// }
 
 const calculateMoveRectJump = (location: coordinate, move: move, boardSize: dimension, blocking: coordinate[], enemyPieces: coordinate[], attributes: attributeParams, teamDirection: direction) => {
 	//landing location is the final destionation of the jump

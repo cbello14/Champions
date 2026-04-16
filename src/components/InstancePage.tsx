@@ -1,13 +1,11 @@
 import { useState } from "react"
 import RectBoardInstance from "./RectBoard/RectBoardInstance"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./ui/card"
+import { Card, CardHeader } from "./ui/card"
 import { useStore } from "@/utils/storage"
 import { useParams } from "react-router"
 import { Instance } from "@/features/instances/instance"
 import { Button } from "./ui/button"
-import { Popover, PopoverContent, PopoverDescription, PopoverHeader, PopoverTitle, PopoverTrigger } from "./ui/popover"
-import { Input } from "./ui/input"
-import { FieldGroup, Field, FieldLabel } from "./ui/field"
+import { Popover, PopoverContent, PopoverHeader, PopoverTitle, PopoverTrigger } from "./ui/popover"
 
 const InstancePage = () => {
 	const { instanceId } = useParams<{ instanceId: string }>()
@@ -15,15 +13,11 @@ const InstancePage = () => {
 	const saveInstance = useStore((state) => state.setInstance);
 	const [instance, setInstance] = useState<Instance | null>(instanceJSON ? Instance.fromJSON(instanceJSON) : null)
 	const [currentTeam, setCurrentTeam] = useState<number>(1);
-	const [gameState, setState] = useState<number>(1);
 
 	const nextTeam = () => {
 		if (!instance) return
-		console.log("!!!!!!!!!!!!!!!!!!");
-		console.log(instance.numTeams);
 		setCurrentTeam((team) => (team + 1) % instance.numTeams);
 		saveInstance(instance);
-		console.log(currentTeam);
 	}
 
 	const teamName = (n: number) => {

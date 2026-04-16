@@ -7,3 +7,5 @@ custom tiles:
 - update rectBoardSpecialTiles in boardDrawing.ts to use new map and allow for custom 
   tile colors and stuff
 - tile class should contain a color string
+
+- Made directional in 'src/components/RectBoard/RectBoardInstance' a callback because it was causing an issue with the 'drawingFunction' we should figure out a cleaner way to do that

@@ -31,7 +31,6 @@ const MoveMenu = ({ index, piece, move, setPiece, handleDeleteMovement, handleAd
                             }
 
                         };
-                        console.log(e);
                         setPiece(new Piece(piece.name, piece.image, newMoves, [...piece.captures]));
                     }}>
                     <SelectTrigger>
@@ -49,7 +48,7 @@ const MoveMenu = ({ index, piece, move, setPiece, handleDeleteMovement, handleAd
             <div className="flex flex-row">
                 <label>Reflection:</label>
                 <Select                    
-                    value={(move.attributes.reflection === undefined) ? "none" : move.attributes.reflection}
+                    value={move.attributes.reflection ?? "none"}
                     onValueChange={(e) => {
                         const newMoves = [...piece.moves];
                         newMoves[index] = {
@@ -82,8 +81,7 @@ const MoveMenu = ({ index, piece, move, setPiece, handleDeleteMovement, handleAd
                     defaultChecked={move.attributes.initialMove}
                     onCheckedChange={(e) => {
                         const newMoves = [...piece.moves];
-                        console.log(e)
-                        var initial = true;
+                        let initial = true;
                         if (typeof e === "boolean") {
                             initial = e
                         }
@@ -98,7 +96,6 @@ const MoveMenu = ({ index, piece, move, setPiece, handleDeleteMovement, handleAd
                             }
                         };
                         setPiece(new Piece(piece.name, piece.image, newMoves, [...piece.captures]));
-                        console.log
                     }} />
             </div>
 
@@ -109,8 +106,7 @@ const MoveMenu = ({ index, piece, move, setPiece, handleDeleteMovement, handleAd
                     defaultChecked={move.attributes.capturing}
                     onCheckedChange={(e) => {
                         const newMoves = [...piece.moves];
-                        console.log(e)
-                        var cap = true;
+                        let cap = true;
                         if (typeof e === "boolean") {
                             cap = e
                         }
