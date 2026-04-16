@@ -44,13 +44,17 @@ const PiecePage = () => {
 		}))
 	};
 
+	const handleDeleteMove = (moveIndex: number) => {
+		setPiece(piece.removeMoveAt(moveIndex))
+	}
+
 	const handleAddMovement = (ind: number) => {
 		setPiece(piece.addMovement(ind,{
 			distance: 1,
 			direction: moveDirection.up
 		}))
 	};
-	
+
 	const handleDeleteMovement = (moveInd: number, movementInd: number) => {
 		setPiece(piece.removeMovementAt(moveInd,movementInd));
 	};
@@ -103,7 +107,7 @@ const PiecePage = () => {
 								setPiece={setPiece}
 								handleDeleteMovement={handleDeleteMovement}
 								handleAddMovement={handleAddMovement}
-								handleDeleteMove={handleAddMove}
+								handleDeleteMove={handleDeleteMove}
 							/>
 						))
 					}
