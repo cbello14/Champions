@@ -37,16 +37,15 @@ const RectBoardDrawing = {
 		const { cellWidth, ctx } = params
 		const radius = cellWidth / 2
 		calculationResults.forEach((result: moveCalculationResult) => {
-			ctx.fillStyle = "Green"
+			
 			const moveX = result.landing[0] * cellWidth + radius
 			const moveY = result.landing[1] * cellWidth + radius
 			drawCircle(ctx, moveX, moveY, radius)
 			if (result.capturing) {
-				ctx.fillStyle = "Red"
 				const captureX = result.capturing[0] * cellWidth + radius
 				const captureY = result.capturing[1] * cellWidth + radius
 				if (!checkCoordinateEquality(result.landing, result.capturing)) {
-					ctx.lineWidth = 10
+					
 					drawLine(ctx, moveX, moveY, captureX, captureY)
 				}
 				drawCross(ctx, captureX, captureY, radius)
@@ -88,16 +87,20 @@ const RectBoardDrawing = {
 }
 
 const drawCircle = (ctx: CanvasRenderingContext2D, centerX: number, centerY: number, radius: number) => {
+	ctx.fillStyle = "Green"
 	ctx.beginPath();
 	ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI); // Define the circle path
 	ctx.fill();
 }
 
 const drawLine = (ctx: CanvasRenderingContext2D, fromX: number, fromY: number, toX: number, toY: number) => {
+	ctx.strokeStyle = "Red"
+	ctx.lineWidth = 10
 	ctx.beginPath();
 	ctx.moveTo(fromX, fromY);
 	ctx.lineTo(toX, toY);
 	ctx.stroke();
+	ctx.lineWidth = 1
 }
 
 const tColor = (t: number) => {
@@ -146,6 +149,7 @@ const rectBoardDrawPiece = (params: RectBoardDrawingParams, piece: Piece, locati
 
 }
 const drawCross = (ctx: CanvasRenderingContext2D, centerX: number, centerY: number, radius: number) => {
+	ctx.fillStyle = "Red"
 	const t = radius / 4;
 	ctx.beginPath();
 	ctx.moveTo(centerX - radius, centerY - radius + t);

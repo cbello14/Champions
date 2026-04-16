@@ -41,9 +41,9 @@ export class Instance {
 		this.numTeams=n
 	}
 	movePiece(from: coordinate, to: coordinate) {
-		const piece = this.piecesRecord.getInstancePiece(from);
+		const instancePiece = this.piecesRecord.getInstancePiece(from);
 
-		if (!piece) {
+		if (!instancePiece) {
 			return this;
 		}
 		let newPieces = this.piecesRecord
@@ -56,10 +56,11 @@ export class Instance {
 			
 		}
 		newPieces = newPieces.removeInstancePiece(from);
-		newPieces = newPieces.setPiece(to, piece.piece, piece.team);
-		return new Instance(this.board,this.numTeams, newPieces,this.initialPieces, this.data, this.id).recordPieceMove(piece);
+		newPieces = newPieces.moveInstancePiece(to, instancePiece);
+		return new Instance(this.board,this.numTeams, newPieces,this.initialPieces, this.data, this.id).recordPieceMove(instancePiece);
 	}
 	recordPieceMove(piece: instancePiece): Instance {
+		console.log("happened")
 		const newData = new Map(this.data);
 		const pieceData = newData.get(piece.id);
 		if (!pieceData) {
@@ -67,11 +68,15 @@ export class Instance {
 		} else {
 			newData.set(piece.id, { hasMoved: true, movesMade: pieceData.movesMade + 1 });
 		}
+		console.log(newData)
 		return new Instance(this.board, this.numTeams,this.piecesRecord,this.initialPieces, newData, this.id);
 	}
 	hasPieceMoved(piece: instancePiece): boolean {
 		const pieceData = this.data.get(piece.id);
-		return pieceData?.hasMoved ?? false;
+		let t=pieceData?.hasMoved ?? false;
+		console.log(pieceData)
+		console.log(t)
+		return t
 	}
 	addPiece(coordinate: coordinate, piece: Piece, team: team) {
 		let newPieces = this.piecesRecord

@@ -13,7 +13,7 @@ const PieceSideBar = ({ pieces, setPiece }: { pieces: Piece[], setPiece: (piece:
             <Button
                 key="add-piece"
                 className="m-1"
-                onClick={() => { setPiece(new Piece()) }}
+                onClick={() => { setPiece(new Piece("New Piece")) }}
             >
                 Add Piece
             </Button>

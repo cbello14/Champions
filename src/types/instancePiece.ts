@@ -62,7 +62,7 @@ export class InstancePieceMap {
 		return new InstancePieceMap(newMap, newId);
 	}
 
-	setInstancePiece(coordinate: coordinate, instancePiece: instancePiece): InstancePieceMap {
+		setInstancePiece(coordinate: coordinate, instancePiece: instancePiece): InstancePieceMap {
 		const coordinateString = coordinateToString(coordinate);
 		const newMap = new Map(this.map);
 
@@ -79,6 +79,16 @@ export class InstancePieceMap {
 		newMap.set(coordinateString, newPiece);
 		return new InstancePieceMap(newMap, newMaxId);
 	}
+
+	moveInstancePiece(coordinate: coordinate, instancePiece: instancePiece): InstancePieceMap {
+		const coordinateString = coordinateToString(coordinate);
+		const newMap = new Map(this.map);
+
+		newMap.set(coordinateString, instancePiece);
+		return new InstancePieceMap(newMap, this.maxId);
+	}
+
+
 
 	removeInstancePiece(coordinate: coordinate): InstancePieceMap {
 		const coordinateString = coordinateToString(coordinate);

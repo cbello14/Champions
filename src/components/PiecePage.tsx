@@ -12,7 +12,7 @@ import PieceSideBar from "./ourUI/PieceSideBar";
 import MoveMenu from "./ourUI/MoveMenu";
 
 const PiecePage = () => {
-	const [piece, setPiece] = useState<Piece>(new Piece());
+	const [piece, setPiece] = useState<Piece>(new Piece("New Piece"));
 	const location: coordinate = [4, 4]
 	const [piecesOpen, setPiecesOpen] = useState<boolean>(true);
 	const moves = calculateMovesRect(piece, location, [8, 8], [], [], moveDirection.up, false)
