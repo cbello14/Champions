@@ -22,7 +22,7 @@ const GamePage = () => {
 	const [action, setAction] = useState<Piece | "team" | "erase" | null>(null)
 	const [name, setName] = useState<string>(basicGame.name)
 	const saveGame = useStore((state) => state.setGame)
-	const [numPlayer, setPlayerCount] = useState<number>(3);
+	const [numPlayer, setPlayerCount] = useState<number>(2);
 
 	const onNameChange = (name: string) => {
 		setName(name)
