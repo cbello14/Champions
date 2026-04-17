@@ -1,90 +1,165 @@
-import { type dimension, type coordinate, checkCoordinateEquality, type Board } from "@/features/boards/board"
+import { type dimension, type coordinate, checkCoordinateEquality, type Board, type shape } from "@/features/boards/board"
 import type { Game } from "@/features/games/game"
 import type { Instance } from "@/features/instances/instance"
 import type { Piece } from "@/features/pieces/piece"
 import type { InstancePieceMap } from "./instancePiece"
 import type { moveCalculationResult } from "./moveCalculation"
 
-interface RectBoardDrawingParams { boardSize: dimension, cellWidth: number, ctx: CanvasRenderingContext2D }
-type RectBoardDrawingFunction = (params: RectBoardDrawingParams) => void
+interface BoardDrawingParams { boardSize: dimension, cellWidth: number, ctx: CanvasRenderingContext2D, shape: shape }
+type BoardDrawingFunction = (params: BoardDrawingParams) => void
 
-const RectBoardDrawing = {
-	rectBoardColoring: (params: RectBoardDrawingParams, primaryColor: string, alternateColor: string, selectedCell: coordinate | null, selectedColor?: string, outlineColor?: string) => {
+const BoardDrawing = {
+	boardColoring: (params: BoardDrawingParams, primaryColor: string, alternateColor: string, selectedCell: coordinate | null, selectedColor?: string, outlineColor?: string) => {
 		const { boardSize, cellWidth, ctx } = params
 		for (let gridX = 0; gridX < boardSize[0]; gridX++) {
 			for (let gridY = 0; gridY < boardSize[1]; gridY++) {
-				const pixelX = gridX * cellWidth
-				const pixelY = gridY * cellWidth
+				const radius = cellWidth / 2
+				const [pixelX, pixelY] = getCenterCoords(gridX, gridY, radius, params.shape)
 				ctx.fillStyle = (gridX + gridY) % 2 === 0 ? primaryColor : alternateColor
 				ctx.fillStyle = !!selectedCell && selectedCell[0] === gridX && selectedCell[1] === gridY && selectedColor ? selectedColor : ctx.fillStyle
-				ctx.fillRect(pixelX, pixelY, cellWidth, cellWidth)
-				if (outlineColor) { ctx.strokeStyle = outlineColor; ctx.strokeRect(pixelX, pixelY, cellWidth, cellWidth) }
+				fillShape(ctx, pixelX, pixelY, radius, params.shape)
+				if (outlineColor) { ctx.strokeStyle = outlineColor; strokeShape(ctx, pixelX, pixelY, radius, params.shape) }
 			}
 		}
 	},
 
-	rectBoardSpecialTiles: (params: RectBoardDrawingParams, board: Board) => {
+	boardSpecialTiles: (params: BoardDrawingParams, board: Board) => {
 		const { cellWidth, ctx } = params;
 		for (const [coord] of board.specialTiles) {
-			const pixelX = coord[0] * cellWidth;
-			const pixelY = coord[1] * cellWidth;
+			const radius = cellWidth / 2
+			const [pixelX, pixelY] = getCenterCoords(coord[0], coord[1], radius, params.shape)
 			ctx.fillStyle = "red";
-			ctx.fillRect(pixelX, pixelY, cellWidth, cellWidth);
+			fillShape(ctx, pixelX, pixelY, radius, params.shape)
 		}
 	},
 
-	rectBoardMoveCaptures: (params: RectBoardDrawingParams, calculationResults: moveCalculationResult[]) => {
+	boardMoveCaptures: (params: BoardDrawingParams, calculationResults: moveCalculationResult[]) => {
 		const { cellWidth, ctx } = params
 		const radius = cellWidth / 2
 		calculationResults.forEach((result: moveCalculationResult) => {
-			
-			const moveX = result.landing[0] * cellWidth + radius
-			const moveY = result.landing[1] * cellWidth + radius
-			drawCircle(ctx, moveX, moveY, radius)
+			const [moveX, moveY] = getCenterCoords(result.landing[0], result.landing[1], radius, params.shape)
+			drawCircle(ctx, moveX, moveY, radius * 0.75)
 			if (result.capturing) {
-				const captureX = result.capturing[0] * cellWidth + radius
-				const captureY = result.capturing[1] * cellWidth + radius
+				const [captureX, captureY] = getCenterCoords(result.capturing[0], result.capturing[1], radius, params.shape)
 				if (!checkCoordinateEquality(result.landing, result.capturing)) {
-					
 					drawLine(ctx, moveX, moveY, captureX, captureY)
 				}
-				drawCross(ctx, captureX, captureY, radius)
+				drawCross(ctx, captureX, captureY, radius* 0.75)
 			}
 		})
 	},
-
-
-	rectBoardGame: (params: RectBoardDrawingParams, game: Game) => {
+	boardGame: (params: BoardDrawingParams, game: Game) => {
 		game.pieces.getKeys().forEach((coordinate: coordinate) => {
 			const instancePiece = game.pieces.getInstancePiece(coordinate)
 			if (instancePiece) {
-				rectBoardDrawPiece(params, instancePiece.piece, coordinate, instancePiece.team)
+				boardDrawPiece(params, instancePiece.piece, coordinate, instancePiece.team)
 			}
 		})
 	},
 
-	RectBoardInstance: (params: RectBoardDrawingParams, instance: Instance) => {
+	boardInstance: (params: BoardDrawingParams, instance: Instance) => {
 		instance.piecesRecord.getKeys().forEach((coordinate: coordinate) => {
 			const instancePiece = instance.piecesRecord.getInstancePiece(coordinate)
 			if (instancePiece) {
-				rectBoardDrawPiece(params, instancePiece.piece, coordinate, instancePiece.team)
+				boardDrawPiece(params, instancePiece.piece, coordinate, instancePiece.team)
 			}
 		})
 
 	},
 
-	rectBoardPiece: (params: RectBoardDrawingParams, piece: Piece, location: coordinate, team: number) => {
-		rectBoardDrawPiece(params, piece, location, team)
+	boardPiece: (params: BoardDrawingParams, piece: Piece, location: coordinate, team: number) => {
+		boardDrawPiece(params, piece, location, team)
 	},
-	rectBoardPieces: (params: RectBoardDrawingParams, piecesRecord: InstancePieceMap) => {
+	boardPieces: (params: BoardDrawingParams, piecesRecord: InstancePieceMap) => {
 		piecesRecord.getKeys().forEach((coordinate: coordinate) => {
 			const instancePiece = piecesRecord.getInstancePiece(coordinate)
 			if (instancePiece) {
-				rectBoardDrawPiece(params, instancePiece.piece, coordinate, instancePiece.team)
+				boardDrawPiece(params, instancePiece.piece, coordinate, instancePiece.team)
 			}
 		})
 	}
 }
+
+const boardDrawPiece = (params: BoardDrawingParams, piece: Piece, location: coordinate, team: number) => {
+	const { cellWidth, ctx } = params
+	const radius = cellWidth / 2
+	const [centerX, centerY] = getCenterCoords(location[0], location[1], radius, params.shape)
+	const teamColor = tColor(team)
+	const teamOutline = oColor(team)
+	// When we implement pieces having an image
+	if (piece.image) {
+		const image = new Image()
+		image.src = piece.image
+		ctx.drawImage(image, centerX - radius, centerY - radius, cellWidth, cellWidth)
+	} else if (piece.name.length > 0) {
+		drawLetter(ctx, centerX, centerY, radius, piece.name[0], teamColor, teamOutline)
+	}
+
+}
+
+function getCenterCoords(gridX: number, gridY: number, radius: number, shape: shape) {
+	if (shape === 'rect') {
+		return [gridX * radius * 2 + radius, gridY * radius * 2 + radius];
+	} else if (shape === 'hex') {
+		const pixelX = gridX * (Math.sqrt(3) * radius) + radius
+		const pixelY = gridY * (3 * radius / 2) + radius
+		const offset = gridY % 2 === 0 ? 0 : Math.sqrt(3) / 2 * radius
+		return [pixelX + offset, pixelY]
+
+	} else {
+		return []
+	}
+}
+
+function fillShape(ctx: CanvasRenderingContext2D, pixelX: number, pixelY: number, radius: number, shape: shape) {
+	if (shape === 'rect') {
+		ctx.fillRect(pixelX - radius, pixelY - radius, radius * 2, radius * 2)
+		return
+	} else if (shape === 'hex') {
+		fillHexagon(ctx, pixelX, pixelY, radius);
+		return
+	}
+}
+
+function strokeShape(ctx: CanvasRenderingContext2D, pixelX: number, pixelY: number, radius: number, shape: shape) {
+	if (shape === 'rect') {
+		ctx.strokeRect(pixelX - radius, pixelY - radius, radius * 2, radius * 2)
+		return
+	} else if (shape === 'hex') {
+		strokeHexagon(ctx, pixelX, pixelY, radius);
+		return
+	}
+}
+
+function fillHexagon(ctx: CanvasRenderingContext2D, x: number, y: number, radius: number): void {
+	ctx.beginPath();
+	for (let i = 0; i < 6; i++) {
+		const angle_deg = 60 * i - 30;
+		const angle_rad = (Math.PI / 180) * angle_deg;
+		const px = x + radius * Math.cos(angle_rad);
+		const py = y + radius * Math.sin(angle_rad);
+
+		if (i === 0) ctx.moveTo(px, py);
+		else ctx.lineTo(px, py);
+	}
+	ctx.closePath();
+	ctx.fill();
+}
+function strokeHexagon(ctx: CanvasRenderingContext2D, x: number, y: number, radius: number): void {
+	ctx.beginPath();
+	for (let i = 0; i < 6; i++) {
+		const angle_deg = 60 * i - 30;
+		const angle_rad = (Math.PI / 180) * angle_deg;
+		const px = x + radius * Math.cos(angle_rad);
+		const py = y + radius * Math.sin(angle_rad);
+
+		if (i === 0) ctx.moveTo(px, py);
+		else ctx.lineTo(px, py);
+	}
+	ctx.closePath();
+	ctx.fill();
+}
+
 
 const drawCircle = (ctx: CanvasRenderingContext2D, centerX: number, centerY: number, radius: number) => {
 	ctx.fillStyle = "Green"
@@ -129,25 +204,8 @@ const oColor = (t: number) => {
 	}
 }
 
-const rectBoardDrawPiece = (params: RectBoardDrawingParams, piece: Piece, location: coordinate, team: number) => {
-	const { cellWidth, ctx } = params
-	const pixelX = location[0] * cellWidth
-	const pixelY = location[1] * cellWidth
-	const radius = cellWidth / 2
-	const centerX = pixelX + radius
-	const centerY = pixelY + radius
-	const teamColor = tColor(team)
-	const teamOutline = oColor(team)
-	// When we implement pieces having an image
-	if (piece.image) {
-		const image = new Image()
-		image.src = piece.image
-		ctx.drawImage(image, pixelX, pixelY, cellWidth, cellWidth)
-	} else if (piece.name.length > 0) {
-		drawLetter(ctx, centerX, centerY, radius, piece.name[0], teamColor, teamOutline)
-	}
 
-}
+
 const drawCross = (ctx: CanvasRenderingContext2D, centerX: number, centerY: number, radius: number) => {
 	ctx.fillStyle = "Red"
 	const t = radius / 4;
@@ -180,5 +238,5 @@ const drawLetter = (ctx: CanvasRenderingContext2D, centerX: number, centerY: num
 }
 
 
-export { RectBoardDrawing }
-export type { RectBoardDrawingFunction, RectBoardDrawingParams }
+export { BoardDrawing }
+export type { BoardDrawingFunction, BoardDrawingParams }

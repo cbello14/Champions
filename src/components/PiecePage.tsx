@@ -2,7 +2,6 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button";
 import { Input } from "./ui/input";
 import SideBar from "@/components/SideBar.tsx";
-import RectBoardPiece from "./RectBoard/RectBoardPiece";
 import { Piece } from "@/features/pieces/piece";
 import { calculateMovesRect } from "@/types/moveCalculation";
 import type { coordinate } from "@/features/boards/board";
@@ -10,6 +9,7 @@ import { useStore } from "@/utils/storage";
 import { moveDirection, moveMovementType, moveReflect } from "@/types/move";
 import PieceSideBar from "./ourUI/PieceSideBar";
 import MoveMenu from "./ourUI/MoveMenu";
+import BoardPiece from "./BoardComponents/BoardPiece";
 
 const PiecePage = () => {
 	const [piece, setPiece] = useState<Piece>(new Piece("New Piece"));
@@ -76,7 +76,7 @@ const PiecePage = () => {
 
 			<main className="flex grow-5 items-center justify-center">
 				<div className="flex flex-col center">
-					<RectBoardPiece cellWidth={100} moves={moves.map(result => result.landing)} captures={[]} piece={piece} location={location} />
+					<BoardPiece cellWidth={100} moves={moves.map(result => result.landing)} captures={[]} piece={piece} location={location} />
 
 				</div>
 			</main>

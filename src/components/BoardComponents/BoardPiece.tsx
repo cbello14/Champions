@@ -1,12 +1,12 @@
-import RectBoardGeneric from "@/components/RectBoard/RectBoardGeneric"
 import type { coordinate } from "@/features/boards/board";
 import { Piece } from "@/features/pieces/piece";
-import { RectBoardDrawing } from "@/types/boardDrawing.ts";
-import type { RectBoardDrawingParams } from "@/types/boardDrawing.ts"
+import { BoardDrawing, } from "@/types/boardDrawing.ts";
+import type { BoardDrawingParams } from "@/types/boardDrawing.ts"
 import type { moveCalculationResult } from "@/types/moveCalculation";
 import { useCallback, useState } from "react";
+import BoardGeneric from "./BoardGeneric";
 
-const RectBoardPiece = ({ cellWidth, moves, captures, piece, location }:
+const BoardPiece = ({ cellWidth, moves, captures, piece, location }:
 	{ cellWidth: number; moves: coordinate[], captures: coordinate[], piece: Piece, location: coordinate }) => {
 
 	const [selected, changeSelected] = useState<coordinate | null>(null)
@@ -16,14 +16,14 @@ const RectBoardPiece = ({ cellWidth, moves, captures, piece, location }:
 	// TODO: create a move calculation method, that will provide us the proper captures for these moves even without there being pieces
 	const moveResults: moveCalculationResult[] = moves.map((move, index) => { return { landing: move, capturing: captures[index] } })
 
-	const drawingFunction = useCallback((params: RectBoardDrawingParams) => {
-		RectBoardDrawing.rectBoardColoring(params, "tan", "blue", selected);
-		RectBoardDrawing.rectBoardMoveCaptures(params, moveResults)
-		RectBoardDrawing.rectBoardPiece(params, piece, location, 1)
+	const drawingFunction = useCallback((params: BoardDrawingParams) => {
+		BoardDrawing.boardColoring(params, "tan", "blue", selected);
+		BoardDrawing.boardMoveCaptures(params, moveResults)
+		BoardDrawing.boardPiece(params, piece, location, 1)
 	}, [location, moveResults, piece, selected]);
 
-	return (<RectBoardGeneric dimensions={[8, 8]} cellWidth={cellWidth} drawingFunction={drawingFunction} selected={selected} setSelected={setSelected} />)
+	return (<BoardGeneric dimensions={[8, 8]} cellWidth={cellWidth} drawingFunction={drawingFunction} selected={selected} setSelected={setSelected} shape={"rect"} />)
 
 }
 
-export default RectBoardPiece
+export default BoardPiece

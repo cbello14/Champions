@@ -85,6 +85,16 @@ export class Board {
 		}
 		return new Board(this.name, this.shape, newDimensions, newTiles, this.id);
 	}
+	changeShape(newShape: shape) {
+		const tempBoard = new Board(this.name, this.shape, this.dimensions);
+		const newTiles = this.specialTiles;
+		for (const coord of this.specialTiles.keys()) {
+			if (tempBoard.isLocationValid(coord)) {
+				newTiles.delete(coord);
+			}
+		}
+		return new Board(this.name, newShape, this.dimensions, newTiles, this.id)
+	}
 
 	isLocationValid(location: coordinate): boolean {
 		const outOfBounds = location.some((value, index) => value < 0 || value >= this.dimensions[index]);
@@ -108,7 +118,7 @@ export class Board {
 		const dim = data.dimensions ? data.dimensions : [];
 		const tiles = data.specialTiles ? new Map<coordinate, Tile>(data.specialTiles.map(([c, t]) => [c, Tile.fromJSON(t)])) : new Map<coordinate, Tile>();
 		const id = data.id ? data.id : "";
-		
+
 		return new Board(name, shape, dim, tiles, id);
 	}
 }

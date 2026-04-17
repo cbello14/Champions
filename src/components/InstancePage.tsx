@@ -1,11 +1,11 @@
 import { useState } from "react"
-import RectBoardInstance from "./RectBoard/RectBoardInstance"
 import { Card, CardHeader } from "./ui/card"
 import { useStore } from "@/utils/storage"
 import { useParams } from "react-router"
 import { Instance } from "@/features/instances/instance"
 import { Button } from "./ui/button"
 import { Popover, PopoverContent, PopoverHeader, PopoverTitle, PopoverTrigger } from "./ui/popover"
+import BoardInstance from "./BoardComponents/BoardInstance"
 
 const InstancePage = () => {
 	const { instanceId } = useParams<{ instanceId: string }>()
@@ -61,7 +61,7 @@ const InstancePage = () => {
 							<h3>{teamName(currentTeam)} Teams Turn</h3>
 						</CardHeader>
 					</Card>
-					{instance ? <RectBoardInstance cellWidth={100} instance={instance} currentTeam={currentTeam} nextTeam={nextTeam} setInstance={(instance) => { setInstance(instance); }} /> : <div>Could not find game</div>}
+					{instance ? <BoardInstance cellWidth={100} instance={instance} currentTeam={currentTeam} nextTeam={nextTeam} setInstance={(instance) => { setInstance(instance); }} /> : <div>Could not find game</div>}
 				</div>
 			</main>
 		</div >

@@ -1,18 +1,18 @@
-import RectBoardGeneric from "@/components/RectBoard/RectBoardGeneric"
 import { fullBlocker } from "@/features/tiles/defaultTiles";
 import type { Board, coordinate } from "@/features/boards/board";
-import { RectBoardDrawing } from "@/types/boardDrawing.ts";
-import type { RectBoardDrawingParams } from "@/types/boardDrawing.ts"
+import { BoardDrawing } from "@/types/boardDrawing.ts";
+import type { BoardDrawingParams } from "@/types/boardDrawing.ts"
 import { useCallback, useState } from "react";
+import BoardGeneric from "./BoardGeneric";
 
 type boardCreationActions = "tile" | null;
 
-const RectBoardBasic = ({ dimensions, cellWidth, primaryColor = "tan", alternateColor = "blue", selectedColor, outlineColor, board, setBoard, onClickAction }:
+const BoardBasic = ({ dimensions, cellWidth, primaryColor = "tan", alternateColor = "blue", selectedColor, outlineColor, board, setBoard, onClickAction }:
 	{ dimensions: number[]; cellWidth: number; primaryColor?: string; alternateColor?: string; selectedColor?: string; outlineColor?: string; board: Board; setBoard: (board: Board) => void; onClickAction: boardCreationActions }) => {
 
 	const [selected, changeSelected] = useState<coordinate | null>(null)
 
-	const setSelected = (newSelected: coordinate | null) => { 
+	const setSelected = (newSelected: coordinate | null) => {
 		if (onClickAction && newSelected) {
 			// problem: specialTiles key is a [number, number] but doing [number, number] == [number, number] compares by reference not value
 			const specialTilesArr = Array.from(board.specialTiles.entries());
@@ -29,17 +29,17 @@ const RectBoardBasic = ({ dimensions, cellWidth, primaryColor = "tan", alternate
 				setBoard(board.addTile(newSelected, fullBlocker)); //HARD CODED: SHOULD CHANGE WHEN WE HAVE USER INPUTTED TILES IMPLEMENTED
 			}
 		}
-		changeSelected(newSelected) 
+		changeSelected(newSelected)
 	}
 
-	const drawingFunction = useCallback((params: RectBoardDrawingParams) => {
-		RectBoardDrawing.rectBoardColoring(params, primaryColor, alternateColor, selected, selectedColor, outlineColor);
-		RectBoardDrawing.rectBoardSpecialTiles(params, board);
+	const drawingFunction = useCallback((params: BoardDrawingParams) => {
+		BoardDrawing.boardColoring(params, primaryColor, alternateColor, selected, selectedColor, outlineColor);
+		BoardDrawing.boardSpecialTiles(params, board);
 	}, [board, primaryColor, alternateColor, selectedColor, selected, outlineColor]);
 
 
-	return (<RectBoardGeneric dimensions={dimensions} cellWidth={cellWidth} drawingFunction={drawingFunction} selected={selected} setSelected={setSelected} />)
+	return (<BoardGeneric shape={board.shape} dimensions={dimensions} cellWidth={cellWidth} drawingFunction={drawingFunction} selected={selected} setSelected={setSelected} />)
 
 }
 
-export default RectBoardBasic
+export default BoardBasic

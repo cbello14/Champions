@@ -110,7 +110,6 @@ const MoveMenu = ({ index, piece, move, setPiece, handleDeleteMovement, handleAd
 
                     defaultChecked={move.attributes.capturing}
                     onCheckedChange={(e) => {
-                        const newMoves = [...piece.moves];
                         let cap = true;
                         if (typeof e === "boolean") {
                             cap = e

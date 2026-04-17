@@ -2,7 +2,6 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import SideBar from "@/components/SideBar.tsx"
 import { basicGame } from "@/features/games/defaultGames"
-import RectBoardGame from "./RectBoard/RectBoardGame"
 import { Game } from "@/features/games/game"
 import { Piece } from "@/features/pieces/piece"
 import PieceList from "./PieceList"
@@ -12,6 +11,7 @@ import { useStore } from "@/utils/storage"
 import { Input } from "./ui/input"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectItem } from "./ui/select"
 import { Label } from "./ui/label"
+import BoardGame from "./BoardComponents/BoardGame"
 
 
 const GamePage = () => {
@@ -65,7 +65,7 @@ const GamePage = () => {
 			</div>
 			<div className="flex flex-col center">
 				<Input type="text" defaultValue={name} onChange={(e) => { onNameChange(e.target.value) }} />
-				<RectBoardGame cellWidth={100} game={game} onClickAction={action} setGame={(game: Game) => { setGame(game); }} numPlayer={numPlayer} />
+				<BoardGame cellWidth={100} game={game} onClickAction={action} setGame={(game: Game) => { setGame(game); }} numPlayer={numPlayer} />
 				<div className="flex flex-row justify-center">
 					<Button className="m-5" onClick={() => { setAction("team") }}> Flip Team </Button>
 					<Button className="m-5" onClick={() => { setAction("erase") }}> Delete Pieces </Button>

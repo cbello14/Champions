@@ -6,7 +6,6 @@ import type { team, turn } from "@/types/team"
 import { calculateMovesRect } from "@/types/moveCalculation"
 import type { direction } from "@/types/move"
 import type { Piece } from "../pieces/piece"
-import type { Game } from "../games/game"
 
 
 export interface info {
@@ -30,15 +29,15 @@ export class Instance {
 	readonly piecesRecord: InstancePieceMap;
 	readonly data: ReadonlyMap<instancePieceId, info>;
 	readonly initialPieces: InstancePieceMap;
-	readonly numTeams:number
+	readonly numTeams: number
 
-	constructor(b: Board = new Board(), n:number=2, r: InstancePieceMap = new InstancePieceMap(), i: InstancePieceMap = new InstancePieceMap(), d: ReadonlyMap<instancePieceId, info> = new Map(), id?: string) {
+	constructor(b: Board = new Board(), n = 2, r: InstancePieceMap = new InstancePieceMap(), i: InstancePieceMap = new InstancePieceMap(), d: ReadonlyMap<instancePieceId, info> = new Map(), id?: string) {
 		this.id = id ?? crypto.randomUUID();
 		this.board = b;
 		this.piecesRecord = r;
 		this.data = d;
-		this.initialPieces=i;
-		this.numTeams=n
+		this.initialPieces = i;
+		this.numTeams = n
 	}
 	movePiece(from: coordinate, to: coordinate) {
 		const instancePiece = this.piecesRecord.getInstancePiece(from);
@@ -48,19 +47,18 @@ export class Instance {
 		}
 		let newPieces = this.piecesRecord
 		//check to see if the piece on to is a king?
-		if(this.piecesRecord.map.get(coordinateToString(to))?.piece.name == "King"  ){
+		if (this.piecesRecord.map.get(coordinateToString(to))?.piece.name == "King") {
 			//END GAME GOES HERE
 			//bandaid fix is to make it just spawn that game again
 			//WE NEED INITIAL PIECES????
-			return new Instance(this.board,this.numTeams,this.initialPieces, this.initialPieces)//something
-			
+			return new Instance(this.board, this.numTeams, this.initialPieces, this.initialPieces)//something
+
 		}
 		newPieces = newPieces.removeInstancePiece(from);
 		newPieces = newPieces.moveInstancePiece(to, instancePiece);
-		return new Instance(this.board,this.numTeams, newPieces,this.initialPieces, this.data, this.id).recordPieceMove(instancePiece);
+		return new Instance(this.board, this.numTeams, newPieces, this.initialPieces, this.data, this.id).recordPieceMove(instancePiece);
 	}
 	recordPieceMove(piece: instancePiece): Instance {
-		console.log("happened")
 		const newData = new Map(this.data);
 		const pieceData = newData.get(piece.id);
 		if (!pieceData) {
@@ -68,30 +66,27 @@ export class Instance {
 		} else {
 			newData.set(piece.id, { hasMoved: true, movesMade: pieceData.movesMade + 1 });
 		}
-		console.log(newData)
-		return new Instance(this.board, this.numTeams,this.piecesRecord,this.initialPieces, newData, this.id);
+		return new Instance(this.board, this.numTeams, this.piecesRecord, this.initialPieces, newData, this.id);
 	}
 	hasPieceMoved(piece: instancePiece): boolean {
 		const pieceData = this.data.get(piece.id);
-		let t=pieceData?.hasMoved ?? false;
-		console.log(pieceData)
-		console.log(t)
+		const t = pieceData?.hasMoved ?? false;
 		return t
 	}
 	addPiece(coordinate: coordinate, piece: Piece, team: team) {
 		let newPieces = this.piecesRecord
 		newPieces = newPieces.setPiece(coordinate, piece, team)
-		return new Instance(this.board,this.numTeams, newPieces,this.initialPieces, this.data, this.id)
+		return new Instance(this.board, this.numTeams, newPieces, this.initialPieces, this.data, this.id)
 	}
 	addInstancePiece(coordinate: coordinate, instancePiece: instancePiece) {
 		let newPieces = this.piecesRecord
 		newPieces = newPieces.setInstancePiece(coordinate, instancePiece)
-		return new Instance(this.board,this.numTeams, newPieces,this.initialPieces, this.data, this.id)
+		return new Instance(this.board, this.numTeams, newPieces, this.initialPieces, this.data, this.id)
 	}
 	removeInstancePiece(coordinate: coordinate) {
 		let newPieces = this.piecesRecord
 		newPieces = newPieces.removeInstancePiece(coordinate)
-		return new Instance(this.board, this.numTeams,newPieces,this.initialPieces, this.data, this.id)
+		return new Instance(this.board, this.numTeams, newPieces, this.initialPieces, this.data, this.id)
 	}
 	setTeam(coordinate: coordinate, team: team) {
 		let newPieces = this.piecesRecord
@@ -102,7 +97,7 @@ export class Instance {
 		piece.team = team
 		newPieces = newPieces.removeInstancePiece(coordinate)
 		newPieces = newPieces.setInstancePiece(coordinate, piece)
-		return new Instance(this.board,this.numTeams, newPieces,this.initialPieces, this.data, this.id)
+		return new Instance(this.board, this.numTeams, newPieces, this.initialPieces, this.data, this.id)
 
 	}
 	getFriendlyPieces(team: team) {
@@ -131,18 +126,15 @@ export class Instance {
 		const piece = this.piecesRecord.getInstancePiece(pieceLocation);
 		if (!piece) return [];
 		const team = piece.team;
-		if (this.board.shape === 'rect') {
-			const friendlyPieces = this.getFriendlyPieces(team).filter((coordinate) => !checkCoordinateEquality(coordinate, pieceLocation));
-			const enemyPieces = this.getEnemyPieces(team);
-			// add tile if piece can't move into it (and maybe check if it can move out of it? idk)
-			const blockedSpecialTiles: coordinate[] = this.getBlockedTiles(piece.piece);
-			const blocked = [...friendlyPieces, ...blockedSpecialTiles];
-			return calculateMovesRect(piece.piece, pieceLocation, this.board.dimensions as number[], blocked as number[][], enemyPieces as number[][], teamDirection, !this.hasPieceMoved(piece));
-		}
-		return [];
+		const friendlyPieces = this.getFriendlyPieces(team).filter((coordinate) => !checkCoordinateEquality(coordinate, pieceLocation));
+		const enemyPieces = this.getEnemyPieces(team);
+		// add tile if piece can't move into it (and maybe check if it can move out of it? idk)
+		const blockedSpecialTiles: coordinate[] = this.getBlockedTiles(piece.piece);
+		const blocked = [...friendlyPieces, ...blockedSpecialTiles];
+		return calculateMovesRect(piece.piece, pieceLocation, this.board.dimensions as number[], blocked as number[][], enemyPieces as number[][], teamDirection, !this.hasPieceMoved(piece));
 	}
 	toJSON(): InstanceJSON {
-		return { id: this.id, numTeams: this.numTeams, board: this.board.toJSON(),initialPieces:this.initialPieces.toJSON(), piecesRecord: this.piecesRecord.toJSON(), data: Array.from(this.data.entries()) };
+		return { id: this.id, numTeams: this.numTeams, board: this.board.toJSON(), initialPieces: this.initialPieces.toJSON(), piecesRecord: this.piecesRecord.toJSON(), data: Array.from(this.data.entries()) };
 	}
 	static fromJSON(data: InstanceJSON): Instance {
 		const board = data.board ? Board.fromJSON(data.board) : new Board();

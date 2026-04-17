@@ -88,8 +88,6 @@ export class InstancePieceMap {
 		return new InstancePieceMap(newMap, this.maxId);
 	}
 
-
-
 	removeInstancePiece(coordinate: coordinate): InstancePieceMap {
 		const coordinateString = coordinateToString(coordinate);
 		const newMap = new Map(this.map);

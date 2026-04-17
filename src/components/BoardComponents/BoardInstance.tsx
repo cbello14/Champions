@@ -1,14 +1,14 @@
-import RectBoardGeneric from "@/components/RectBoard/RectBoardGeneric"
 import { checkCoordinateEquality, type coordinate } from "@/features/boards/board";
-import { RectBoardDrawing } from "@/types/boardDrawing.ts";
-import type { RectBoardDrawingParams } from "@/types/boardDrawing.ts"
+import { BoardDrawing } from "@/types/boardDrawing.ts";
+import type { BoardDrawingParams } from "@/types/boardDrawing.ts"
 import { useCallback, useState } from "react";
 import { type moveCalculationResult } from "@/types/moveCalculation";
 import type { Instance } from "@/features/instances/instance";
 import { moveDirection } from "@/types/move";
+import BoardGeneric from "./BoardGeneric";
 
 
-const RectBoardInstance = ({ cellWidth, instance, setInstance, currentTeam, nextTeam }:
+const BoardInstance = ({ cellWidth, instance, setInstance, currentTeam, nextTeam }:
 	{ cellWidth: number; instance: Instance; setInstance: (instance: Instance) => void; currentTeam: number, nextTeam: () => void }) => {
 	const [selected, changeSelected] = useState<coordinate | null>(null)
 
@@ -46,21 +46,21 @@ const RectBoardInstance = ({ cellWidth, instance, setInstance, currentTeam, next
 		}
 	}, [])
 
-	const drawingFunction = useCallback((params: RectBoardDrawingParams) => {
-		RectBoardDrawing.rectBoardColoring(params, "tan", "blue", selected);
-		RectBoardDrawing.rectBoardSpecialTiles(params, instance.board);
+	const drawingFunction = useCallback((params: BoardDrawingParams) => {
+		BoardDrawing.boardColoring(params, "tan", "blue", selected);
+		BoardDrawing.boardSpecialTiles(params, instance.board);
 		let moves: moveCalculationResult[] = []
 		if (selected) {
 			const selectedPiece = instance.piecesRecord.getInstancePiece(selected)
 			const direction = directional(selectedPiece?.team)
 			moves = instance.calculateMoves(selected, direction)
 		}
-		RectBoardDrawing.rectBoardMoveCaptures(params, moves)
-		RectBoardDrawing.RectBoardInstance(params, instance)
+		BoardDrawing.boardMoveCaptures(params, moves)
+		BoardDrawing.boardInstance(params, instance)
 	}, [directional, instance, selected]);
 
-	return (<RectBoardGeneric dimensions={instance.board.dimensions} cellWidth={cellWidth} drawingFunction={drawingFunction} selected={selected} setSelected={setSelected} />)
+	return (<BoardGeneric shape={instance.board.shape} dimensions={instance.board.dimensions} cellWidth={cellWidth} drawingFunction={drawingFunction} selected={selected} setSelected={setSelected} />)
 
 }
 
-export default RectBoardInstance
+export default BoardInstance

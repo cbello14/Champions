@@ -1,12 +1,14 @@
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Card, CardHeader } from "@/components/ui/card"
-import RectBoardBasic from "@/components/RectBoard/RectBoardBasic"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { X } from "lucide-react"
 import { useState } from "react"
 import { useStore } from "@/utils/storage"
 import { Board } from "@/features/boards/board"
+import type { shape } from "@/features/boards/board"
 import { basic } from "@/features/boards/defaultBoards"
+import BoardBasic from "./BoardComponents/BoardBasic"
 
 const BoardPage = () => {
 	const [board, setBoard] = useState<Board>(basic);
@@ -29,8 +31,12 @@ const BoardPage = () => {
 
 	const onYChange = (y: number) => {
 		setDimensions([dimensions[0], y]);
-		const newBoard = new Board(name, board.shape, [board.dimensions[0],y], board.specialTiles, board.id);
+		const newBoard = new Board(name, board.shape, [board.dimensions[0], y], board.specialTiles, board.id);
 		setBoard(newBoard);
+	};
+
+	const onShapeChange = (s: shape) => {
+		setBoard(board.changeShape(s));
 	};
 
 	return <>
@@ -45,10 +51,20 @@ const BoardPage = () => {
 								<X />
 								<Input type="number" placeholder="8" defaultValue={dimensions[1]} min={1} onChange={(e) => { onYChange(parseInt(e.target.value)) }} />
 							</div>
+							<Select defaultValue={board.shape} onValueChange={(v: shape) => { onShapeChange(v); }}>
+								<SelectTrigger>
+									<SelectValue />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectItem value="rect">Rectangle</SelectItem>
+									<SelectItem value="hex">Hexagon</SelectItem>
+								</SelectContent>
+							</Select>
 						</div>
 					</CardHeader>
 				</Card>
-				<RectBoardBasic dimensions={dimensions} cellWidth={100} board={board} setBoard={(board: Board) => { setBoard(board) }} onClickAction={action} />
+
+				<BoardBasic dimensions={dimensions} cellWidth={100} board={board} setBoard={(board: Board) => { setBoard(board) }} onClickAction={action} />
 				<div className="flex flex-row justify-center">
 					<Button className="m-5" onClick={() => { setAction("tile") }}> Block / Unblock Tile </Button>
 					<Button className="m-5" onClick={() => { setAction(null) }}> Stop Editing </Button>
