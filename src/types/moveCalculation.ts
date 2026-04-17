@@ -165,8 +165,8 @@ const calculateMovementRectNoJump = (location: coordinate, movement: movement, b
 	// set up our return array
 	const possibleMoves: moveCalculationResult[] = [];
 	const movementDirection = parseDirectionRect(movement.direction, teamDirection, attributes.flippedHorizontally, attributes.flippedVertically);
-	// if our movement's distance is 'n' then set our distance equal to the largest dimension, otherwise just use the movement's distance
-	const distance = movement.distance === 'n' ? Math.max(boardSize[0], boardSize[1]) : movement.distance
+	// if our movement's distance is Infinity then set our distance equal to the largest dimension, otherwise just use the movement's distance
+	const distance = movement.distance === Infinity ? Math.max(boardSize[0], boardSize[1]) : movement.distance
 	let prevLoc = location;
 	// loop through all the spots in the direction of that distance
 	for (let i = 0; i < distance; i++) {
@@ -208,13 +208,13 @@ const calculateMovementRectJump = (location: coordinate, movement: movement, boa
 	//start with our current direction
 	let currentLocation: coordinate = location;
 	const movementDirection = parseDirectionRect(movement.direction, teamDirection, attributes.flippedHorizontally, attributes.flippedVertically);
-	// set distance to be either the one given in movement, or the largest dim of the board if movement's is n
-	const distance = movement.distance === 'n' ? Math.max(boardSize[0], boardSize[1]) : movement.distance
+	// set distance to be either the one given in movement, or the largest dim of the board if movement's is Infinity
+	const distance = movement.distance === Infinity ? Math.max(boardSize[0], boardSize[1]) : movement.distance
 	for (let i = 0; i < distance; i++) {
 		const prevLocation = currentLocation
 		currentLocation = sumRectCoords(currentLocation, movementDirection)
-		// if our movement distance is 'inf' (n) and we just went out of bounds then just return the prevlocation which was still in bounds
-		if (movement.distance === 'n' && checkCoordInRectDim(currentLocation, boardSize)) {
+		// if our movement distance is Infinity and we just went out of bounds then just return the prevlocation which was still in bounds
+		if (movement.distance === Infinity && checkCoordInRectDim(currentLocation, boardSize)) {
 			return prevLocation
 		}
 	}

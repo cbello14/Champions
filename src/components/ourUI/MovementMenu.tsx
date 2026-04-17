@@ -1,6 +1,7 @@
 import { Piece } from "@/features/pieces/piece";
-import type { distance, direction, movement } from "@/types/move";
+import type { direction, movement } from "@/types/move";
 import { Button } from "../ui/button";
+import { Checkbox } from "../ui/checkbox";
 import { Input } from "../ui/input";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectItem } from "../ui/select";
 
@@ -15,16 +16,26 @@ const MovementMenu = ({ movement, piece, index, movementIndex, setPiece, handleD
         <>
             <div className="flex flex-row"><label>Distance:</label>
                 <Input
-                    type="text"
-                    value={movement.distance}
-                    onChange={(e) => {                        
-                        const newMovement= {
+                    type="number"
+                    value={movement.distance === Infinity ? '' : movement.distance}
+                    disabled={movement.distance === Infinity}
+                    onChange={(e) => {
+                        const newMovement = {
                             ...piece.moves[index].movements[movementIndex],
-                            distance: e.target.value as distance
+                            distance: Number(e.target.value)
                         };
-
-                        
-                        setPiece(piece.replaceMovementAt(index,movementIndex,newMovement))
+                        setPiece(piece.replaceMovementAt(index, movementIndex, newMovement))
+                    }}
+                />
+                <label>Infinite</label>
+                <Checkbox
+                    checked={movement.distance === Infinity}
+                    onCheckedChange={(checked) => {
+                        const newMovement = {
+                            ...piece.moves[index].movements[movementIndex],
+                            distance: checked ? Infinity : 1
+                        };
+                        setPiece(piece.replaceMovementAt(index, movementIndex, newMovement))
                     }}
                 />
             </div>

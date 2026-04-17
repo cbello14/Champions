@@ -200,7 +200,7 @@ describe("calculateMovesRect", () => {
 				test("slide stops at the board boundary", () => {
 					const piece = new Piece("", "", [{
 						attributes: { type: moveMovementType.slide },
-						movements: [{ direction: moveDirection.up, distance: "n" }]
+						movements: [{ direction: moveDirection.up, distance: Infinity }]
 					}], ["direct"]);
 					const result = calculateMovesRect(piece, [3, 3], boardSize, [], [], teamDir, false);
 					expect(result).toHaveLength(3);
@@ -250,7 +250,7 @@ describe("calculateMovesRect", () => {
 			test("Piece is blocked by friendly piece", () => {
 				const piece = new Piece("", "", [{
 					attributes: { type: moveMovementType.slide },
-					movements: [{ direction: moveDirection.up, distance: "n" }]
+					movements: [{ direction: moveDirection.up, distance: Infinity }]
 				}], ["direct"]);
 				const result = calculateMovesRect(piece, [3, 3], boardSize, [[3, 1]], [], teamDir, false);
 				expect(result.map(r => r.landing)).toContainEqual([3, 2]);
@@ -259,7 +259,7 @@ describe("calculateMovesRect", () => {
 			test("Piece with offset capture has the option to capture different enemies with one slide", () => {
 				const piece = new Piece("", "", [{
 					attributes: { type: moveMovementType.slide },
-					movements: [{ direction: moveDirection.right, distance: "n" }]
+					movements: [{ direction: moveDirection.right, distance: Infinity }]
 				}], [[{ direction: moveDirection.up, distance: 1 }]]);
 				const result = calculateMovesRect(piece, [1, 4], boardSize, [], [[2, 3], [4, 3]], teamDir, false);
 				const captures = result.filter(r => r.capturing !== null).map(r => r.capturing);

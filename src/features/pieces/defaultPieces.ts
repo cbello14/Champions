@@ -47,7 +47,7 @@ export const knight = new Piece(
 export const bishop = new Piece(
 	'Bishop',
 	'',
-	[{ attributes: { type: moveMovementType.slide, reflection: moveReflect.horizontalvertical }, movements: [{ distance: 'n', direction: moveDirection.upright }] }],
+	[{ attributes: { type: moveMovementType.slide, reflection: moveReflect.horizontalvertical }, movements: [{ distance: Infinity, direction: moveDirection.upright }] }],
 	['direct']
 );
 
@@ -55,8 +55,8 @@ export const rook = new Piece(
 	'Rook',
 	'',
 	[
-		{ attributes: { type: moveMovementType.slide, reflection: moveReflect.horizontalvertical }, movements: [{ distance: 'n', direction: moveDirection.up }] },
-		{ attributes: { type: moveMovementType.slide, reflection: moveReflect.horizontalvertical }, movements: [{ distance: 'n', direction: moveDirection.right }] }
+		{ attributes: { type: moveMovementType.slide, reflection: moveReflect.horizontalvertical }, movements: [{ distance: Infinity, direction: moveDirection.up }] },
+		{ attributes: { type: moveMovementType.slide, reflection: moveReflect.horizontalvertical }, movements: [{ distance: Infinity, direction: moveDirection.right }] }
 	],
 	['direct', 'direct']
 );
@@ -65,9 +65,9 @@ export const queen = new Piece(
 	'Queen',
 	'',
 	[
-		{ attributes: { type: moveMovementType.slide, reflection: moveReflect.horizontalvertical }, movements: [{ distance: 'n', direction: moveDirection.up }] },
-		{ attributes: { type: moveMovementType.slide, reflection: moveReflect.horizontalvertical }, movements: [{ distance: 'n', direction: moveDirection.right }] },
-		{ attributes: { type: moveMovementType.slide, reflection: moveReflect.horizontalvertical }, movements: [{ distance: 'n', direction: moveDirection.upright }] }
+		{ attributes: { type: moveMovementType.slide, reflection: moveReflect.horizontalvertical }, movements: [{ distance: Infinity, direction: moveDirection.up }] },
+		{ attributes: { type: moveMovementType.slide, reflection: moveReflect.horizontalvertical }, movements: [{ distance: Infinity, direction: moveDirection.right }] },
+		{ attributes: { type: moveMovementType.slide, reflection: moveReflect.horizontalvertical }, movements: [{ distance: Infinity, direction: moveDirection.upright }] }
 	],
 	['direct', 'direct', 'direct']
 );
