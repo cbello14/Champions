@@ -47,6 +47,10 @@ export class Board {
 		this.specialTiles = t;
 	}
 
+	changeName(newName: string) {
+		return new Board(newName, this.shape, this.dimensions, this.specialTiles, this.id)
+	}
+
 	//NOTE: idk if maps copy by value or reference, if things break start here
 	addTile(coordinate: coordinate, tile: Tile): Board {
 		if (!this.isLocationValid(coordinate)) {
@@ -79,21 +83,14 @@ export class Board {
 		const tempBoard = new Board(this.name, this.shape, newDimensions);
 		const newTiles = this.specialTiles;
 		for (const coord of this.specialTiles.keys()) {
-			if (tempBoard.isLocationValid(coord)) {
+			if (!tempBoard.isLocationValid(coord)) {
 				newTiles.delete(coord);
 			}
 		}
 		return new Board(this.name, this.shape, newDimensions, newTiles, this.id);
 	}
 	changeShape(newShape: shape) {
-		const tempBoard = new Board(this.name, this.shape, this.dimensions);
-		const newTiles = this.specialTiles;
-		for (const coord of this.specialTiles.keys()) {
-			if (tempBoard.isLocationValid(coord)) {
-				newTiles.delete(coord);
-			}
-		}
-		return new Board(this.name, newShape, this.dimensions, newTiles, this.id)
+		return new Board(this.name, newShape, this.dimensions, this.specialTiles, this.id)
 	}
 
 	isLocationValid(location: coordinate): boolean {

@@ -82,7 +82,7 @@ const PiecePage = () => {
 				</div>
 			</main>
 			<div className="flex grow-2 items-center justify-center">
-				<div className="flex flex-col center">
+				<div className="flex flex-col center gap-4">
 					<div className="flex flex-row items-center">
 						<Label className="pr-4">Name:</Label>
 						<Input

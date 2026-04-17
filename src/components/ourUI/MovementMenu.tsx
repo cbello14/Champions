@@ -71,8 +71,6 @@ const MovementMenu = ({ movement, piece, index, movementIndex, setPiece, handleD
 				</Select>
 			</div>
 			<Button onClick={() => { handleDeleteMovement(index, movementIndex) }}> Delete Movement </Button>
-			<br />
-			<br />
 		</div>
 
 

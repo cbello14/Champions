@@ -1,8 +1,8 @@
-import { Button } from "@/components/ui/button";
 import { useStore } from "@/utils/storage";
 import { useEffect } from "react";
 import { basic } from "@/features/boards/defaultBoards";
 import type { Board } from "@/features/boards/board";
+import SnapshotButton from "./snapshotButton";
 
 const BoardList = ({ onSelectBoard }: { onSelectBoard: (board: Board) => void }) => {
 	const boardsJSON = useStore((state) => state.boards);
@@ -21,21 +21,7 @@ const BoardList = ({ onSelectBoard }: { onSelectBoard: (board: Board) => void })
 		<div className="flex flex-col gap-4">
 			{boards.length > 0 ? (
 				boards.map((board) => (
-					<Button
-						key={board.id}
-						variant="outline"
-						className="h-20 flex flex-col items-center justify-center gap-2 hover:bg-accent"
-						onClick={() => { onSelectBoard(board) }}
-					>
-						<span className="text-xs font-semibold truncate w-full">
-							{board.name}
-						</span>
-						<span className="text-xs font-semibold truncate w-full">
-							{board.dimensions[0]}
-							{" by "}
-							{board.dimensions[1]}
-						</span>
-					</Button>
+					<SnapshotButton snapshotItem={board} onClick={() => { onSelectBoard(board) }} />
 				))
 			) : (
 				<p className="col-span-full text-center text-muted-foreground py-4">
