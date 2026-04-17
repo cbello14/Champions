@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import { Input } from "./ui/input";
 import SideBar from "@/components/SideBar.tsx";
 import { Piece } from "@/features/pieces/piece";
@@ -15,7 +16,7 @@ const PiecePage = () => {
 	const [piece, setPiece] = useState<Piece>(new Piece("New Piece"));
 	const location: coordinate = [4, 4]
 	const [piecesOpen, setPiecesOpen] = useState<boolean>(true);
-	const moves = calculateMovesRect(piece, location, [8, 8], [], [], moveDirection.up, false)
+	const moves = calculateMovesRect(piece, location, [9, 9], [], [], moveDirection.up, false)
 
 	const piecesJSON = useStore((state) => state.pieces);
 	const pieces = Object.fromEntries(
@@ -49,14 +50,14 @@ const PiecePage = () => {
 	}
 
 	const handleAddMovement = (ind: number) => {
-		setPiece(piece.addMovement(ind,{
+		setPiece(piece.addMovement(ind, {
 			distance: 1,
 			direction: moveDirection.up
 		}))
 	};
 
 	const handleDeleteMovement = (moveInd: number, movementInd: number) => {
-		setPiece(piece.removeMovementAt(moveInd,movementInd));
+		setPiece(piece.removeMovementAt(moveInd, movementInd));
 	};
 
 	return <>
@@ -82,10 +83,8 @@ const PiecePage = () => {
 			</main>
 			<div className="flex grow-2 items-center justify-center">
 				<div className="flex flex-col center">
-					<div className="flex flex-row">
-						<Button className="m-5" onClick={handleSave} > Save Piece </Button>
-						<Button className="m-5" onClick={handleDelete}> Delete Piece</Button>
-						<label className="pr-4">Name:</label>
+					<div className="flex flex-row items-center">
+						<Label className="pr-4">Name:</Label>
 						<Input
 							placeholder="Default Name"
 							type="text"
@@ -94,6 +93,8 @@ const PiecePage = () => {
 								setPiece(new Piece(e.target.value, piece.image, [...piece.moves], [...piece.captures]));
 							}}
 						/>
+						<Button className="m-5" onClick={handleSave} > Save Piece </Button>
+						<Button className="m-5" onClick={handleDelete}> Delete Piece</Button>
 					</div>
 
 

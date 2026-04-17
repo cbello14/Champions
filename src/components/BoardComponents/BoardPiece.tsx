@@ -22,7 +22,7 @@ const BoardPiece = ({ cellWidth, moves, captures, piece, location }:
 		BoardDrawing.boardPiece(params, piece, location, 1)
 	}, [location, moveResults, piece, selected]);
 
-	return (<BoardGeneric dimensions={[8, 8]} cellWidth={cellWidth} drawingFunction={drawingFunction} selected={selected} setSelected={setSelected} shape={"rect"} />)
+	return (<BoardGeneric dimensions={[9, 9]} cellWidth={cellWidth} drawingFunction={drawingFunction} selected={selected} setSelected={setSelected} shape={"rect"} />)
 
 }
 
