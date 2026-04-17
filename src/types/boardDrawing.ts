@@ -9,7 +9,7 @@ interface BoardDrawingParams { boardSize: dimension, cellWidth: number, ctx: Can
 type BoardDrawingFunction = (params: BoardDrawingParams) => void
 
 const BoardDrawing = {
-	boardColoring: (params: BoardDrawingParams, primaryColor: string, alternateColor: string, selectedCell: coordinate | null, selectedColor?: string, outlineColor?: string) => {
+	boardColoring: (params: BoardDrawingParams, primaryColor: string, alternateColor: string, selectedCell: coordinate | null, selectedColor?: string, outlineColor = 'black') => {
 		const { boardSize, cellWidth, ctx } = params
 		for (let gridX = 0; gridX < boardSize[0]; gridX++) {
 			for (let gridY = 0; gridY < boardSize[1]; gridY++) {
@@ -18,18 +18,21 @@ const BoardDrawing = {
 				ctx.fillStyle = (gridX + gridY) % 2 === 0 ? primaryColor : alternateColor
 				ctx.fillStyle = !!selectedCell && selectedCell[0] === gridX && selectedCell[1] === gridY && selectedColor ? selectedColor : ctx.fillStyle
 				fillShape(ctx, pixelX, pixelY, radius, params.shape)
-				if (outlineColor) { ctx.strokeStyle = outlineColor; strokeShape(ctx, pixelX, pixelY, radius, params.shape) }
+				ctx.strokeStyle = outlineColor
+				strokeShape(ctx, pixelX, pixelY, radius, params.shape)
 			}
 		}
 	},
 
-	boardSpecialTiles: (params: BoardDrawingParams, board: Board) => {
+	boardSpecialTiles: (params: BoardDrawingParams, board: Board, outlineColor = 'black') => {
 		const { cellWidth, ctx } = params;
 		for (const [coord] of board.specialTiles) {
 			const radius = cellWidth / 2
 			const [pixelX, pixelY] = getCenterCoords(coord[0], coord[1], radius, params.shape)
 			ctx.fillStyle = "red";
 			fillShape(ctx, pixelX, pixelY, radius, params.shape)
+			ctx.strokeStyle = outlineColor
+			strokeShape(ctx, pixelX, pixelY, radius, params.shape)
 		}
 	},
 
@@ -44,7 +47,7 @@ const BoardDrawing = {
 				if (!checkCoordinateEquality(result.landing, result.capturing)) {
 					drawLine(ctx, moveX, moveY, captureX, captureY)
 				}
-				drawCross(ctx, captureX, captureY, radius* 0.75)
+				drawCross(ctx, captureX, captureY, radius * 0.75)
 			}
 		})
 	},
@@ -157,7 +160,7 @@ function strokeHexagon(ctx: CanvasRenderingContext2D, x: number, y: number, radi
 		else ctx.lineTo(px, py);
 	}
 	ctx.closePath();
-	ctx.fill();
+	ctx.stroke();
 }
 
 
