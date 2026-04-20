@@ -12,6 +12,7 @@ import { Input } from "./ui/input"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectItem } from "./ui/select"
 import { Label } from "./ui/label"
 import BoardGame from "./BoardComponents/BoardGame"
+import { toast } from "sonner"
 
 
 const GamePage = () => {
@@ -71,7 +72,12 @@ const GamePage = () => {
 					<Button className="m-5" onClick={() => { setAction("erase") }}> Delete Pieces </Button>
 					<Button className="m-5" onClick={() => { setAction(null) }}> Stop Editing </Button>
 				</div>
-				<Button className="m-5" type="submit" onClick={() => { saveGame(game) }}> Save </Button>
+				<Button className="m-5" type="submit" onClick={() => {
+					toast("Game Saved",
+						{ position: "top-center" }
+					)
+					saveGame(game)
+				}}> Save </Button>
 			</div>
 
 			<SideBar isOpen={piecesOpen} setIsOpen={(state: boolean) => { setPiecesOpen(state) }} name={"Pieces"} content={<PieceList onSelectPiece={(piece) => { setAction(piece); }} />} align={"right"} />

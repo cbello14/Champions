@@ -11,6 +11,7 @@ import BoardBasic from "./BoardComponents/BoardBasic"
 import BoardList from "./BoardList"
 import SideBar from "./SideBar"
 import { Label } from "./ui/label"
+import { toast } from "sonner"
 
 const BoardPage = () => {
 	const [board, setBoard] = useState<Board>(new Board("New Board"));
@@ -80,7 +81,11 @@ const BoardPage = () => {
 					<Button className="m-5" onClick={() => { setAction("tile") }}> Block / Unblock Tile </Button>
 					<Button className="m-5" onClick={() => { setAction(null) }}> Stop Editing </Button>
 				</div>
-				<Button className="m-5" type="submit" onClick={() => { saveBoard(board) }}> Save </Button>
+				<Button className="m-5" type="submit" onClick={() => {
+					toast("Board Saved",
+						{ position: "top-center" }
+					); saveBoard(board)
+				}}> Save </Button>
 			</div>
 		</main>
 	</div>
