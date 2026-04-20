@@ -11,6 +11,7 @@ import { moveDirection, moveMovementType, moveReflect } from "@/types/move";
 import PieceSideBar from "./ourUI/PieceSideBar";
 import MoveMenu from "./ourUI/MoveMenu";
 import BoardPiece from "./BoardComponents/BoardPiece";
+import { toast } from "sonner";
 
 const PiecePage = () => {
 	const [piece, setPiece] = useState<Piece>(new Piece("New Piece"));
@@ -26,10 +27,17 @@ const PiecePage = () => {
 	const deletePiece = useStore((state) => state.deletePiece);
 
 	const handleSave = () => {
+		
+		toast("Piece Saved", 
+          { position: "top-center" }
+        )
 		savePiece(piece);
 	};
 	const handleDelete = () => {
 		deletePiece(piece.id);
+		toast("Piece Deleted", 
+          { position: "top-center" }
+        )
 		setPiece(new Piece("New Piece"))
 	};
 

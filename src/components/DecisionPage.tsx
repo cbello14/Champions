@@ -4,6 +4,7 @@ import { useStore } from "@/utils/storage";
 import { basicGame } from "@/features/games/defaultGames";
 import { useEffect } from "react";
 import type { Game } from "@/features/games/game";
+import SnapshotButton from "./snapshotButton";
 
 const DecisionPage = () => {
 	const navigate = useNavigate();
@@ -30,9 +31,8 @@ const DecisionPage = () => {
 		<h2 className="text-lg font-semibold">Choose Game</h2>
 		{games.length === 0 ? <p>No games found. Create one first.</p> :
 			games.map((game) => (
-				<Button key={game.id} onClick={() => { onStartGame(game); }}>
-					Start {game.name}
-				</Button>
+				<SnapshotButton snapshotItem={game} onClick={() => { onStartGame(game); }} /> 
+
 			))
 		}
 		<Button variant="outline" onClick={() => { void navigate("/games"); }}>

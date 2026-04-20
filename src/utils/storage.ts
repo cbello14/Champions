@@ -81,11 +81,11 @@ export const useStore = create<StorageState>()(
 
 			setPiece: (p) => {
 
-				
-					set((state) => ({
-						pieces: { [p.id]: p.toJSON(), ...state.pieces, }
-					}))
-				
+
+				set((state) => ({
+					pieces: { [p.id]: p.toJSON(), ...state.pieces, }
+				}))
+
 
 			},
 			setTile: (t) => {
