@@ -34,7 +34,7 @@ const BoardGame = ({ cellWidth, game, setGame, onClickAction, numPlayer }:
 	}
 
 	const drawingFunction = useCallback((params: BoardDrawingParams) => {
-		BoardDrawing.boardColoring(params, "tan", "blue", selected);
+		BoardDrawing.boardColoring(params, undefined, selected);
 		let moves: moveCalculationResult[] = []
 		if (selected && !onClickAction) {
 			const selectedPiece = game.pieces.getInstancePiece(selected)

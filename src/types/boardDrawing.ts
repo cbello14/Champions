@@ -4,34 +4,35 @@ import type { Instance } from "@/features/instances/instance"
 import type { Piece } from "@/features/pieces/piece"
 import type { InstancePieceMap } from "./instancePiece"
 import type { moveCalculationResult } from "./moveCalculation"
+import { basic_theme, type theme } from "./theme"
 
 interface BoardDrawingParams { boardSize: dimension, cellWidth: number, ctx: CanvasRenderingContext2D, shape: shape }
 type BoardDrawingFunction = (params: BoardDrawingParams) => void
 
 const BoardDrawing = {
-	boardColoring: (params: BoardDrawingParams, primaryColor: string, alternateColor: string, selectedCell: coordinate | null, selectedColor?: string, outlineColor = 'black') => {
+	boardColoring: (params: BoardDrawingParams, theme = basic_theme, selectedCell: coordinate | null, selectedColor?: string) => {
 		const { boardSize, cellWidth, ctx } = params
 		for (let gridX = 0; gridX < boardSize[0]; gridX++) {
 			for (let gridY = 0; gridY < boardSize[1]; gridY++) {
 				const radius = cellWidth / 2
 				const [pixelX, pixelY] = getCenterCoords(gridX, gridY, radius, params.shape)
-				ctx.fillStyle = (gridX + gridY) % 2 === 0 ? primaryColor : alternateColor
+				ctx.fillStyle = (gridX + gridY) % 2 === 0 ? theme.gridPrimaryColor : theme.gridAlternateColor
 				ctx.fillStyle = !!selectedCell && selectedCell[0] === gridX && selectedCell[1] === gridY && selectedColor ? selectedColor : ctx.fillStyle
 				fillShape(ctx, pixelX, pixelY, radius, params.shape)
-				ctx.strokeStyle = outlineColor
+				ctx.strokeStyle = theme.gridOutlineColor
 				strokeShape(ctx, pixelX, pixelY, radius, params.shape)
 			}
 		}
 	},
 
-	boardSpecialTiles: (params: BoardDrawingParams, board: Board, outlineColor = 'black') => {
+	boardSpecialTiles: (params: BoardDrawingParams, board: Board, theme = basic_theme) => {
 		const { cellWidth, ctx } = params;
 		for (const [coord] of board.specialTiles) {
 			const radius = cellWidth / 2
 			const [pixelX, pixelY] = getCenterCoords(coord[0], coord[1], radius, params.shape)
 			ctx.fillStyle = "red";
 			fillShape(ctx, pixelX, pixelY, radius, params.shape)
-			ctx.strokeStyle = outlineColor
+			ctx.strokeStyle = theme.gridOutlineColor
 			strokeShape(ctx, pixelX, pixelY, radius, params.shape)
 		}
 	},
@@ -51,51 +52,49 @@ const BoardDrawing = {
 			}
 		})
 	},
-	boardGame: (params: BoardDrawingParams, game: Game) => {
+	boardGame: (params: BoardDrawingParams, game: Game, theme = basic_theme) => {
 		game.pieces.getKeys().forEach((coordinate: coordinate) => {
 			const instancePiece = game.pieces.getInstancePiece(coordinate)
 			if (instancePiece) {
-				boardDrawPiece(params, instancePiece.piece, coordinate, instancePiece.team)
+				boardDrawPiece(params, instancePiece.piece, coordinate, instancePiece.team, theme)
 			}
 		})
 	},
 
-	boardInstance: (params: BoardDrawingParams, instance: Instance) => {
+	boardInstance: (params: BoardDrawingParams, instance: Instance, theme = basic_theme) => {
 		instance.piecesRecord.getKeys().forEach((coordinate: coordinate) => {
 			const instancePiece = instance.piecesRecord.getInstancePiece(coordinate)
 			if (instancePiece) {
-				boardDrawPiece(params, instancePiece.piece, coordinate, instancePiece.team)
+				boardDrawPiece(params, instancePiece.piece, coordinate, instancePiece.team, theme)
 			}
 		})
 
 	},
 
-	boardPiece: (params: BoardDrawingParams, piece: Piece, location: coordinate, team: number) => {
-		boardDrawPiece(params, piece, location, team)
+	boardPiece: (params: BoardDrawingParams, piece: Piece, location: coordinate, team: number, theme = basic_theme) => {
+		boardDrawPiece(params, piece, location, team, theme)
 	},
-	boardPieces: (params: BoardDrawingParams, piecesRecord: InstancePieceMap) => {
+	boardPieces: (params: BoardDrawingParams, piecesRecord: InstancePieceMap, theme = basic_theme) => {
 		piecesRecord.getKeys().forEach((coordinate: coordinate) => {
 			const instancePiece = piecesRecord.getInstancePiece(coordinate)
 			if (instancePiece) {
-				boardDrawPiece(params, instancePiece.piece, coordinate, instancePiece.team)
+				boardDrawPiece(params, instancePiece.piece, coordinate, instancePiece.team, theme)
 			}
 		})
 	}
 }
 
-const boardDrawPiece = (params: BoardDrawingParams, piece: Piece, location: coordinate, team: number) => {
+const boardDrawPiece = (params: BoardDrawingParams, piece: Piece, location: coordinate, team: number, theme: theme) => {
 	const { cellWidth, ctx } = params
 	const radius = cellWidth / 2
 	const [centerX, centerY] = getCenterCoords(location[0], location[1], radius, params.shape)
-	const teamColor = tColor(team)
-	const teamOutline = oColor(team)
 	// When we implement pieces having an image
 	if (piece.image) {
 		const image = new Image()
 		image.src = piece.image
 		ctx.drawImage(image, centerX - radius, centerY - radius, cellWidth, cellWidth)
 	} else if (piece.name.length > 0) {
-		drawLetter(ctx, centerX, centerY, radius, piece.name[0], teamColor, teamOutline)
+		drawLetter(ctx, centerX, centerY, radius, piece.name[0], theme.teamColors[team], theme.gridOutlineColor)
 	}
 
 }
@@ -181,31 +180,6 @@ const drawLine = (ctx: CanvasRenderingContext2D, fromX: number, fromY: number, t
 	ctx.lineWidth = 1
 }
 
-const tColor = (t: number) => {
-	switch (t) {
-		case 1:
-			return 'white'
-		case 2:
-			return 'orange'
-		case 3:
-			return 'purple'
-		default:
-			return 'black'
-	}
-}
-
-const oColor = (t: number) => {
-	switch (t) {
-		case 1:
-			return 'black'
-		case 2:
-			return 'purple'
-		case 3:
-			return 'orange'
-		default:
-			return 'white'
-	}
-}
 
 
 
@@ -237,7 +211,8 @@ const drawLetter = (ctx: CanvasRenderingContext2D, centerX: number, centerY: num
 	ctx.fillStyle = teamColor
 	ctx.strokeStyle = teamOutline
 	ctx.fillText(letter, centerX, centerY);
-	ctx.strokeText(letter, centerX, centerY);
+	if (radius > 10)
+		ctx.strokeText(letter, centerX, centerY);
 }
 
 

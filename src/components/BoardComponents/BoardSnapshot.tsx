@@ -14,7 +14,7 @@ const BoardSnapshot = ({ cellWidth, board, pieces }:
 	const ignoreSelected = (newSelected: coordinate | null) => { newSelected === null; return }
 
 	const drawingFunction = useCallback((params: BoardDrawingParams) => {
-		BoardDrawing.boardColoring(params, "tan", "blue", null);
+		BoardDrawing.boardColoring(params, undefined, null);
 		BoardDrawing.boardSpecialTiles(params, board);
 		if (pieces)
 			BoardDrawing.boardPieces(params, pieces)

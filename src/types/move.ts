@@ -16,7 +16,6 @@ const moveDirection: Record<string, direction> = { right: 'right', left: 'left',
 
 type direction = cardinalDirection | diagonalDirection
 
-// NOTE: UNFORTUNATELY THERE IS NO WAY TO REQUIRE THE TYPE ONLY ACCEPT NUMBERS > 0 SO WE NEED TO BUILD IN THIS ASSERTION OURSELVES WHEREVER IT IS USED
 type distance = number
 
 interface movement { distance: distance, direction: direction }

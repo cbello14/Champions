@@ -17,7 +17,7 @@ const BoardPiece = ({ cellWidth, moves, captures, piece, location }:
 	const moveResults: moveCalculationResult[] = moves.map((move, index) => { return { landing: move, capturing: captures[index] } })
 
 	const drawingFunction = useCallback((params: BoardDrawingParams) => {
-		BoardDrawing.boardColoring(params, "tan", "blue", selected);
+		BoardDrawing.boardColoring(params, undefined, selected);
 		BoardDrawing.boardMoveCaptures(params, moveResults)
 		BoardDrawing.boardPiece(params, piece, location, 1)
 	}, [location, moveResults, piece, selected]);

@@ -7,8 +7,8 @@ import BoardGeneric from "./BoardGeneric";
 
 type boardCreationActions = "tile" | null;
 
-const BoardBasic = ({ dimensions, cellWidth, primaryColor = "tan", alternateColor = "blue", selectedColor, outlineColor, board, setBoard, onClickAction }:
-	{ dimensions: number[]; cellWidth: number; primaryColor?: string; alternateColor?: string; selectedColor?: string; outlineColor?: string; board: Board; setBoard: (board: Board) => void; onClickAction: boardCreationActions }) => {
+const BoardBasic = ({ dimensions, cellWidth, board, setBoard, onClickAction }:
+	{ dimensions: number[]; cellWidth: number; board: Board; setBoard: (board: Board) => void; onClickAction: boardCreationActions }) => {
 
 	const [selected, changeSelected] = useState<coordinate | null>(null)
 
@@ -33,9 +33,9 @@ const BoardBasic = ({ dimensions, cellWidth, primaryColor = "tan", alternateColo
 	}
 
 	const drawingFunction = useCallback((params: BoardDrawingParams) => {
-		BoardDrawing.boardColoring(params, primaryColor, alternateColor, selected, selectedColor, outlineColor);
+		BoardDrawing.boardColoring(params, undefined, selected );
 		BoardDrawing.boardSpecialTiles(params, board);
-	}, [board, primaryColor, alternateColor, selectedColor, selected, outlineColor]);
+	}, [board, selected]);
 
 
 	return (<BoardGeneric shape={board.shape} dimensions={dimensions} cellWidth={cellWidth} drawingFunction={drawingFunction} selected={selected} setSelected={setSelected} />)

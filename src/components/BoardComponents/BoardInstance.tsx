@@ -47,7 +47,7 @@ const BoardInstance = ({ cellWidth, instance, setInstance, currentTeam, nextTeam
 	}, [])
 
 	const drawingFunction = useCallback((params: BoardDrawingParams) => {
-		BoardDrawing.boardColoring(params, "tan", "blue", selected);
+		BoardDrawing.boardColoring(params, undefined, selected);
 		BoardDrawing.boardSpecialTiles(params, instance.board);
 		let moves: moveCalculationResult[] = []
 		if (selected) {
