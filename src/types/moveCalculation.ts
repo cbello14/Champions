@@ -1,10 +1,10 @@
 import { Piece } from "@/features/pieces/piece";
-import { type movement, type move, type direction, moveReflect, moveDirection, moveMovementType } from "./move";
+import { type movement, type move, type direction, moveReflect, moveDirection, moveMovementType, type permission } from "./move";
 import { checkCoordinateArrayIncludes, checkCoordinateEquality, type coordinate, type dimension } from "@/features/boards/board";
 import { rectTeamDirection } from "./team";
 import type { capture } from "./capture";
 
-export interface attributeParams { isJump: boolean, flippedHorizontally: boolean, flippedVertically: boolean, captureType: capture, requiresCapture?: boolean }
+export interface attributeParams { isJump: boolean, flippedHorizontally: boolean, flippedVertically: boolean, captureType: capture, requiresCapture: permission }
 
 export interface moveCalculationResult { landing: coordinate, capturing: coordinate | null }
 
@@ -15,19 +15,20 @@ const calculateMovesRect = (piece: Piece, location: coordinate, boardSize: dimen
 	// iterate through each move in the array
 	piece.moves.forEach((move: move, index: number) => {
 		const isJump = move.attributes.type === moveMovementType.jump
-		const requiresFirstMove = !!move.attributes.initialMove
 		let blockingCoords = [...blocking]
 		let enemyCoords = [...enemyPieces]
-		if (requiresFirstMove && !isFirstMove) {
+		if (move.attributes.initialMove === 'required' && !isFirstMove) {
+			return;
+		}
+		if (move.attributes.initialMove === 'disabled' && isFirstMove) {
 			return;
 		}
 		// if move isnt allowed to capture, or just cant, then enemypieces are blocking
-		if (move.attributes.capturing === false || piece.captures[index] === 'no-capture') {
-
+		if (move.attributes.capturing === 'disabled' || piece.captures[index] === 'no-capture') {
 			blockingCoords = blocking.concat(enemyPieces)
 			enemyCoords = []
 		}
-		const attributes = { isJump: isJump, flippedHorizontally: false, flippedVertically: false, captureType: move.attributes.capturing !== false ? piece.captures[index] : 'no-capture', requiresCapture: move.attributes.capturing };
+		const attributes = { isJump: isJump, flippedHorizontally: false, flippedVertically: false, captureType: move.attributes.capturing !== 'disabled' ? piece.captures[index] : 'no-capture', requiresCapture: move.attributes.capturing };
 		// run the move normally and add its moves to the results
 		possibleMoves.push(...calculateMoveRect(location, move, boardSize, blockingCoords, enemyCoords, attributes, teamDirection));
 		const horizontal = move.attributes.reflection === moveReflect.horizontal
@@ -107,7 +108,7 @@ const calculateMoveRectJump = (location: coordinate, move: move, boardSize: dime
 		result.capturing = calculateCaptureMovement(landingLocation, attributes.captureType, boardSize, enemyPieces, attributes, teamDirection)
 	}
 	// if our move requires capturing but in the end nothing was captured the entire move failed
-	if (result.capturing === null && attributes.requiresCapture) {
+	if (result.capturing === null && attributes.requiresCapture === 'required') {
 		return []
 	}
 	return [result];
@@ -129,7 +130,7 @@ const calculateCaptureMovement = (location: coordinate, movements: movement[], b
 	const landedOnEnemy = checkCoordinateArrayIncludes(enemyPieces, landingLocation)
 	if (landedOnEnemy) {
 		//also check if the enemy is a king, if so, idk do something with it
-		
+
 		return landingLocation
 		//ASDF
 	}
@@ -194,7 +195,7 @@ const calculateMovementRectNoJump = (location: coordinate, movement: movement, b
 			result.capturing = calculateCaptureMovement(nextLoc, attributes.captureType, boardSize, enemyPieces, attributes, teamDirection)
 		}
 		// if we didnt capture anything but we need to capture something, dont include this spot to our results and exit
-		if (result.capturing === null && attributes.requiresCapture) {
+		if (result.capturing === null && attributes.requiresCapture === 'required') {
 			break
 		}
 		// otherwise add our result to our list and keep iterating

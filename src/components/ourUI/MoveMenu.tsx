@@ -1,11 +1,10 @@
 import { Piece } from "@/features/pieces/piece";
-import type { move, movementType, reflect } from "@/types/move";
+import type { move, movementType, permission, reflect } from "@/types/move";
 
 import { Button } from "../ui/button";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "../ui/collapsible";
 import { Label } from "../ui/label";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectItem } from "../ui/select";
-import { Checkbox } from "../ui/checkbox";
 import MovementMenu from "./MovementMenu";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
@@ -61,7 +60,7 @@ const MoveMenu = ({ index, piece, move, setPiece, handleDeleteMovement, handleAd
 				<div className="flex flex-row items-center gap-4">
 					<Label>Reflection:</Label>
 					<Select
-						value={move.attributes.reflection ?? "none"}
+						value={move.attributes.reflection}
 						onValueChange={(e) => {
 
 							const newMove = {
@@ -89,58 +88,62 @@ const MoveMenu = ({ index, piece, move, setPiece, handleDeleteMovement, handleAd
 				</div>
 
 				<div className="flex flex-row items-center gap-4">
-					<Label>Initial Move Only:</Label>
+					<Label>Can Move on Initial Move:</Label>
 
-					<Checkbox
-						defaultChecked={move.attributes.initialMove}
-						onCheckedChange={(e) => {
-
-							let initial = true;
-							if (typeof e === "boolean") {
-								initial = e
-							}
-							else {
-								initial = false
-							}//if its bad, assume not a first move
-
-
+					<Select
+						value={move.attributes.initialMove}
+						onValueChange={(e) => {
 
 							const newMove = {
 								...move,
 								attributes: {
 									...move.attributes,
-									initialMove: initial
+									initialMove: e as permission
 								}
-							};
+							}
 							setPiece(piece.replaceMoveAt(newMove, index))
-						}} />
+
+						}}>
+						<SelectTrigger>
+							<SelectValue />
+						</SelectTrigger>
+						<SelectContent >
+							<SelectGroup>
+								<SelectItem value="required">Required</SelectItem>
+								<SelectItem value="optional">Optional</SelectItem>
+								<SelectItem value="disabled">Disabled</SelectItem>
+							</SelectGroup>
+						</SelectContent>
+					</Select>
 				</div>
 
 				<div className="flex flex-row items-center gap-4">
-					<Label>Only On Capturing:</Label>
-					<Checkbox
-
-						defaultChecked={move.attributes.capturing}
-						onCheckedChange={(e) => {
-							let cap = true;
-							if (typeof e === "boolean") {
-								cap = e
-							}
-							else {
-								cap = true
-							}//if its bad, assume it is a capturing move
+					<Label>Can Move to Capture:</Label>
+					<Select
+						value={move.attributes.initialMove}
+						onValueChange={(e) => {
 
 							const newMove = {
 								...move,
 								attributes: {
 									...move.attributes,
-									capturing: cap
+									capturing: e as permission
 								}
-							};
+							}
 							setPiece(piece.replaceMoveAt(newMove, index))
 
-
-						}} />
+						}}>
+						<SelectTrigger>
+							<SelectValue />
+						</SelectTrigger>
+						<SelectContent >
+							<SelectGroup>
+								<SelectItem value="required">Required</SelectItem>
+								<SelectItem value="optional">Optional</SelectItem>
+								<SelectItem value="disabled">Disabled</SelectItem>
+							</SelectGroup>
+						</SelectContent>
+					</Select>
 				</div>
 
 				<div className="flex flex-col center gap-4">
