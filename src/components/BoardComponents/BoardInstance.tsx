@@ -18,9 +18,9 @@ const BoardInstance = ({ cellWidth, instance, setInstance, currentTeam, nextTeam
 			if (prevSelectedPiece?.team === currentTeam) {
 				const direction = directional(prevSelectedPiece.team)
 				const moves = instance.calculateMoves(selected, direction)
-				const selectedMove = moves.map((moveResult) => moveResult.landing).some((moveLocation: coordinate) => { return checkCoordinateEquality(moveLocation, newSelected) })
+				const selectedMove = moves.find((moveResult) => { return checkCoordinateEquality(moveResult.landing, newSelected) })
 				if (selectedMove) {
-					setInstance(instance.movePiece(selected, newSelected))
+					setInstance(instance.movePiece(selected, selectedMove))
 					nextTeam()
 					return
 				}

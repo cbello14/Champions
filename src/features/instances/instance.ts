@@ -3,7 +3,7 @@ import { InstancePieceMap, type instancePiece, type instancePieceId, type Instan
 import type { coordinate } from "@/features/boards/board"
 import type { BoardJSON } from "@/features/boards/board"
 import type { team, turn } from "@/types/team"
-import { calculateMovesRect } from "@/types/moveCalculation"
+import { calculateMovesRect, type moveCalculationResult } from "@/types/moveCalculation"
 import type { direction } from "@/types/move"
 import type { Piece } from "../pieces/piece"
 
@@ -39,15 +39,17 @@ export class Instance {
 		this.initialPieces = i;
 		this.numTeams = n
 	}
-	movePiece(from: coordinate, to: coordinate) {
+	movePiece(from: coordinate, to: moveCalculationResult) {
 		const instancePiece = this.piecesRecord.getInstancePiece(from);
+		const toLocation = to.landing
+		const toCapture = to.capturing ?? toLocation
 
 		if (!instancePiece) {
 			return this;
 		}
 		let newPieces = this.piecesRecord
 		//check to see if the piece on to is a king?
-		if (this.piecesRecord.map.get(coordinateToString(to))?.piece.name == "King") {
+		if (this.piecesRecord.map.get(coordinateToString(toCapture))?.piece.name == "King") {
 			//END GAME GOES HERE
 			//bandaid fix is to make it just spawn that game again
 			//WE NEED INITIAL PIECES????
@@ -55,7 +57,8 @@ export class Instance {
 
 		}
 		newPieces = newPieces.removeInstancePiece(from);
-		newPieces = newPieces.moveInstancePiece(to, instancePiece);
+		newPieces = newPieces.removeInstancePiece(toCapture);
+		newPieces = newPieces.moveInstancePiece(toLocation, instancePiece);
 		return new Instance(this.board, this.numTeams, newPieces, this.initialPieces, this.data, this.id).recordPieceMove(instancePiece);
 	}
 	recordPieceMove(piece: instancePiece): Instance {
