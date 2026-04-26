@@ -1,87 +1,116 @@
-import { useEffect, useRef } from "react"
-import type { BoardDrawingFunction, BoardDrawingParams } from "@/types/boardDrawing"
+import { useEffect, useRef } from "react";
+import type { BoardDrawingFunction, BoardDrawingParams } from "@/types/boardDrawing";
 import type { coordinate, shape } from "@/features/boards/board";
 
 const reverseCoordsHex = (internalX: number, internalY: number, cellWidth: number) => {
-	// All this logic is from: https://www.redblobgames.com/grids/hexagons/ 
-	const radius = cellWidth / 2
+  // All this logic is from: https://www.redblobgames.com/grids/hexagons/
+  const radius = cellWidth / 2;
 
-	const x = internalX - radius;
-	const y = internalY - radius;
+  const x = internalX - radius;
+  const y = internalY - radius;
 
-	const q = (Math.sqrt(3) / 3 * x - 1 / 3 * y) / radius;
-	const r = (2 / 3 * y) / radius;
+  const q = ((Math.sqrt(3) / 3) * x - (1 / 3) * y) / radius;
+  const r = ((2 / 3) * y) / radius;
 
-	const s = -q - r;
-	let rq = Math.round(q);
-	let rr = Math.round(r);
-	const rs = Math.round(s);
+  const s = -q - r;
+  let rq = Math.round(q);
+  let rr = Math.round(r);
+  const rs = Math.round(s);
 
-	const q_diff = Math.abs(rq - q);
-	const r_diff = Math.abs(rr - r);
-	const s_diff = Math.abs(rs - s);
+  const q_diff = Math.abs(rq - q);
+  const r_diff = Math.abs(rr - r);
+  const s_diff = Math.abs(rs - s);
 
-	if (q_diff > r_diff && q_diff > s_diff) {
-		rq = -rr - rs;
-	} else if (r_diff > s_diff) {
-		rr = -rq - rs;
-	}
+  if (q_diff > r_diff && q_diff > s_diff) {
+    rq = -rr - rs;
+  } else if (r_diff > s_diff) {
+    rr = -rq - rs;
+  }
 
-	const selectedY = rr;
-	const selectedX = rq + (rr - (rr & 1)) / 2;
-	return [selectedX, selectedY]
-}
+  const selectedY = rr;
+  const selectedX = rq + (rr - (rr & 1)) / 2;
+  return [selectedX, selectedY];
+};
 
 const reverseCoordsRect = (internalX: number, internalY: number, cellWidth: number) => {
-	const selectedX = Math.trunc(internalX / cellWidth);
-	const selectedY = Math.trunc(internalY / cellWidth);
-	return [selectedX, selectedY]
-}
+  const selectedX = Math.trunc(internalX / cellWidth);
+  const selectedY = Math.trunc(internalY / cellWidth);
+  return [selectedX, selectedY];
+};
 
+const BoardGeneric = ({
+  dimensions,
+  cellWidth,
+  drawingFunction,
+  selected,
+  setSelected,
+  shape,
+}: {
+  dimensions: readonly number[];
+  cellWidth: number;
+  drawingFunction: BoardDrawingFunction;
+  selected: coordinate | null;
+  setSelected: (newSelected: coordinate | null) => void;
+  shape: shape;
+}) => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const handleCanvasClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
 
+    const rect = canvas.getBoundingClientRect();
 
-const BoardGeneric =
-	({ dimensions, cellWidth, drawingFunction, selected, setSelected, shape }:
-		{ dimensions: readonly number[]; cellWidth: number; drawingFunction: BoardDrawingFunction, selected: coordinate | null, setSelected: (newSelected: coordinate | null) => void, shape: shape }) => {
-		const canvasRef = useRef<HTMLCanvasElement>(null);
-		const handleCanvasClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
-			const canvas = canvasRef.current;
-			if (!canvas) return;
+    const rawX = event.clientX - rect.left;
+    const rawY = event.clientY - rect.top;
 
-			const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
 
-			const rawX = event.clientX - rect.left;
-			const rawY = event.clientY - rect.top;
+    const internalX = rawX * scaleX;
+    const internalY = rawY * scaleY;
 
-			const scaleX = canvas.width / rect.width;
-			const scaleY = canvas.height / rect.height;
+    const [selectedX, selectedY] =
+      shape === "rect"
+        ? reverseCoordsRect(internalX, internalY, cellWidth)
+        : reverseCoordsHex(internalX, internalY, cellWidth);
 
-			const internalX = rawX * scaleX;
-			const internalY = rawY * scaleY;
+    if (
+      selectedX >= 0 &&
+      selectedX < dimensions[0] &&
+      selectedY >= 0 &&
+      selectedY < dimensions[1]
+    ) {
+      setSelected([selectedX, selectedY]);
+    }
+  };
 
-			const [selectedX, selectedY] = shape === 'rect' ? reverseCoordsRect(internalX, internalY, cellWidth) : reverseCoordsHex(internalX, internalY, cellWidth)
+  useEffect(() => {
+    if (canvasRef.current) {
+      const context = canvasRef.current.getContext("2d");
+      const canvas = canvasRef.current;
 
-			if (selectedX >= 0 && selectedX < dimensions[0] &&
-				selectedY >= 0 && selectedY < dimensions[1]) {
-				setSelected([selectedX, selectedY]);
-			}
-		}
+      if (context) {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        const params: BoardDrawingParams = {
+          boardSize: [...dimensions],
+          cellWidth: cellWidth,
+          ctx: context,
+          shape: shape,
+        };
+        drawingFunction(params);
+      }
+    }
+  }, [dimensions, cellWidth, selected, drawingFunction, shape]);
+  return (
+    <>
+      <canvas
+        ref={canvasRef}
+        onClick={handleCanvasClick}
+        width={dimensions[0] * cellWidth}
+        height={dimensions[1] * cellWidth}
+      />
+    </>
+  );
+};
 
-		useEffect(() => {
-			if (canvasRef.current) {
-				const context = canvasRef.current.getContext("2d");
-				const canvas = canvasRef.current
-
-				if (context) {
-					context.clearRect(0, 0, canvas.width, canvas.height);
-					const params: BoardDrawingParams = { boardSize: [...dimensions], cellWidth: cellWidth, ctx: context, shape: shape }
-					drawingFunction(params)
-				}
-			}
-		}, [dimensions, cellWidth, selected, drawingFunction, shape])
-		return <>
-			<canvas ref={canvasRef} onClick={handleCanvasClick} width={dimensions[0] * cellWidth} height={dimensions[1] * cellWidth} />
-		</>
-	}
-
-export default BoardGeneric
+export default BoardGeneric;

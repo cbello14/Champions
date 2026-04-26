@@ -1,2 +1,1 @@
-
-export type Pages = "HomePage" | "GamePage" | "PiecePage" | "BoardPage" | "PlayPage"
+export type Pages = "HomePage" | "GamePage" | "PiecePage" | "BoardPage" | "PlayPage";
