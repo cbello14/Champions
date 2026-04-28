@@ -1,9 +1,9 @@
 import { Piece } from "@/features/pieces/piece";
 import type { move, movementType, permission, reflect } from "@/types/move";
 
-import { Button } from "../ui/button";
-import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "../ui/collapsible";
-import { Label } from "../ui/label";
+import { Button } from "./ui/button";
+import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "./ui/collapsible";
+import { Label } from "./ui/label";
 import {
   Select,
   SelectTrigger,
@@ -11,7 +11,7 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-} from "../ui/select";
+} from "./ui/select";
 import MovementMenu from "./MovementMenu";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";

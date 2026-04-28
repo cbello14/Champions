@@ -1,6 +1,11 @@
 import type { move, movement, moveAttributes, direction } from "@/types/move";
 import type { capture } from "@/types/capture";
 
+export interface verifiedImage {
+  src: string;
+  verified: boolean;
+}
+
 interface movementJSON {
   distance: number | "Infinity";
   direction: direction;
@@ -40,7 +45,7 @@ const moveFromJSON = (moveJSON: moveJSON) => {
 export interface PieceJSON {
   id: string;
   name: string;
-  image: string;
+  image: verifiedImage;
   moves: moveJSON[];
   captures: capture[];
 }
@@ -48,11 +53,17 @@ export interface PieceJSON {
 export class Piece {
   readonly id: string;
   readonly name: string;
-  readonly image: string;
+  readonly image: verifiedImage;
   readonly moves: readonly move[];
   readonly captures: readonly capture[];
 
-  constructor(name = "", image = "", m: move[] = [], c: capture[] = [], id?: string) {
+  constructor(
+    name = "",
+    image: verifiedImage = { src: "", verified: false },
+    m: move[] = [],
+    c: capture[] = [],
+    id?: string
+  ) {
     this.id = id ?? crypto.randomUUID();
     this.name = name;
     this.image = image;
@@ -104,6 +115,9 @@ export class Piece {
     newCaptures[index] = capture;
     return new Piece(this.name, this.image, [...this.moves], newCaptures, this.id);
   }
+  replaceImage(image: verifiedImage) {
+    return new Piece(this.name, image, [...this.moves], [...this.captures], this.id);
+  }
   toJSON(): PieceJSON {
     const newMoves = [...this.moves].map((move) => moveToJSON(move));
     return {
@@ -116,7 +130,7 @@ export class Piece {
   }
   static fromJSON(data: PieceJSON): Piece {
     const name = data.name ? data.name : "";
-    const image = data.image ? data.image : "";
+    const image = data.image ? data.image : { src: "", verified: false };
     const moves = data.moves ? data.moves.map((moveJSON) => moveFromJSON(moveJSON)) : [];
     const captures = data.captures ? data.captures : [];
     const id = data.id ? data.id : "";

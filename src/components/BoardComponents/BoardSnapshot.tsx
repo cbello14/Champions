@@ -15,8 +15,8 @@ const BoardSnapshot = ({
   board: Board;
   pieces?: InstancePieceMap;
 }) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-expressions
   const ignoreSelected = (newSelected: coordinate | null) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     newSelected === null;
     return;
   };

@@ -1,8 +1,8 @@
 import { Piece } from "@/features/pieces/piece";
 import type { direction, movement } from "@/types/move";
-import { Button } from "../ui/button";
-import { Checkbox } from "../ui/checkbox";
-import { Input } from "../ui/input";
+import { Button } from "./ui/button";
+import { Checkbox } from "./ui/checkbox";
+import { Input } from "./ui/input";
 import {
   Select,
   SelectTrigger,
@@ -10,8 +10,8 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-} from "../ui/select";
-import { Label } from "../ui/label";
+} from "./ui/select";
+import { Label } from "./ui/label";
 
 const MovementMenu = ({
   movement,

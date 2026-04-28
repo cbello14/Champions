@@ -3,20 +3,22 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "./ui/input";
 import SideBar from "@/components/SideBar.tsx";
-import { Piece } from "@/features/pieces/piece";
+import { Piece, type verifiedImage } from "@/features/pieces/piece";
 import { calculateMovesRect } from "@/types/moveCalculation";
 import type { coordinate } from "@/features/boards/board";
 import { useStore } from "@/utils/storage";
 import { moveDirection, moveMovementType, moveReflect } from "@/types/move";
-import PieceSideBar from "./ourUI/PieceSideBar";
-import MoveMenu from "./ourUI/MoveMenu";
+import PieceSideBar from "./PieceSideBar";
+import MoveMenu from "./MoveMenu";
 import BoardPiece from "./BoardComponents/BoardPiece";
 import { toast } from "sonner";
+import { useDebounce } from "@/hooks/use-debounce";
 
 const PiecePage = () => {
   const [piece, setPiece] = useState<Piece>(new Piece("New Piece"));
   const location: coordinate = [4, 4];
   const [piecesOpen, setPiecesOpen] = useState<boolean>(true);
+  const [imageUrl, setImageUrl] = useState<string>(piece.image.src);
   const moves = calculateMovesRect(piece, location, [9, 9], [], [], moveDirection.up, false);
 
   const piecesJSON = useStore((state) => state.pieces);
@@ -42,8 +44,8 @@ const PiecePage = () => {
         attributes: {
           type: moveMovementType.slide,
           reflection: moveReflect.horizontal,
-          initialMove: false,
-          capturing: false,
+          initialMove: "optional",
+          capturing: "optional",
         },
         movements: [],
       })
@@ -67,6 +69,31 @@ const PiecePage = () => {
     setPiece(piece.removeMovementAt(moveInd, movementInd));
   };
 
+  const changePiece = (piece: Piece) => {
+    setPiece(piece);
+    setImageUrl(piece.image.src);
+  };
+
+  const verifyImageUrl = (url: string) => {
+    const image: verifiedImage = { src: url, verified: false };
+    const img = new Image();
+    img.src = url;
+    img.onload = () => {
+      image.verified = true;
+      setPiece(piece.replaceImage(image));
+    };
+    img.onerror = () => {
+      setPiece(piece.replaceImage(image));
+    };
+  };
+
+  const debounceVerifyImageUrl = useDebounce(verifyImageUrl, 1500);
+
+  const changeImageURL = (url: string) => {
+    setImageUrl(url);
+    debounceVerifyImageUrl(url);
+  };
+
   return (
     <>
       <div className="flex flex-row justify-between gap-4 p-4 items-start">
@@ -76,7 +103,7 @@ const PiecePage = () => {
             setPiecesOpen(state);
           }}
           name={"Pieces"}
-          content={<PieceSideBar pieces={Object.values(pieces)} setPiece={setPiece} />}
+          content={<PieceSideBar pieces={Object.values(pieces)} setPiece={changePiece} />}
           align={"left"}
         />
 
@@ -101,7 +128,13 @@ const PiecePage = () => {
                 value={piece.name}
                 onChange={(e) => {
                   setPiece(
-                    new Piece(e.target.value, piece.image, [...piece.moves], [...piece.captures])
+                    new Piece(
+                      e.target.value,
+                      piece.image,
+                      [...piece.moves],
+                      [...piece.captures],
+                      piece.id
+                    )
                   );
                 }}
               />
@@ -114,8 +147,20 @@ const PiecePage = () => {
                 Delete Piece
               </Button>
             </div>
-
-            <img src={piece.image} />
+            <div className="flex flex-row items-center">
+              <Label className="pr-4">Image URL:</Label>
+              <Input
+                placeholder="Image URL"
+                type="text"
+                value={imageUrl}
+                onChange={(e) => {
+                  changeImageURL(e.target.value);
+                }}
+              />
+            </div>
+            {imageUrl && !piece.image.verified && (
+              <span className="text-red-500 text-sm">Invalid image URL</span>
+            )}
             {piece.moves.map((move, index) => (
               <MoveMenu
                 index={index}

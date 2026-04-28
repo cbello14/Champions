@@ -7,7 +7,8 @@ import {
 } from "@/features/boards/board";
 import type { Game } from "@/features/games/game";
 import type { Instance } from "@/features/instances/instance";
-import type { Piece } from "@/features/pieces/piece";
+import { Piece } from "@/features/pieces/piece";
+import { useStore } from "@/utils/storage";
 import type { InstancePieceMap } from "./instancePiece";
 import type { moveCalculationResult } from "./moveCalculation";
 import { basic_theme, type theme } from "./theme";
@@ -133,11 +134,22 @@ const boardDrawPiece = (
   const { cellWidth, ctx } = params;
   const radius = cellWidth / 2;
   const [centerX, centerY] = getCenterCoords(location[0], location[1], radius, params.shape);
-  // When we implement pieces having an image
-  if (piece.image) {
+  if (piece.image.src && piece.image.verified) {
     const image = new Image();
-    image.src = piece.image;
-    ctx.drawImage(image, centerX - radius, centerY - radius, cellWidth, cellWidth);
+    image.src = piece.image.src;
+    image.onload = () => {
+      ctx.drawImage(image, centerX - radius, centerY - radius, cellWidth, cellWidth);
+    };
+    image.onerror = () => {
+      const updated = new Piece(
+        piece.name,
+        { src: piece.image.src, verified: false },
+        [...piece.moves],
+        [...piece.captures],
+        piece.id
+      );
+      useStore.getState().setPiece(updated);
+    };
   } else if (piece.name.length > 0) {
     drawLetter(
       ctx,

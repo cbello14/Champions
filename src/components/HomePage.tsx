@@ -20,15 +20,6 @@ const HomePage = () => {
               <Button
                 className="flex-1 h-full"
                 onClick={() => {
-                  void navigate("games");
-                }}
-              >
-                {" "}
-                Create Custom Game
-              </Button>
-              <Button
-                className="flex-1 h-full"
-                onClick={() => {
                   void navigate("pieces");
                 }}
               >
@@ -43,6 +34,15 @@ const HomePage = () => {
               >
                 {" "}
                 Create Custom Board
+              </Button>
+              <Button
+                className="flex-1 h-full"
+                onClick={() => {
+                  void navigate("games");
+                }}
+              >
+                {" "}
+                Create Custom Game
               </Button>
             </div>
             <Button

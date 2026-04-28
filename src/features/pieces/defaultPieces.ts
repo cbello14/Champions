@@ -3,7 +3,7 @@ import { Piece } from "./piece";
 
 export const pawn = new Piece(
   "Pawn",
-  "",
+  { src: "", verified: false },
   [
     {
       attributes: {
@@ -47,7 +47,7 @@ export const pawn = new Piece(
 
 export const knight = new Piece(
   "Knight",
-  "",
+  { src: "", verified: false },
   [
     {
       attributes: {
@@ -79,7 +79,7 @@ export const knight = new Piece(
 
 export const bishop = new Piece(
   "Bishop",
-  "",
+  { src: "", verified: false },
   [
     {
       attributes: {
@@ -96,7 +96,7 @@ export const bishop = new Piece(
 
 export const rook = new Piece(
   "Rook",
-  "",
+  { src: "", verified: false },
   [
     {
       attributes: {
@@ -122,7 +122,7 @@ export const rook = new Piece(
 
 export const queen = new Piece(
   "Queen",
-  "",
+  { src: "", verified: false },
   [
     {
       attributes: {
@@ -157,7 +157,7 @@ export const queen = new Piece(
 
 export const king = new Piece(
   "King",
-  "",
+  { src: "", verified: false },
   [
     {
       attributes: {

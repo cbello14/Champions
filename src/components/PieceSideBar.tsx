@@ -1,5 +1,5 @@
 import { Piece } from "@/features/pieces/piece";
-import { Button } from "../ui/button";
+import { Button } from "./ui/button";
 
 const PieceSideBar = ({
   pieces,
