@@ -4,7 +4,7 @@ import { moveDirection, moveMovementType } from "@/types/move";
 
 describe("Tile", () => {
   const testMove: move = {
-    attributes: { type: moveMovementType.slide },
+    attributes: { type: moveMovementType.slide, reflection: "none", initialMove: "optional", capturing: "optional" },
     movements: [{ direction: moveDirection.up, distance: 1 }],
   };
 
