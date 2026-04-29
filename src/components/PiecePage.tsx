@@ -10,6 +10,7 @@ import { useDebounce } from '@/hooks/use-debounce';
 import { moveDirection, moveMovementType, moveReflect } from '@/types/move';
 import { calculateMovesRect } from '@/types/moveCalculation';
 import { useStore } from '@/utils/storage';
+import { Tooltip, TooltipContent, TooltipTrigger, } from "@/components/ui/tooltip"
 
 import BoardPiece from './BoardComponents/BoardPiece';
 import MoveMenu from './MoveMenu';
@@ -151,17 +152,25 @@ const PiecePage = () => {
               Delete Piece
             </Button>
           </div>
-          <div className="flex flex-row items-center">
-            <Label className="pr-4">Image URL:</Label>
-            <Input
-              placeholder="Image URL"
-              type="text"
-              value={imageUrl}
-              onChange={(e) => {
-                changeImageURL(e.target.value);
-              }}
-            />
-          </div>
+          
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="flex flex-row items-center">
+                <Label className="pr-4">Image URL:</Label>
+                <Input
+                  placeholder="Image URL"
+                  type="text"
+                  value={imageUrl}
+                  onChange={(e) => {
+                    changeImageURL(e.target.value);
+                  }}
+                /></div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Add an image to the Piece</p>
+              </TooltipContent>
+            </Tooltip>
+          
           {imageUrl && !piece.image.verified ? (
             <span className="text-red-500 text-sm">Invalid image URL</span>
           ) : null}
@@ -178,7 +187,16 @@ const PiecePage = () => {
               setPiece={setPiece}
             />
           ))}
-          <Button onClick={handleAddMove}> Add Move </Button>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button onClick={handleAddMove}> Add Move </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Add a new Move to the Piece</p>
+            </TooltipContent>
+          </Tooltip>
+
         </div>
       </div>
     </div>

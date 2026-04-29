@@ -13,6 +13,7 @@ import {
 
 import type { Piece } from '@/features/pieces/piece';
 import type { Direction, Movement } from '@/types/move';
+import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 
 const MovementMenu = ({
   movement,
@@ -32,29 +33,45 @@ const MovementMenu = ({
   <div className="border p-2 m-2 flex flex-col gap-4">
     <div className="flex flex-row items-center gap-4">
       <Label>Distance:</Label>
-      <Input
-        disabled={movement.distance === Infinity}
-        type="number"
-        value={movement.distance === Infinity ? '' : movement.distance}
-        onChange={(e) => {
-          const newMovement = {
-            ...piece.moves[index].movements[movementIndex],
-            distance: Number(e.target.value),
-          };
-          setPiece(piece.replaceMovementAt(index, movementIndex, newMovement));
-        }}
-      />
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Input
+            disabled={movement.distance === Infinity}
+            type="number"
+            value={movement.distance === Infinity ? '' : movement.distance}
+            onChange={(e) => {
+              const newMovement = {
+                ...piece.moves[index].movements[movementIndex],
+                distance: Number(e.target.value),
+              };
+              setPiece(piece.replaceMovementAt(index, movementIndex, newMovement));
+            }}
+          />
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>How many spaces it will go</p>
+        </TooltipContent>
+      </Tooltip>
+
       <Label>Infinite</Label>
-      <Checkbox
-        checked={movement.distance === Infinity}
-        onCheckedChange={(checked) => {
-          const newMovement = {
-            ...piece.moves[index].movements[movementIndex],
-            distance: checked ? Infinity : 1,
-          };
-          setPiece(piece.replaceMovementAt(index, movementIndex, newMovement));
-        }}
-      />
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Checkbox
+            checked={movement.distance === Infinity}
+            onCheckedChange={(checked) => {
+              const newMovement = {
+                ...piece.moves[index].movements[movementIndex],
+                distance: checked ? Infinity : 1,
+              };
+              setPiece(piece.replaceMovementAt(index, movementIndex, newMovement));
+            }}
+          />
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>Move infinitely in its direction</p>
+        </TooltipContent>
+      </Tooltip>
+
     </div>
     <div className="flex flex-row items-center gap-4">
       <Label>Direction:</Label>
