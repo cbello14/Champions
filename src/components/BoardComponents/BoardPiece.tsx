@@ -1,10 +1,13 @@
-import type { coordinate } from "@/features/boards/board";
-import { Piece } from "@/features/pieces/piece";
-import { BoardDrawing } from "@/types/boardDrawing.ts";
-import type { BoardDrawingParams } from "@/types/boardDrawing.ts";
-import type { moveCalculationResult } from "@/types/moveCalculation";
-import { useCallback, useState } from "react";
-import BoardGeneric from "./BoardGeneric";
+import { useCallback, useState } from 'react';
+
+import { BoardDrawing } from '@/types/boardDrawing';
+
+import BoardGeneric from './BoardGeneric';
+
+import type { Coordinate } from '@/features/boards/board';
+import type { Piece } from '@/features/pieces/piece';
+import type { BoardDrawingParams } from '@/types/boardDrawing';
+import type { MoveCalculationResult } from '@/types/moveCalculation';
 
 const BoardPiece = ({
   cellWidth,
@@ -14,25 +17,22 @@ const BoardPiece = ({
   location,
 }: {
   cellWidth: number;
-  moves: coordinate[];
-  captures: coordinate[];
+  moves: Coordinate[];
+  captures: Coordinate[];
   piece: Piece;
-  location: coordinate;
+  location: Coordinate;
 }) => {
-  const [selected, changeSelected] = useState<coordinate | null>(null);
-
-  const setSelected = (newSelected: coordinate | null) => {
-    changeSelected(newSelected);
-  };
+  const [selected, setSelected] = useState<Coordinate | null>(null);
 
   // TODO: create a move calculation method, that will provide us the proper captures for these moves even without there being pieces
-  const moveResults: moveCalculationResult[] = moves.map((move, index) => {
-    return { landing: move, capturing: captures[index] };
-  });
+  const moveResults: MoveCalculationResult[] = moves.map((move, index) => ({
+    landing: move,
+    capturing: captures[index],
+  }));
 
   const drawingFunction = useCallback(
     (params: BoardDrawingParams) => {
-      BoardDrawing.boardColoring(params, undefined, selected);
+      BoardDrawing.boardColoring(params, selected);
       BoardDrawing.boardMoveCaptures(params, moveResults);
       BoardDrawing.boardPiece(params, piece, location, 1);
     },
@@ -41,12 +41,12 @@ const BoardPiece = ({
 
   return (
     <BoardGeneric
-      dimensions={[9, 9]}
       cellWidth={cellWidth}
+      dimensions={[9, 9]}
       drawingFunction={drawingFunction}
       selected={selected}
       setSelected={setSelected}
-      shape={"rect"}
+      shape="rect"
     />
   );
 };

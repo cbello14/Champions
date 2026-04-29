@@ -1,10 +1,14 @@
-import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router";
-import { useStore } from "@/utils/storage";
-import { basicGame } from "@/features/games/defaultGames";
-import { useEffect } from "react";
-import type { Game } from "@/features/games/game";
-import SnapshotButton from "./snapshotButton";
+import { useEffect } from 'react';
+
+import { useNavigate } from 'react-router';
+
+import { Button } from '@/components/ui/button';
+import basicGame from '@/features/games/defaultGames';
+import { useStore } from '@/utils/storage';
+
+import SnapshotButton from './SnapshotButton';
+
+import type { Game } from '@/features/games/game';
 
 const DecisionPage = () => {
   const navigate = useNavigate();
@@ -24,7 +28,7 @@ const DecisionPage = () => {
   const onStartGame = (game: Game) => {
     const instance = game.createInstance();
     setInstance(instance);
-    void navigate(`/play/${instance.id}`);
+    navigate(`/play/${instance.id}`);
   };
 
   return (
@@ -35,7 +39,9 @@ const DecisionPage = () => {
       ) : (
         games.map((game) => (
           <SnapshotButton
+            key={game.id}
             snapshotItem={game}
+            text={undefined}
             onClick={() => {
               onStartGame(game);
             }}
@@ -45,7 +51,7 @@ const DecisionPage = () => {
       <Button
         variant="outline"
         onClick={() => {
-          void navigate("/games");
+          navigate('/games');
         }}
       >
         Create Custom Game

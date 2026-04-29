@@ -1,22 +1,27 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Input } from "./ui/input";
-import SideBar from "@/components/SideBar.tsx";
-import { Piece, type verifiedImage } from "@/features/pieces/piece";
-import { calculateMovesRect } from "@/types/moveCalculation";
-import type { coordinate } from "@/features/boards/board";
-import { useStore } from "@/utils/storage";
-import { moveDirection, moveMovementType, moveReflect } from "@/types/move";
-import PieceSideBar from "./PieceSideBar";
-import MoveMenu from "./MoveMenu";
-import BoardPiece from "./BoardComponents/BoardPiece";
-import { toast } from "sonner";
-import { useDebounce } from "@/hooks/use-debounce";
+import { useState } from 'react';
+
+import { toast } from 'sonner';
+
+import SideBar from '@/components/SideBar';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Piece } from '@/features/pieces/piece';
+import { useDebounce } from '@/hooks/use-debounce';
+import { moveDirection, moveMovementType, moveReflect } from '@/types/move';
+import { calculateMovesRect } from '@/types/moveCalculation';
+import { useStore } from '@/utils/storage';
+
+import BoardPiece from './BoardComponents/BoardPiece';
+import MoveMenu from './MoveMenu';
+import PieceSideBar from './PieceSideBar';
+import { Input } from './ui/input';
+
+import type { Coordinate } from '@/features/boards/board';
+import type { VerifiedImage } from '@/features/pieces/piece';
 
 const PiecePage = () => {
-  const [piece, setPiece] = useState<Piece>(new Piece("New Piece"));
-  const location: coordinate = [4, 4];
+  const [piece, setPiece] = useState<Piece>(new Piece('New Piece'));
+  const location: Coordinate = [4, 4];
   const [piecesOpen, setPiecesOpen] = useState<boolean>(true);
   const [imageUrl, setImageUrl] = useState<string>(piece.image.src);
   const moves = calculateMovesRect(piece, location, [9, 9], [], [], moveDirection.up, false);
@@ -29,13 +34,13 @@ const PiecePage = () => {
   const deletePiece = useStore((state) => state.deletePiece);
 
   const handleSave = () => {
-    toast("Piece Saved", { position: "top-center" });
+    toast('Piece Saved', { position: 'top-center' });
     savePiece(piece);
   };
   const handleDelete = () => {
     deletePiece(piece.id);
-    toast("Piece Deleted", { position: "top-center" });
-    setPiece(new Piece("New Piece"));
+    toast('Piece Deleted', { position: 'top-center' });
+    setPiece(new Piece('New Piece'));
   };
 
   const handleAddMove = () => {
@@ -44,8 +49,8 @@ const PiecePage = () => {
         attributes: {
           type: moveMovementType.slide,
           reflection: moveReflect.horizontal,
-          initialMove: "optional",
-          capturing: "optional",
+          initialMove: 'optional',
+          capturing: 'optional',
         },
         movements: [],
       })
@@ -69,13 +74,13 @@ const PiecePage = () => {
     setPiece(piece.removeMovementAt(moveInd, movementInd));
   };
 
-  const changePiece = (piece: Piece) => {
-    setPiece(piece);
-    setImageUrl(piece.image.src);
+  const changePiece = (newPiece: Piece) => {
+    setPiece(newPiece);
+    setImageUrl(newPiece.image.src);
   };
 
   const verifyImageUrl = (url: string) => {
-    const image: verifiedImage = { src: url, verified: false };
+    const image: VerifiedImage = { src: url, verified: false };
     const img = new Image();
     img.src = url;
     img.onload = () => {
@@ -95,88 +100,88 @@ const PiecePage = () => {
   };
 
   return (
-    <>
-      <div className="flex flex-row justify-between gap-4 p-4 items-start">
-        <SideBar
-          isOpen={piecesOpen}
-          setIsOpen={(state: boolean) => {
-            setPiecesOpen(state);
-          }}
-          name={"Pieces"}
-          content={<PieceSideBar pieces={Object.values(pieces)} setPiece={changePiece} />}
-          align={"left"}
-        />
+    <div className="flex flex-row justify-between gap-4 p-4 items-start">
+      <SideBar
+        align="left"
+        content={<PieceSideBar pieces={Object.values(pieces)} setPiece={changePiece} />}
+        isOpen={piecesOpen}
+        name="Pieces"
+        setIsOpen={(state: boolean) => {
+          setPiecesOpen(state);
+        }}
+      />
 
-        <main className="flex grow-5 items-center justify-center">
-          <div className="flex flex-col center">
-            <BoardPiece
-              cellWidth={100}
-              moves={moves.map((result) => result.landing)}
-              captures={[]}
-              piece={piece}
-              location={location}
+      <main className="flex grow-5 items-center justify-center">
+        <div className="flex flex-col center">
+          <BoardPiece
+            captures={[]}
+            cellWidth={100}
+            location={location}
+            moves={moves.map((result) => result.landing)}
+            piece={piece}
+          />
+        </div>
+      </main>
+      <div className="flex grow-2 items-center justify-center">
+        <div className="flex flex-col center gap-4">
+          <div className="flex flex-row items-center">
+            <Label className="pr-4">Name:</Label>
+            <Input
+              placeholder="Default Name"
+              type="text"
+              value={piece.name}
+              onChange={(e) => {
+                setPiece(
+                  new Piece(
+                    e.target.value,
+                    piece.image,
+                    [...piece.moves],
+                    [...piece.captures],
+                    piece.id
+                  )
+                );
+              }}
+            />
+            <Button className="m-5" onClick={handleSave}>
+              {' '}
+              Save Piece{' '}
+            </Button>
+            <Button className="m-5" onClick={handleDelete}>
+              {' '}
+              Delete Piece
+            </Button>
+          </div>
+          <div className="flex flex-row items-center">
+            <Label className="pr-4">Image URL:</Label>
+            <Input
+              placeholder="Image URL"
+              type="text"
+              value={imageUrl}
+              onChange={(e) => {
+                changeImageURL(e.target.value);
+              }}
             />
           </div>
-        </main>
-        <div className="flex grow-2 items-center justify-center">
-          <div className="flex flex-col center gap-4">
-            <div className="flex flex-row items-center">
-              <Label className="pr-4">Name:</Label>
-              <Input
-                placeholder="Default Name"
-                type="text"
-                value={piece.name}
-                onChange={(e) => {
-                  setPiece(
-                    new Piece(
-                      e.target.value,
-                      piece.image,
-                      [...piece.moves],
-                      [...piece.captures],
-                      piece.id
-                    )
-                  );
-                }}
-              />
-              <Button className="m-5" onClick={handleSave}>
-                {" "}
-                Save Piece{" "}
-              </Button>
-              <Button className="m-5" onClick={handleDelete}>
-                {" "}
-                Delete Piece
-              </Button>
-            </div>
-            <div className="flex flex-row items-center">
-              <Label className="pr-4">Image URL:</Label>
-              <Input
-                placeholder="Image URL"
-                type="text"
-                value={imageUrl}
-                onChange={(e) => {
-                  changeImageURL(e.target.value);
-                }}
-              />
-            </div>
-            {imageUrl && !piece.image.verified && (
-              <span className="text-red-500 text-sm">Invalid image URL</span>
-            )}
-            {piece.moves.map((move, index) => (
-              <MoveMenu
-                index={index}
-                piece={piece}
-                move={move}
-                setPiece={setPiece}
-                handleDeleteMovement={handleDeleteMovement}
-                handleAddMovement={handleAddMovement}
-                handleDeleteMove={handleDeleteMove}
-              />
-            ))}
-            <Button onClick={handleAddMove}> Add Move </Button>
-          </div>
+          {imageUrl && !piece.image.verified ? (
+            <span className="text-red-500 text-sm">Invalid image URL</span>
+          ) : null}
+          {piece.moves.map((move, index) => (
+            <MoveMenu
+              // eslint-disable-next-line react/no-array-index-key
+              key={index}
+              handleAddMovement={handleAddMovement}
+              handleDeleteMove={handleDeleteMove}
+              handleDeleteMovement={handleDeleteMovement}
+              index={index}
+              move={move}
+              piece={piece}
+              setPiece={setPiece}
+            />
+          ))}
+          <Button onClick={handleAddMove}> Add Move </Button>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

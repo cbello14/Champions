@@ -1,10 +1,14 @@
-import { BoardDrawing } from "@/types/boardDrawing.ts";
-import type { BoardDrawingParams } from "@/types/boardDrawing.ts";
-import { useCallback } from "react";
-import { coordinateToString, type Board, type coordinate } from "@/features/boards/board";
-import type { InstancePieceMap } from "@/types/instancePiece";
-import BoardGeneric from "./BoardGeneric";
-import { Label } from "../ui/label";
+import { useCallback } from 'react';
+
+import { coordinateToString } from '@/features/boards/board';
+import { BoardDrawing } from '@/types/boardDrawing';
+
+import BoardGeneric from './BoardGeneric';
+import { Label } from '../ui/label';
+
+import type { Board, Coordinate } from '@/features/boards/board';
+import type { BoardDrawingParams } from '@/types/boardDrawing';
+import type { InstancePieceMap } from '@/types/instancePiece';
 
 const BoardSnapshot = ({
   cellWidth,
@@ -13,17 +17,16 @@ const BoardSnapshot = ({
 }: {
   cellWidth: number;
   board: Board;
-  pieces?: InstancePieceMap;
+  pieces: InstancePieceMap | undefined;
 }) => {
-  const ignoreSelected = (newSelected: coordinate | null) => {
+  const ignoreSelected = (newSelected: Coordinate | null) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     newSelected === null;
-    return;
   };
 
   const drawingFunction = useCallback(
     (params: BoardDrawingParams) => {
-      BoardDrawing.boardColoring(params, undefined, null);
+      BoardDrawing.boardColoring(params, null);
       BoardDrawing.boardSpecialTiles(params, board);
       if (pieces) BoardDrawing.boardPieces(params, pieces);
     },
@@ -33,12 +36,12 @@ const BoardSnapshot = ({
   return (
     <div className="flex flex-col items-center">
       <BoardGeneric
-        shape={board.shape}
-        dimensions={board.dimensions}
         cellWidth={cellWidth}
+        dimensions={board.dimensions}
         drawingFunction={drawingFunction}
         selected={null}
         setSelected={ignoreSelected}
+        shape={board.shape}
       />
       <Label>{board.name} </Label>
       <Label>{coordinateToString([...board.dimensions])} </Label>

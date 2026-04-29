@@ -1,33 +1,37 @@
-import type { move } from "@/types/move";
+import type { Move } from '@/types/move';
 
 export interface TileJSON {
   id: string;
   name: string;
-  inboundMoves: move[];
-  outboundMoves: move[];
-  //effect: function?
+  inboundMoves: Move[];
+  outboundMoves: Move[];
+  // effect: function?
 }
 
 export class Tile {
   readonly id: string;
-  readonly name: string;
-  readonly inboundMoves: readonly move[];
-  readonly outboundMoves: readonly move[];
-  //readonly effect: function?
 
-  constructor(n = " ", inbound: move[], outbound: move[], id?: string) {
+  readonly name: string;
+
+  readonly inboundMoves: readonly Move[];
+
+  readonly outboundMoves: readonly Move[];
+  // readonly effect: function?
+
+  constructor(n: string, inbound: Move[], outbound: Move[], id?: string) {
     this.id = id ?? crypto.randomUUID();
     this.name = n;
     this.inboundMoves = inbound;
     this.outboundMoves = outbound;
-    //effect = foo()
+    // effect = foo()
   }
 
-  //NOTE: move checkers currently only check if the move is exact
-  isValidInboundMove(move: move): boolean {
+  // NOTE: move checkers currently only check if the move is exact
+  isValidInboundMove(move: Move): boolean {
     return this.inboundMoves.includes(move);
   }
-  isValidOutboundMove(move: move): boolean {
+
+  isValidOutboundMove(move: Move): boolean {
     return this.outboundMoves.includes(move);
   }
 
@@ -39,11 +43,12 @@ export class Tile {
       outboundMoves: [...this.outboundMoves],
     };
   }
+
   static fromJSON(data: TileJSON): Tile {
-    const name = data.name ? data.name : "";
+    const name = data.name ? data.name : '';
     const inboundMoves = data.inboundMoves ? data.inboundMoves : [];
     const outboundMoves = data.outboundMoves ? data.outboundMoves : [];
-    const id = data.id ? data.id : "";
+    const id = data.id ? data.id : '';
     return new Tile(name, inboundMoves, outboundMoves, id);
   }
 }

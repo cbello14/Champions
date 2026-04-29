@@ -1,25 +1,26 @@
-import { moveDirection, moveMovementType, moveReflect } from "@/types/move";
-import { Piece } from "./piece";
+import { moveDirection, moveMovementType, moveReflect } from '@/types/move';
+
+import { Piece } from './piece';
 
 export const pawn = new Piece(
-  "Pawn",
-  { src: "", verified: false },
+  'Pawn',
+  { src: '', verified: false },
   [
     {
       attributes: {
         type: moveMovementType.slide,
-        reflection: "none",
-        initialMove: "required",
-        capturing: "disabled",
+        reflection: 'none',
+        initialMove: 'required',
+        capturing: 'disabled',
       },
       movements: [{ distance: 2, direction: moveDirection.up }],
     },
     {
       attributes: {
         type: moveMovementType.slide,
-        reflection: "none",
-        initialMove: "optional",
-        capturing: "disabled",
+        reflection: 'none',
+        initialMove: 'optional',
+        capturing: 'disabled',
       },
       movements: [{ distance: 1, direction: moveDirection.up }],
     },
@@ -27,8 +28,8 @@ export const pawn = new Piece(
       attributes: {
         type: moveMovementType.slide,
         reflection: moveReflect.horizontal,
-        initialMove: "optional",
-        capturing: "required",
+        initialMove: 'optional',
+        capturing: 'required',
       },
       movements: [{ distance: 1, direction: moveDirection.upright }],
     },
@@ -36,25 +37,25 @@ export const pawn = new Piece(
       attributes: {
         type: moveMovementType.slide,
         reflection: moveReflect.horizontal,
-        initialMove: "optional",
-        capturing: "required",
+        initialMove: 'optional',
+        capturing: 'required',
       },
       movements: [{ distance: 1, direction: moveDirection.upright }],
     },
   ],
-  ["no-capture", "no-capture", "direct", [{ distance: 1, direction: moveDirection.down }]]
+  ['no-capture', 'no-capture', 'direct', [{ distance: 1, direction: moveDirection.down }]]
 );
 
 export const knight = new Piece(
-  "Knight",
-  { src: "", verified: false },
+  'Knight',
+  { src: '', verified: false },
   [
     {
       attributes: {
         type: moveMovementType.jump,
         reflection: moveReflect.horizontalvertical,
-        initialMove: "optional",
-        capturing: "optional",
+        initialMove: 'optional',
+        capturing: 'optional',
       },
       movements: [
         { distance: 2, direction: moveDirection.up },
@@ -65,8 +66,8 @@ export const knight = new Piece(
       attributes: {
         type: moveMovementType.jump,
         reflection: moveReflect.horizontalvertical,
-        initialMove: "optional",
-        capturing: "optional",
+        initialMove: 'optional',
+        capturing: 'optional',
       },
       movements: [
         { distance: 1, direction: moveDirection.up },
@@ -74,36 +75,36 @@ export const knight = new Piece(
       ],
     },
   ],
-  ["direct", "direct"]
+  ['direct', 'direct']
 );
 
 export const bishop = new Piece(
-  "Bishop",
-  { src: "", verified: false },
+  'Bishop',
+  { src: '', verified: false },
   [
     {
       attributes: {
         type: moveMovementType.slide,
         reflection: moveReflect.horizontalvertical,
-        initialMove: "optional",
-        capturing: "optional",
+        initialMove: 'optional',
+        capturing: 'optional',
       },
       movements: [{ distance: Infinity, direction: moveDirection.upright }],
     },
   ],
-  ["direct"]
+  ['direct']
 );
 
 export const rook = new Piece(
-  "Rook",
-  { src: "", verified: false },
+  'Rook',
+  { src: '', verified: false },
   [
     {
       attributes: {
         type: moveMovementType.slide,
         reflection: moveReflect.horizontalvertical,
-        initialMove: "optional",
-        capturing: "optional",
+        initialMove: 'optional',
+        capturing: 'optional',
       },
       movements: [{ distance: Infinity, direction: moveDirection.up }],
     },
@@ -111,25 +112,25 @@ export const rook = new Piece(
       attributes: {
         type: moveMovementType.slide,
         reflection: moveReflect.horizontalvertical,
-        initialMove: "optional",
-        capturing: "optional",
+        initialMove: 'optional',
+        capturing: 'optional',
       },
       movements: [{ distance: Infinity, direction: moveDirection.right }],
     },
   ],
-  ["direct", "direct"]
+  ['direct', 'direct']
 );
 
 export const queen = new Piece(
-  "Queen",
-  { src: "", verified: false },
+  'Queen',
+  { src: '', verified: false },
   [
     {
       attributes: {
         type: moveMovementType.slide,
         reflection: moveReflect.horizontalvertical,
-        initialMove: "optional",
-        capturing: "optional",
+        initialMove: 'optional',
+        capturing: 'optional',
       },
       movements: [{ distance: Infinity, direction: moveDirection.up }],
     },
@@ -137,8 +138,8 @@ export const queen = new Piece(
       attributes: {
         type: moveMovementType.slide,
         reflection: moveReflect.horizontalvertical,
-        initialMove: "optional",
-        capturing: "optional",
+        initialMove: 'optional',
+        capturing: 'optional',
       },
       movements: [{ distance: Infinity, direction: moveDirection.right }],
     },
@@ -146,25 +147,25 @@ export const queen = new Piece(
       attributes: {
         type: moveMovementType.slide,
         reflection: moveReflect.horizontalvertical,
-        initialMove: "optional",
-        capturing: "optional",
+        initialMove: 'optional',
+        capturing: 'optional',
       },
       movements: [{ distance: Infinity, direction: moveDirection.upright }],
     },
   ],
-  ["direct", "direct", "direct"]
+  ['direct', 'direct', 'direct']
 );
 
 export const king = new Piece(
-  "King",
-  { src: "", verified: false },
+  'King',
+  { src: '', verified: false },
   [
     {
       attributes: {
         type: moveMovementType.slide,
         reflection: moveReflect.horizontalvertical,
-        initialMove: "optional",
-        capturing: "optional",
+        initialMove: 'optional',
+        capturing: 'optional',
       },
       movements: [{ distance: 1, direction: moveDirection.up }],
     },
@@ -172,8 +173,8 @@ export const king = new Piece(
       attributes: {
         type: moveMovementType.slide,
         reflection: moveReflect.horizontalvertical,
-        initialMove: "optional",
-        capturing: "optional",
+        initialMove: 'optional',
+        capturing: 'optional',
       },
       movements: [{ distance: 1, direction: moveDirection.right }],
     },
@@ -181,11 +182,11 @@ export const king = new Piece(
       attributes: {
         type: moveMovementType.slide,
         reflection: moveReflect.horizontalvertical,
-        initialMove: "optional",
-        capturing: "optional",
+        initialMove: 'optional',
+        capturing: 'optional',
       },
       movements: [{ distance: 1, direction: moveDirection.upright }],
     },
   ],
-  ["direct", "direct", "direct"]
+  ['direct', 'direct', 'direct']
 );

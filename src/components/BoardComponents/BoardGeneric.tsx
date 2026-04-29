@@ -1,6 +1,7 @@
-import { useEffect, useRef } from "react";
-import type { BoardDrawingFunction, BoardDrawingParams } from "@/types/boardDrawing";
-import type { coordinate, shape } from "@/features/boards/board";
+import { useEffect, useRef } from 'react';
+
+import type { Coordinate, Shape } from '@/features/boards/board';
+import type { BoardDrawingFunction, BoardDrawingParams } from '@/types/boardDrawing';
 
 const reverseCoordsHex = (internalX: number, internalY: number, cellWidth: number) => {
   // All this logic is from: https://www.redblobgames.com/grids/hexagons/
@@ -17,17 +18,18 @@ const reverseCoordsHex = (internalX: number, internalY: number, cellWidth: numbe
   let rr = Math.round(r);
   const rs = Math.round(s);
 
-  const q_diff = Math.abs(rq - q);
-  const r_diff = Math.abs(rr - r);
-  const s_diff = Math.abs(rs - s);
+  const qDiff = Math.abs(rq - q);
+  const rDiff = Math.abs(rr - r);
+  const sDiff = Math.abs(rs - s);
 
-  if (q_diff > r_diff && q_diff > s_diff) {
+  if (qDiff > rDiff && qDiff > sDiff) {
     rq = -rr - rs;
-  } else if (r_diff > s_diff) {
+  } else if (rDiff > sDiff) {
     rr = -rq - rs;
   }
 
   const selectedY = rr;
+  // eslint-disable-next-line no-bitwise
   const selectedX = rq + (rr - (rr & 1)) / 2;
   return [selectedX, selectedY];
 };
@@ -49,9 +51,9 @@ const BoardGeneric = ({
   dimensions: readonly number[];
   cellWidth: number;
   drawingFunction: BoardDrawingFunction;
-  selected: coordinate | null;
-  setSelected: (newSelected: coordinate | null) => void;
-  shape: shape;
+  selected: Coordinate | null;
+  setSelected: (newSelected: Coordinate | null) => void;
+  shape: Shape;
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const handleCanvasClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
@@ -70,7 +72,7 @@ const BoardGeneric = ({
     const internalY = rawY * scaleY;
 
     const [selectedX, selectedY] =
-      shape === "rect"
+      shape === 'rect'
         ? reverseCoordsRect(internalX, internalY, cellWidth)
         : reverseCoordsHex(internalX, internalY, cellWidth);
 
@@ -86,30 +88,28 @@ const BoardGeneric = ({
 
   useEffect(() => {
     if (canvasRef.current) {
-      const context = canvasRef.current.getContext("2d");
+      const context = canvasRef.current.getContext('2d');
       const canvas = canvasRef.current;
 
       if (context) {
         context.clearRect(0, 0, canvas.width, canvas.height);
         const params: BoardDrawingParams = {
           boardSize: [...dimensions],
-          cellWidth: cellWidth,
+          cellWidth,
           ctx: context,
-          shape: shape,
+          shape,
         };
         drawingFunction(params);
       }
     }
   }, [dimensions, cellWidth, selected, drawingFunction, shape]);
   return (
-    <>
-      <canvas
-        ref={canvasRef}
-        onClick={handleCanvasClick}
-        width={dimensions[0] * cellWidth}
-        height={dimensions[1] * cellWidth}
-      />
-    </>
+    <canvas
+      ref={canvasRef}
+      height={dimensions[1] * cellWidth}
+      onClick={handleCanvasClick}
+      width={dimensions[0] * cellWidth}
+    />
   );
 };
 

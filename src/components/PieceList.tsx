@@ -1,8 +1,10 @@
-import { Button } from "@/components/ui/button";
-import { Piece } from "@/features/pieces/piece";
-import { useStore } from "@/utils/storage";
-import { useEffect } from "react";
-import { pawn, king, queen, rook, knight, bishop } from "@/features/pieces/defaultPieces";
+import { useEffect } from 'react';
+
+import { Button } from '@/components/ui/button';
+import { bishop, king, knight, pawn, queen, rook } from '@/features/pieces/defaultPieces';
+import { useStore } from '@/utils/storage';
+
+import type { Piece } from '@/features/pieces/piece';
 
 const PieceList = ({ onSelectPiece }: { onSelectPiece: (piece: Piece) => void }) => {
   const piecesJSON = useStore((state) => state.pieces);
@@ -26,8 +28,8 @@ const PieceList = ({ onSelectPiece }: { onSelectPiece: (piece: Piece) => void })
         pieces.map((piece) => (
           <Button
             key={piece.id}
-            variant="outline"
             className="h-20 flex flex-col items-center justify-center gap-2 hover:bg-accent"
+            variant="outline"
             onClick={() => {
               onSelectPiece(piece);
             }}

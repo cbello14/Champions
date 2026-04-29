@@ -1,17 +1,17 @@
-type color = string;
-interface theme {
-  gridPrimaryColor: color;
-  gridAlternateColor: color;
-  gridOutlineColor: color;
-  teamColors: color[];
+type Color = string;
+interface Theme {
+  gridPrimaryColor: Color;
+  gridAlternateColor: Color;
+  gridOutlineColor: Color;
+  teamColors: Color[];
 }
 
-const basic_theme: theme = {
-  gridPrimaryColor: "blue",
-  gridAlternateColor: "tan",
-  gridOutlineColor: "black",
-  teamColors: ["black", "white", "orange", "purple"],
+const basicTheme: Theme = {
+  gridPrimaryColor: 'blue',
+  gridAlternateColor: 'tan',
+  gridOutlineColor: 'black',
+  teamColors: ['black', 'white', 'orange', 'purple'],
 };
 
-export { basic_theme };
-export type { theme };
+export { basicTheme };
+export type { Theme as theme };

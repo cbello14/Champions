@@ -1,11 +1,15 @@
-import { checkCoordinateEquality, type coordinate } from "@/features/boards/board";
-import { BoardDrawing } from "@/types/boardDrawing.ts";
-import type { BoardDrawingParams } from "@/types/boardDrawing.ts";
-import { useCallback, useState } from "react";
-import { type moveCalculationResult } from "@/types/moveCalculation";
-import type { Instance } from "@/features/instances/instance";
-import { moveDirection } from "@/types/move";
-import BoardGeneric from "./BoardGeneric";
+import { useCallback, useState } from 'react';
+
+import { checkCoordinateEquality } from '@/features/boards/board';
+import { BoardDrawing } from '@/types/boardDrawing';
+import { moveDirection } from '@/types/move';
+
+import BoardGeneric from './BoardGeneric';
+
+import type { Coordinate } from '@/features/boards/board';
+import type { Instance } from '@/features/instances/instance';
+import type { BoardDrawingParams } from '@/types/boardDrawing';
+import type { MoveCalculationResult } from '@/types/moveCalculation';
 
 const BoardInstance = ({
   cellWidth,
@@ -20,27 +24,7 @@ const BoardInstance = ({
   currentTeam: number;
   nextTeam: () => void;
 }) => {
-  const [selected, changeSelected] = useState<coordinate | null>(null);
-
-  const setSelected = (newSelected: coordinate | null) => {
-    if (selected && newSelected) {
-      const prevSelectedPiece = instance.piecesRecord.getInstancePiece(selected);
-      if (prevSelectedPiece?.team === currentTeam) {
-        const direction = directional(prevSelectedPiece.team);
-        const moves = instance.calculateMoves(selected, direction);
-        const selectedMove = moves.find((moveResult) => {
-          return checkCoordinateEquality(moveResult.landing, newSelected);
-        });
-        if (selectedMove) {
-          setInstance(instance.movePiece(selected, selectedMove));
-          nextTeam();
-          return;
-        }
-      }
-    }
-    changeSelected(newSelected);
-  };
-
+  const [selected, setSelected] = useState<Coordinate | null>(null);
   // made this into a callback because it was causing a issue with drawingFunction, would be better to figure out a different solution
   const directional = useCallback((teamNumber: number | undefined) => {
     if (!teamNumber) return moveDirection.down;
@@ -56,11 +40,30 @@ const BoardInstance = ({
     }
   }, []);
 
+  const changeSelected = (newSelected: Coordinate | null) => {
+    if (selected && newSelected) {
+      const prevSelectedPiece = instance.piecesRecord.getInstancePiece(selected);
+      if (prevSelectedPiece?.team === currentTeam) {
+        const direction = directional(prevSelectedPiece.team);
+        const moves = instance.calculateMoves(selected, direction);
+        const selectedMove = moves.find((moveResult) =>
+          checkCoordinateEquality(moveResult.landing, newSelected)
+        );
+        if (selectedMove) {
+          setInstance(instance.movePiece(selected, selectedMove));
+          nextTeam();
+          return;
+        }
+      }
+    }
+    setSelected(newSelected);
+  };
+
   const drawingFunction = useCallback(
     (params: BoardDrawingParams) => {
-      BoardDrawing.boardColoring(params, undefined, selected);
+      BoardDrawing.boardColoring(params, selected);
       BoardDrawing.boardSpecialTiles(params, instance.board);
-      let moves: moveCalculationResult[] = [];
+      let moves: MoveCalculationResult[] = [];
       if (selected) {
         const selectedPiece = instance.piecesRecord.getInstancePiece(selected);
         const direction = directional(selectedPiece?.team);
@@ -74,12 +77,12 @@ const BoardInstance = ({
 
   return (
     <BoardGeneric
-      shape={instance.board.shape}
-      dimensions={instance.board.dimensions}
       cellWidth={cellWidth}
+      dimensions={instance.board.dimensions}
       drawingFunction={drawingFunction}
       selected={selected}
-      setSelected={setSelected}
+      setSelected={changeSelected}
+      shape={instance.board.shape}
     />
   );
 };

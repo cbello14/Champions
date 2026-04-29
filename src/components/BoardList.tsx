@@ -1,8 +1,11 @@
-import { useStore } from "@/utils/storage";
-import { useEffect } from "react";
-import { basic } from "@/features/boards/defaultBoards";
-import type { Board } from "@/features/boards/board";
-import SnapshotButton from "./snapshotButton";
+import { useEffect } from 'react';
+
+import { basic } from '@/features/boards/defaultBoards';
+import { useStore } from '@/utils/storage';
+
+import SnapshotButton from './SnapshotButton';
+
+import type { Board } from '@/features/boards/board';
 
 const BoardList = ({ onSelectBoard }: { onSelectBoard: (board: Board) => void }) => {
   const boardsJSON = useStore((state) => state.boards);
@@ -22,7 +25,9 @@ const BoardList = ({ onSelectBoard }: { onSelectBoard: (board: Board) => void })
       {boards.length > 0 ? (
         boards.map((board) => (
           <SnapshotButton
+            key={board.id}
             snapshotItem={board}
+            text={undefined}
             onClick={() => {
               onSelectBoard(board);
             }}

@@ -1,36 +1,36 @@
-import {
-  type dimension,
-  type coordinate,
-  checkCoordinateEquality,
-  type Board,
-  type shape,
-} from "@/features/boards/board";
-import type { Game } from "@/features/games/game";
-import type { Instance } from "@/features/instances/instance";
-import { Piece } from "@/features/pieces/piece";
-import { useStore } from "@/utils/storage";
-import type { InstancePieceMap } from "./instancePiece";
-import type { moveCalculationResult } from "./moveCalculation";
-import { basic_theme, type theme } from "./theme";
+/* eslint-disable @typescript-eslint/no-use-before-define */
+import { checkCoordinateEquality } from '@/features/boards/board';
+import { Piece } from '@/features/pieces/piece';
+import { useStore } from '@/utils/storage';
+
+import { basicTheme } from './theme';
+
+import type { Board, Coordinate, Dimension, Shape } from '@/features/boards/board';
+import type { Game } from '@/features/games/game';
+import type { Instance } from '@/features/instances/instance';
+
+import type { InstancePieceMap } from './instancePiece';
+import type { MoveCalculationResult } from './moveCalculation';
+import type { theme } from './theme';
 
 interface BoardDrawingParams {
-  boardSize: dimension;
+  boardSize: Dimension;
   cellWidth: number;
   ctx: CanvasRenderingContext2D;
-  shape: shape;
+  shape: Shape;
 }
 type BoardDrawingFunction = (params: BoardDrawingParams) => void;
 
 const BoardDrawing = {
   boardColoring: (
     params: BoardDrawingParams,
-    theme = basic_theme,
-    selectedCell: coordinate | null,
-    selectedColor?: string
+    selectedCell: Coordinate | null,
+    selectedColor?: string,
+    theme = basicTheme
   ) => {
     const { boardSize, cellWidth, ctx } = params;
-    for (let gridX = 0; gridX < boardSize[0]; gridX++) {
-      for (let gridY = 0; gridY < boardSize[1]; gridY++) {
+    for (let gridX = 0; gridX < boardSize[0]; gridX += 1) {
+      for (let gridY = 0; gridY < boardSize[1]; gridY += 1) {
         const radius = cellWidth / 2;
         const [pixelX, pixelY] = getCenterCoords(gridX, gridY, radius, params.shape);
         ctx.fillStyle =
@@ -46,22 +46,22 @@ const BoardDrawing = {
     }
   },
 
-  boardSpecialTiles: (params: BoardDrawingParams, board: Board, theme = basic_theme) => {
+  boardSpecialTiles: (params: BoardDrawingParams, board: Board, theme = basicTheme) => {
     const { cellWidth, ctx } = params;
     for (const [coord] of board.specialTiles) {
       const radius = cellWidth / 2;
       const [pixelX, pixelY] = getCenterCoords(coord[0], coord[1], radius, params.shape);
-      ctx.fillStyle = "red";
+      ctx.fillStyle = 'red';
       fillShape(ctx, pixelX, pixelY, radius, params.shape);
       ctx.strokeStyle = theme.gridOutlineColor;
       strokeShape(ctx, pixelX, pixelY, radius, params.shape);
     }
   },
 
-  boardMoveCaptures: (params: BoardDrawingParams, calculationResults: moveCalculationResult[]) => {
+  boardMoveCaptures: (params: BoardDrawingParams, calculationResults: MoveCalculationResult[]) => {
     const { cellWidth, ctx } = params;
     const radius = cellWidth / 2;
-    calculationResults.forEach((result: moveCalculationResult) => {
+    calculationResults.forEach((result: MoveCalculationResult) => {
       const [moveX, moveY] = getCenterCoords(
         result.landing[0],
         result.landing[1],
@@ -83,8 +83,8 @@ const BoardDrawing = {
       }
     });
   },
-  boardGame: (params: BoardDrawingParams, game: Game, theme = basic_theme) => {
-    game.pieces.getKeys().forEach((coordinate: coordinate) => {
+  boardGame: (params: BoardDrawingParams, game: Game, theme = basicTheme) => {
+    game.pieces.getKeys().forEach((coordinate: Coordinate) => {
       const instancePiece = game.pieces.getInstancePiece(coordinate);
       if (instancePiece) {
         boardDrawPiece(params, instancePiece.piece, coordinate, instancePiece.team, theme);
@@ -92,8 +92,8 @@ const BoardDrawing = {
     });
   },
 
-  boardInstance: (params: BoardDrawingParams, instance: Instance, theme = basic_theme) => {
-    instance.piecesRecord.getKeys().forEach((coordinate: coordinate) => {
+  boardInstance: (params: BoardDrawingParams, instance: Instance, theme = basicTheme) => {
+    instance.piecesRecord.getKeys().forEach((coordinate: Coordinate) => {
       const instancePiece = instance.piecesRecord.getInstancePiece(coordinate);
       if (instancePiece) {
         boardDrawPiece(params, instancePiece.piece, coordinate, instancePiece.team, theme);
@@ -104,18 +104,14 @@ const BoardDrawing = {
   boardPiece: (
     params: BoardDrawingParams,
     piece: Piece,
-    location: coordinate,
+    location: Coordinate,
     team: number,
-    theme = basic_theme
+    theme = basicTheme
   ) => {
     boardDrawPiece(params, piece, location, team, theme);
   },
-  boardPieces: (
-    params: BoardDrawingParams,
-    piecesRecord: InstancePieceMap,
-    theme = basic_theme
-  ) => {
-    piecesRecord.getKeys().forEach((coordinate: coordinate) => {
+  boardPieces: (params: BoardDrawingParams, piecesRecord: InstancePieceMap, theme = basicTheme) => {
+    piecesRecord.getKeys().forEach((coordinate: Coordinate) => {
       const instancePiece = piecesRecord.getInstancePiece(coordinate);
       if (instancePiece) {
         boardDrawPiece(params, instancePiece.piece, coordinate, instancePiece.team, theme);
@@ -127,7 +123,7 @@ const BoardDrawing = {
 const boardDrawPiece = (
   params: BoardDrawingParams,
   piece: Piece,
-  location: coordinate,
+  location: Coordinate,
   team: number,
   theme: theme
 ) => {
@@ -163,17 +159,17 @@ const boardDrawPiece = (
   }
 };
 
-function getCenterCoords(gridX: number, gridY: number, radius: number, shape: shape) {
-  if (shape === "rect") {
+function getCenterCoords(gridX: number, gridY: number, radius: number, shape: Shape) {
+  if (shape === 'rect') {
     return [gridX * radius * 2 + radius, gridY * radius * 2 + radius];
-  } else if (shape === "hex") {
+  }
+  if (shape === 'hex') {
     const pixelX = gridX * (Math.sqrt(3) * radius) + radius;
     const pixelY = gridY * ((3 * radius) / 2) + radius;
     const offset = gridY % 2 === 0 ? 0 : (Math.sqrt(3) / 2) * radius;
     return [pixelX + offset, pixelY];
-  } else {
-    return [];
   }
+  return [];
 }
 
 function fillShape(
@@ -181,14 +177,12 @@ function fillShape(
   pixelX: number,
   pixelY: number,
   radius: number,
-  shape: shape
+  shape: Shape
 ) {
-  if (shape === "rect") {
+  if (shape === 'rect') {
     ctx.fillRect(pixelX - radius, pixelY - radius, radius * 2, radius * 2);
-    return;
-  } else if (shape === "hex") {
+  } else if (shape === 'hex') {
     fillHexagon(ctx, pixelX, pixelY, radius);
-    return;
   }
 }
 
@@ -197,24 +191,22 @@ function strokeShape(
   pixelX: number,
   pixelY: number,
   radius: number,
-  shape: shape
+  shape: Shape
 ) {
-  if (shape === "rect") {
+  if (shape === 'rect') {
     ctx.strokeRect(pixelX - radius, pixelY - radius, radius * 2, radius * 2);
-    return;
-  } else if (shape === "hex") {
+  } else if (shape === 'hex') {
     strokeHexagon(ctx, pixelX, pixelY, radius);
-    return;
   }
 }
 
 function fillHexagon(ctx: CanvasRenderingContext2D, x: number, y: number, radius: number): void {
   ctx.beginPath();
-  for (let i = 0; i < 6; i++) {
-    const angle_deg = 60 * i - 30;
-    const angle_rad = (Math.PI / 180) * angle_deg;
-    const px = x + radius * Math.cos(angle_rad);
-    const py = y + radius * Math.sin(angle_rad);
+  for (let i = 0; i < 6; i += 1) {
+    const angleDeg = 60 * i - 30;
+    const angleRad = (Math.PI / 180) * angleDeg;
+    const px = x + radius * Math.cos(angleRad);
+    const py = y + radius * Math.sin(angleRad);
 
     if (i === 0) ctx.moveTo(px, py);
     else ctx.lineTo(px, py);
@@ -224,11 +216,11 @@ function fillHexagon(ctx: CanvasRenderingContext2D, x: number, y: number, radius
 }
 function strokeHexagon(ctx: CanvasRenderingContext2D, x: number, y: number, radius: number): void {
   ctx.beginPath();
-  for (let i = 0; i < 6; i++) {
-    const angle_deg = 60 * i - 30;
-    const angle_rad = (Math.PI / 180) * angle_deg;
-    const px = x + radius * Math.cos(angle_rad);
-    const py = y + radius * Math.sin(angle_rad);
+  for (let i = 0; i < 6; i += 1) {
+    const angleDeg = 60 * i - 30;
+    const angleRad = (Math.PI / 180) * angleDeg;
+    const px = x + radius * Math.cos(angleRad);
+    const py = y + radius * Math.sin(angleRad);
 
     if (i === 0) ctx.moveTo(px, py);
     else ctx.lineTo(px, py);
@@ -243,7 +235,7 @@ const drawCircle = (
   centerY: number,
   radius: number
 ) => {
-  ctx.fillStyle = "Green";
+  ctx.fillStyle = 'Green';
   ctx.beginPath();
   ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI); // Define the circle path
   ctx.fill();
@@ -256,7 +248,7 @@ const drawLine = (
   toX: number,
   toY: number
 ) => {
-  ctx.strokeStyle = "Red";
+  ctx.strokeStyle = 'Red';
   ctx.lineWidth = 10;
   ctx.beginPath();
   ctx.moveTo(fromX, fromY);
@@ -271,7 +263,7 @@ const drawCross = (
   centerY: number,
   radius: number
 ) => {
-  ctx.fillStyle = "Red";
+  ctx.fillStyle = 'Red';
   const t = radius / 4;
   ctx.beginPath();
   ctx.moveTo(centerX - radius, centerY - radius + t);
@@ -301,8 +293,8 @@ const drawLetter = (
   teamOutline: string
 ) => {
   ctx.font = `${radius.toString()}px Arial`;
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
   ctx.fillStyle = teamColor;
   ctx.strokeStyle = teamOutline;
   ctx.fillText(letter, centerX, centerY);

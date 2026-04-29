@@ -1,5 +1,3 @@
-import type { movement } from "./move";
+import type { Movement } from './move';
 
-type capture = "direct" | "no-capture" | movement[];
-
-export type { capture };
+export type Capture = 'direct' | 'no-capture' | Movement[];

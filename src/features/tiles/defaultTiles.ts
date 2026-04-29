@@ -1,3 +1,5 @@
-import { Tile } from "./tile";
+import { Tile } from './tile';
 
-export const fullBlocker = new Tile("Full Blocker", [], []);
+const fullBlocker = new Tile('Full Blocker', [], []);
+
+export default fullBlocker;

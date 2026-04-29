@@ -1,29 +1,34 @@
-import type { coordinateString, coordinate } from "@/features/boards/board";
-import { coordinateToString, coordinateStringToCoordinate } from "@/features/boards/board";
-import { Piece, type PieceJSON } from "@/features/pieces/piece";
-import type { team } from "./team";
+import { coordinateStringToCoordinate, coordinateToString } from '@/features/boards/board';
+import { Piece } from '@/features/pieces/piece';
 
-export type instancePieceId = number;
+import type { Coordinate, CoordinateString } from '@/features/boards/board';
+import type { PieceJSON } from '@/features/pieces/piece';
 
-export interface instancePiece {
-  id: instancePieceId;
+import type { Team } from './team';
+
+export type InstancePieceId = number;
+
+export interface InstancePiece {
+  id: InstancePieceId;
   piece: Piece;
-  team: team;
+  team: Team;
 }
 
 export interface InstancePieceJSON {
-  id: instancePieceId;
+  id: InstancePieceId;
   piece: PieceJSON;
-  team: team;
+  team: Team;
 }
 
-export type InstancePieceMapJSON = [coordinateString, InstancePieceJSON][];
+export type InstancePieceMapJSON = [CoordinateString, InstancePieceJSON][];
 
 export class InstancePieceMap {
-  readonly map: ReadonlyMap<coordinateString, instancePiece>;
-  readonly maxId: instancePieceId;
+  readonly map: ReadonlyMap<CoordinateString, InstancePiece>;
+
+  readonly maxId: InstancePieceId;
+
   constructor(
-    map: ReadonlyMap<coordinateString, instancePiece> = new Map(),
+    map: ReadonlyMap<CoordinateString, InstancePiece> = new Map(),
     currentMaxId?: number
   ) {
     if (currentMaxId !== undefined) {
@@ -33,12 +38,12 @@ export class InstancePieceMap {
       return;
     }
 
-    const newMap = new Map<coordinateString, instancePiece>();
+    const newMap = new Map<CoordinateString, InstancePiece>();
     let calcMaxId = 0;
 
     for (const [coordStr, piece] of map.entries()) {
       if (piece.id <= calcMaxId) {
-        calcMaxId++;
+        calcMaxId += 1;
         newMap.set(coordStr, { ...piece, id: calcMaxId });
       } else {
         calcMaxId = piece.id;
@@ -49,23 +54,23 @@ export class InstancePieceMap {
     this.maxId = calcMaxId;
   }
 
-  getInstancePiece(coordinate: coordinate) {
+  getInstancePiece(coordinate: Coordinate) {
     const coordinateString = coordinateToString(coordinate);
     return this.map.get(coordinateString);
   }
 
-  setPiece(coordinate: coordinate, piece: Piece, team: team): InstancePieceMap {
+  setPiece(coordinate: Coordinate, piece: Piece, team: Team): InstancePieceMap {
     const coordinateString = coordinateToString(coordinate);
     const newMap = new Map(this.map);
     const newId = this.maxId + 1;
 
-    const instance: instancePiece = { id: newId, piece: piece, team: team };
+    const instance: InstancePiece = { id: newId, piece, team };
 
     newMap.set(coordinateString, instance);
     return new InstancePieceMap(newMap, newId);
   }
 
-  setInstancePiece(coordinate: coordinate, instancePiece: instancePiece): InstancePieceMap {
+  setInstancePiece(coordinate: Coordinate, instancePiece: InstancePiece): InstancePieceMap {
     const coordinateString = coordinateToString(coordinate);
     const newMap = new Map(this.map);
 
@@ -73,7 +78,7 @@ export class InstancePieceMap {
     let newPiece = instancePiece;
 
     if (instancePiece.id <= this.maxId) {
-      newMaxId++;
+      newMaxId += 1;
       newPiece = { ...instancePiece, id: newMaxId };
     } else {
       newMaxId = instancePiece.id;
@@ -83,7 +88,7 @@ export class InstancePieceMap {
     return new InstancePieceMap(newMap, newMaxId);
   }
 
-  moveInstancePiece(coordinate: coordinate, instancePiece: instancePiece): InstancePieceMap {
+  moveInstancePiece(coordinate: Coordinate, instancePiece: InstancePiece): InstancePieceMap {
     const coordinateString = coordinateToString(coordinate);
     const newMap = new Map(this.map);
 
@@ -91,28 +96,28 @@ export class InstancePieceMap {
     return new InstancePieceMap(newMap, this.maxId);
   }
 
-  removeInstancePiece(coordinate: coordinate): InstancePieceMap {
+  removeInstancePiece(coordinate: Coordinate): InstancePieceMap {
     const coordinateString = coordinateToString(coordinate);
     const newMap = new Map(this.map);
     newMap.delete(coordinateString);
     return new InstancePieceMap(newMap, this.maxId);
   }
 
-  getKeys(): coordinate[] {
+  getKeys(): Coordinate[] {
     return [...this.map.keys()]
       .map((coordString) => coordinateStringToCoordinate(coordString))
-      .filter((coord): coord is coordinate => coord !== null);
+      .filter((coord): coord is Coordinate => coord !== null);
   }
 
-  getFriendlyPieces(team: team) {
+  getFriendlyPieces(team: Team) {
     return this.getKeys().filter(
-      (value): value is coordinate => this.getInstancePiece(value)?.team === team
+      (value): value is Coordinate => this.getInstancePiece(value)?.team === team
     );
   }
 
-  getEnemyPieces(team: team) {
+  getEnemyPieces(team: Team) {
     return this.getKeys().filter(
-      (value): value is coordinate => this.getInstancePiece(value)?.team !== team
+      (value): value is Coordinate => this.getInstancePiece(value)?.team !== team
     );
   }
 
@@ -124,7 +129,7 @@ export class InstancePieceMap {
   }
 
   static fromJSON(data: InstancePieceMapJSON): InstancePieceMap {
-    const map = new Map<coordinateString, instancePiece>(
+    const map = new Map<CoordinateString, InstancePiece>(
       data.map(([coord, inst]: [string, InstancePieceJSON]) => [
         coord,
         { id: inst.id, piece: Piece.fromJSON(inst.piece), team: inst.team },
@@ -133,6 +138,7 @@ export class InstancePieceMap {
     return new InstancePieceMap(map);
   }
 
+  // eslint-disable-next-line class-methods-use-this
   clear(): InstancePieceMap {
     return new InstancePieceMap();
   }

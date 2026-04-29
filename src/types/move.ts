@@ -1,61 +1,61 @@
-type movementType = "jump" | "slide";
-const moveMovementType: Record<string, movementType> = { jump: "jump", slide: "slide" };
+type MovementType = 'jump' | 'slide';
+const moveMovementType: Record<string, MovementType> = { jump: 'jump', slide: 'slide' };
 
-type reflect = "none" | "horizontal" | "vertical" | "horizontal-vertical"  ;
-const moveReflect: Record<string, reflect> = {
-	horizontal: "horizontal",
-	vertical: "vertical",
-	horizontalvertical: "horizontal-vertical",
+type Reflect = 'none' | 'horizontal' | 'vertical' | 'horizontal-vertical';
+const moveReflect: Record<string, Reflect> = {
+  horizontal: 'horizontal',
+  vertical: 'vertical',
+  horizontalvertical: 'horizontal-vertical',
 };
 
-interface moveAttributes {
-	type: movementType;
-	reflection: reflect;
-	initialMove: permission;
-	capturing: permission;
+interface MoveAttributes {
+  type: MovementType;
+  reflection: Reflect;
+  initialMove: Permission;
+  capturing: Permission;
 }
 
-type cardinalDirection = "right" | "left" | "down" | "up";
+type CardinalDirection = 'right' | 'left' | 'down' | 'up';
 
-type diagonalDirection = "down-left" | "up-right" | "down-right" | "up-left";
+type DiagonalDirection = 'down-left' | 'up-right' | 'down-right' | 'up-left';
 
-type permission = "optional" | "required" | "disabled";
+type Permission = 'optional' | 'required' | 'disabled';
 
-const moveDirection: Record<string, direction> = {
-	right: "right",
-	left: "left",
-	down: "down",
-	up: "up",
-	downleft: "down-left",
-	downright: "down-right",
-	upleft: "up-left",
-	upright: "up-right",
+const moveDirection: Record<string, Direction> = {
+  right: 'right',
+  left: 'left',
+  down: 'down',
+  up: 'up',
+  downleft: 'down-left',
+  downright: 'down-right',
+  upleft: 'up-left',
+  upright: 'up-right',
 };
 
-type direction = cardinalDirection | diagonalDirection;
+type Direction = CardinalDirection | DiagonalDirection;
 
-type distance = number;
+type Distance = number;
 
-interface movement {
-	distance: distance;
-	direction: direction;
+interface Movement {
+  distance: Distance;
+  direction: Direction;
 }
 
-interface move {
-	attributes: moveAttributes;
-	movements: movement[];
+interface Move {
+  attributes: MoveAttributes;
+  movements: Movement[];
 }
 
 export type {
-	movementType,
-	reflect,
-	moveAttributes,
-	cardinalDirection,
-	diagonalDirection,
-	direction,
-	distance,
-	movement,
-	move,
-	permission,
+  CardinalDirection,
+  DiagonalDirection,
+  Direction,
+  Distance,
+  Move,
+  MoveAttributes,
+  Movement,
+  MovementType,
+  Permission,
+  Reflect,
 };
-export { moveReflect, moveDirection, moveMovementType };
+export { moveDirection, moveMovementType, moveReflect };

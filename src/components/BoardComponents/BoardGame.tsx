@@ -1,14 +1,17 @@
-import type { coordinate } from "@/features/boards/board";
-import { BoardDrawing } from "@/types/boardDrawing.ts";
-import type { BoardDrawingParams } from "@/types/boardDrawing.ts";
-import { useCallback, useState } from "react";
-import { Game } from "@/features/games/game";
-import { type moveCalculationResult } from "@/types/moveCalculation";
-import type { Piece } from "@/features/pieces/piece";
-import { moveDirection } from "@/types/move";
-import BoardGeneric from "./BoardGeneric";
+import { useCallback, useState } from 'react';
 
-type gameCreationActions = Piece | "erase" | "team" | null;
+import { BoardDrawing } from '@/types/boardDrawing';
+import { moveDirection } from '@/types/move';
+
+import BoardGeneric from './BoardGeneric';
+
+import type { Coordinate } from '@/features/boards/board';
+import type { Game } from '@/features/games/game';
+import type { Piece } from '@/features/pieces/piece';
+import type { BoardDrawingParams } from '@/types/boardDrawing';
+import type { MoveCalculationResult } from '@/types/moveCalculation';
+
+type GameCreationActions = Piece | 'erase' | 'team' | null;
 
 const BoardGame = ({
   cellWidth,
@@ -20,33 +23,33 @@ const BoardGame = ({
   cellWidth: number;
   game: Game;
   setGame: (game: Game) => void;
-  onClickAction: gameCreationActions;
+  onClickAction: GameCreationActions;
   numPlayer: number;
 }) => {
-  const [selected, changeSelected] = useState<coordinate | null>(null);
+  const [selected, setSelected] = useState<Coordinate | null>(null);
 
-  const setSelected = (newSelected: coordinate | null) => {
+  const changeSelected = (newSelected: Coordinate | null) => {
     if (onClickAction && newSelected) {
-      if (onClickAction === "team") {
+      if (onClickAction === 'team') {
         const pieceClicked = game.pieces.getInstancePiece(newSelected);
         if (pieceClicked) {
-          //in here, have a +1 and modulus
+          // in here, have a +1 and modulus
           setGame(game.setTeam(newSelected, (pieceClicked.team + 1) % numPlayer));
-          //setGame(game.setTeam(newSelected, pieceClicked.team === 0 ? 1 : 0))
+          // setGame(game.setTeam(newSelected, pieceClicked.team === 0 ? 1 : 0))
         }
-      } else if (onClickAction === "erase") {
+      } else if (onClickAction === 'erase') {
         setGame(game.removeInstancePiece(newSelected));
       } else {
         setGame(game.addPiece(newSelected, onClickAction, 1));
       }
     }
-    changeSelected(newSelected);
+    setSelected(newSelected);
   };
 
   const drawingFunction = useCallback(
     (params: BoardDrawingParams) => {
-      BoardDrawing.boardColoring(params, undefined, selected);
-      let moves: moveCalculationResult[] = [];
+      BoardDrawing.boardColoring(params, selected);
+      let moves: MoveCalculationResult[] = [];
       if (selected && !onClickAction) {
         const selectedPiece = game.pieces.getInstancePiece(selected);
         const direction = selectedPiece?.team === 1 ? moveDirection.up : moveDirection.down;
@@ -61,11 +64,11 @@ const BoardGame = ({
 
   return (
     <BoardGeneric
-      dimensions={game.board.dimensions}
       cellWidth={cellWidth}
+      dimensions={game.board.dimensions}
       drawingFunction={drawingFunction}
       selected={selected}
-      setSelected={setSelected}
+      setSelected={changeSelected}
       shape={game.board.shape}
     />
   );

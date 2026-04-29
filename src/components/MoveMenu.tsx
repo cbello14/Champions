@@ -1,20 +1,22 @@
-import { Piece } from "@/features/pieces/piece";
-import type { move, movementType, permission, reflect } from "@/types/move";
+import { useState } from 'react';
 
-import { Button } from "./ui/button";
-import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "./ui/collapsible";
-import { Label } from "./ui/label";
+import { ChevronDown, ChevronUp } from 'lucide-react';
+
+import MovementMenu from './MovementMenu';
+import { Button } from './ui/button';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
+import { Label } from './ui/label';
 import {
   Select,
-  SelectTrigger,
-  SelectValue,
   SelectContent,
   SelectGroup,
   SelectItem,
-} from "./ui/select";
-import MovementMenu from "./MovementMenu";
-import { ChevronDown, ChevronUp } from "lucide-react";
-import { useState } from "react";
+  SelectTrigger,
+  SelectValue,
+} from './ui/select';
+
+import type { Piece } from '@/features/pieces/piece';
+import type { Move, MovementType, Permission, Reflect } from '@/types/move';
 
 const MoveMenu = ({
   index,
@@ -27,7 +29,7 @@ const MoveMenu = ({
 }: {
   index: number;
   piece: Piece;
-  move: move;
+  move: Move;
   setPiece: (piece: Piece) => void;
   handleDeleteMovement: (index: number, movementIndex: number) => void;
   handleAddMovement: (index: number) => void;
@@ -41,15 +43,13 @@ const MoveMenu = ({
         <Label>Move {index + 1}</Label>
         <CollapsibleTrigger>
           <Button
-            variant="ghost"
             size="sm"
+            variant="ghost"
             onClick={() => {
-              {
-                setOpen(!open);
-              }
+              setOpen(!open);
             }}
           >
-            {" "}
+            {' '}
             {open ? <ChevronUp /> : <ChevronDown />}
           </Button>
         </CollapsibleTrigger>
@@ -64,7 +64,7 @@ const MoveMenu = ({
                 ...move,
                 attributes: {
                   ...move.attributes,
-                  type: e as movementType,
+                  type: e as MovementType,
                 },
               };
               setPiece(piece.replaceMoveAt(newMove, index));
@@ -91,7 +91,7 @@ const MoveMenu = ({
                 ...move,
                 attributes: {
                   ...move.attributes,
-                  reflection: e as reflect,
+                  reflection: e as Reflect,
                 },
               };
               setPiece(piece.replaceMoveAt(newMove, index));
@@ -121,7 +121,7 @@ const MoveMenu = ({
                 ...move,
                 attributes: {
                   ...move.attributes,
-                  initialMove: e as permission,
+                  initialMove: e as Permission,
                 },
               };
               setPiece(piece.replaceMoveAt(newMove, index));
@@ -149,7 +149,7 @@ const MoveMenu = ({
                 ...move,
                 attributes: {
                   ...move.attributes,
-                  capturing: e as permission,
+                  capturing: e as Permission,
                 },
               };
               setPiece(piece.replaceMoveAt(newMove, index));
@@ -171,14 +171,17 @@ const MoveMenu = ({
         <div className="flex flex-col center gap-4">
           Movements:
           {move.movements.map((movement, movementIndex) => (
+            // eslint-disable-next-line react/jsx-key
             <div>
               <MovementMenu
-                movement={movement}
-                piece={piece}
-                index={index}
-                movementIndex={movementIndex}
-                setPiece={setPiece}
+                // eslint-disable-next-line react/no-array-index-key
+                key={`Move-${index}Movement-${movementIndex}`}
                 handleDeleteMovement={handleDeleteMovement}
+                index={index}
+                movement={movement}
+                movementIndex={movementIndex}
+                piece={piece}
+                setPiece={setPiece}
               />
             </div>
           ))}
@@ -187,8 +190,8 @@ const MoveMenu = ({
               handleAddMovement(index);
             }}
           >
-            {" "}
-            Add Movement{" "}
+            {' '}
+            Add Movement{' '}
           </Button>
         </div>
 
@@ -197,8 +200,8 @@ const MoveMenu = ({
             handleDeleteMove(index);
           }}
         >
-          {" "}
-          Delete Move{" "}
+          {' '}
+          Delete Move{' '}
         </Button>
       </CollapsibleContent>
     </Collapsible>

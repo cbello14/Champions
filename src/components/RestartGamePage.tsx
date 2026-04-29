@@ -1,8 +1,12 @@
-import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router";
-import { useStore } from "@/utils/storage";
-import { Instance, type InstanceJSON } from "@/features/instances/instance";
-import SnapshotButton from "./snapshotButton";
+import { useNavigate } from 'react-router';
+
+import { Button } from '@/components/ui/button';
+import { Instance } from '@/features/instances/instance';
+import { useStore } from '@/utils/storage';
+
+import SnapshotButton from './SnapshotButton';
+
+import type { InstanceJSON } from '@/features/instances/instance';
 
 const RestartGamePage = () => {
   const navigate = useNavigate();
@@ -16,7 +20,7 @@ const RestartGamePage = () => {
         <p>No saved games in progress.</p>
         <Button
           onClick={() => {
-            void navigate("/start");
+            navigate('/start');
           }}
         >
           Start A Game
@@ -37,10 +41,10 @@ const RestartGamePage = () => {
             <div key={instance.id} className="p-4">
               <SnapshotButton
                 snapshotItem={instance}
+                text="Resume Game"
                 onClick={() => {
-                  void navigate(`/play/${instance.id}`);
+                  navigate(`/play/${instance.id}`);
                 }}
-                text={"Resume Game"}
               />
             </div>
           );
@@ -49,7 +53,7 @@ const RestartGamePage = () => {
       <Button
         variant="outline"
         onClick={() => {
-          void navigate("/start");
+          navigate('/start');
         }}
       >
         Start New Game

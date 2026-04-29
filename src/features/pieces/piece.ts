@@ -1,67 +1,63 @@
-import type { move, movement, moveAttributes, direction } from "@/types/move";
-import type { capture } from "@/types/capture";
+import type { Capture } from '@/types/capture';
+import type { Direction, Move, MoveAttributes, Movement } from '@/types/move';
 
-export interface verifiedImage {
+export interface VerifiedImage {
   src: string;
   verified: boolean;
 }
 
-interface movementJSON {
-  distance: number | "Infinity";
-  direction: direction;
+interface MovementJSON {
+  distance: number | 'Infinity';
+  direction: Direction;
 }
-interface moveJSON {
-  attributes: moveAttributes;
-  movements: movementJSON[];
+interface MoveJSON {
+  attributes: MoveAttributes;
+  movements: MovementJSON[];
 }
 
-const movementToJSON = (movement: movement) => {
-  return {
-    direction: movement.direction,
-    distance: movement.distance === Infinity ? "Infinity" : movement.distance,
-  } as movementJSON;
-};
-const moveToJSON = (move: move) => {
-  return {
-    attributes: move.attributes,
-    movements: move.movements.map((movement) => movementToJSON(movement)),
-  } as moveJSON;
-};
+const movementToJSON = (movement: Movement) => ({
+  direction: movement.direction,
+  distance: movement.distance === Infinity ? 'Infinity' : movement.distance,
+});
+const moveToJSON = (move: Move) => ({
+  attributes: move.attributes,
+  movements: move.movements.map((movement) => movementToJSON(movement)),
+});
 
-const movementFromJSON = (movementJSON: movementJSON) => {
-  return {
-    direction: movementJSON.direction,
-    distance: movementJSON.distance === "Infinity" ? Infinity : movementJSON.distance,
-  } as movement;
-};
+const movementFromJSON = (movementJSON: MovementJSON) => ({
+  direction: movementJSON.direction,
+  distance: movementJSON.distance === 'Infinity' ? Infinity : movementJSON.distance,
+});
 
-const moveFromJSON = (moveJSON: moveJSON) => {
-  return {
-    attributes: moveJSON.attributes,
-    movements: moveJSON.movements.map((mJSON) => movementFromJSON(mJSON)),
-  } as move;
-};
+const moveFromJSON = (moveJSON: MoveJSON) => ({
+  attributes: moveJSON.attributes,
+  movements: moveJSON.movements.map((mJSON) => movementFromJSON(mJSON)),
+});
 
 export interface PieceJSON {
   id: string;
   name: string;
-  image: verifiedImage;
-  moves: moveJSON[];
-  captures: capture[];
+  image: VerifiedImage;
+  moves: MoveJSON[];
+  captures: Capture[];
 }
 
 export class Piece {
   readonly id: string;
+
   readonly name: string;
-  readonly image: verifiedImage;
-  readonly moves: readonly move[];
-  readonly captures: readonly capture[];
+
+  readonly image: VerifiedImage;
+
+  readonly moves: readonly Move[];
+
+  readonly captures: readonly Capture[];
 
   constructor(
-    name = "",
-    image: verifiedImage = { src: "", verified: false },
-    m: move[] = [],
-    c: capture[] = [],
+    name = '',
+    image: VerifiedImage = { src: '', verified: false },
+    m: Move[] = [],
+    c: Capture[] = [],
     id?: string
   ) {
     this.id = id ?? crypto.randomUUID();
@@ -70,7 +66,8 @@ export class Piece {
     this.moves = m;
     this.captures = c;
   }
-  addMove(move: move, capture: capture = "direct"): Piece {
+
+  addMove(move: Move, capture: Capture = 'direct'): Piece {
     return new Piece(
       this.name,
       this.image,
@@ -79,6 +76,7 @@ export class Piece {
       this.id
     );
   }
+
   removeMoveAt(index: number): Piece {
     const newMoves = [...this.moves];
     newMoves.splice(index, 1);
@@ -86,40 +84,48 @@ export class Piece {
     newCaptures.splice(index, 1);
     return new Piece(this.name, this.image, newMoves, newCaptures, this.id);
   }
-  removeMove(move: move): Piece {
+
+  removeMove(move: Move): Piece {
     const index = this.moves.indexOf(move);
     return this.removeMoveAt(index);
   }
-  replaceMoveAt(move: move, index: number): Piece {
+
+  replaceMoveAt(move: Move, index: number): Piece {
     const newMoves = [...this.moves];
     newMoves[index] = move;
     return new Piece(this.name, this.image, newMoves, [...this.captures], this.id);
   }
-  addMovement(moveIndex: number, movement: movement): Piece {
+
+  addMovement(moveIndex: number, movement: Movement): Piece {
     const newMoves = [...this.moves];
     newMoves[moveIndex].movements.push(movement);
     return new Piece(this.name, this.image, newMoves, [...this.captures], this.id);
   }
+
   removeMovementAt(moveIndex: number, movementIndex: number): Piece {
     const newMoves = [...this.moves];
     newMoves[moveIndex].movements.splice(movementIndex, 1);
     return new Piece(this.name, this.image, newMoves, [...this.captures], this.id);
   }
-  replaceMovementAt(moveIndex: number, movementIndex: number, movement: movement) {
+
+  replaceMovementAt(moveIndex: number, movementIndex: number, movement: Movement) {
     const newMoves = [...this.moves];
     newMoves[moveIndex].movements[movementIndex] = movement;
     return new Piece(this.name, this.image, newMoves, [...this.captures], this.id);
   }
-  replaceCaptureAt(capture: capture, index: number) {
+
+  replaceCaptureAt(capture: Capture, index: number) {
     const newCaptures = [...this.captures];
     newCaptures[index] = capture;
     return new Piece(this.name, this.image, [...this.moves], newCaptures, this.id);
   }
-  replaceImage(image: verifiedImage) {
+
+  replaceImage(image: VerifiedImage) {
     return new Piece(this.name, image, [...this.moves], [...this.captures], this.id);
   }
+
   toJSON(): PieceJSON {
-    const newMoves = [...this.moves].map((move) => moveToJSON(move));
+    const newMoves = [...this.moves].map((move) => moveToJSON(move) as MoveJSON);
     return {
       id: this.id,
       name: this.name,
@@ -128,12 +134,13 @@ export class Piece {
       captures: [...this.captures],
     };
   }
+
   static fromJSON(data: PieceJSON): Piece {
-    const name = data.name ? data.name : "";
-    const image = data.image ? data.image : { src: "", verified: false };
+    const name = data.name ? data.name : '';
+    const image = data.image ? data.image : { src: '', verified: false };
     const moves = data.moves ? data.moves.map((moveJSON) => moveFromJSON(moveJSON)) : [];
     const captures = data.captures ? data.captures : [];
-    const id = data.id ? data.id : "";
+    const id = data.id ? data.id : '';
     return new Piece(name, image, moves, captures, id);
   }
 }

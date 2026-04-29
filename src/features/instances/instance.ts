@@ -1,19 +1,17 @@
-import { Board, checkCoordinateEquality, coordinateToString } from "@/features/boards/board";
-import {
-  InstancePieceMap,
-  type instancePiece,
-  type instancePieceId,
-  type InstancePieceMapJSON,
-} from "@/types/instancePiece";
-import type { coordinate } from "@/features/boards/board";
-import type { BoardJSON } from "@/features/boards/board";
-import type { team, turn } from "@/types/team";
-import { calculateMovesRect, type moveCalculationResult } from "@/types/moveCalculation";
-import type { direction } from "@/types/move";
-import type { Piece } from "../pieces/piece";
+import { Board, checkCoordinateEquality, coordinateToString } from '@/features/boards/board';
+import { InstancePieceMap } from '@/types/instancePiece';
+import { calculateMovesRect } from '@/types/moveCalculation';
 
-export interface info {
-  captured?: [coordinate, turn];
+import type { BoardJSON, Coordinate } from '@/features/boards/board';
+import type { InstancePiece, InstancePieceId, InstancePieceMapJSON } from '@/types/instancePiece';
+import type { Direction } from '@/types/move';
+import type { MoveCalculationResult } from '@/types/moveCalculation';
+import type { Team, Turn } from '@/types/team';
+
+import type { Piece } from '../pieces/piece';
+
+export interface Info {
+  captured?: [Coordinate, Turn];
   hasMoved: boolean;
   movesMade: number;
 }
@@ -23,16 +21,21 @@ export interface InstanceJSON {
   board: BoardJSON;
   piecesRecord: InstancePieceMapJSON;
   initialPieces: InstancePieceMapJSON;
-  data: [instancePieceId, info][];
+  data: [InstancePieceId, Info][];
   numTeams: number;
 }
 
 export class Instance {
   readonly id: string;
+
   readonly board: Board;
+
   readonly piecesRecord: InstancePieceMap;
-  readonly data: ReadonlyMap<instancePieceId, info>;
+
+  readonly data: ReadonlyMap<InstancePieceId, Info>;
+
   readonly initialPieces: InstancePieceMap;
+
   readonly numTeams: number;
 
   constructor(
@@ -40,7 +43,7 @@ export class Instance {
     n = 2,
     r: InstancePieceMap = new InstancePieceMap(),
     i: InstancePieceMap = new InstancePieceMap(),
-    d: ReadonlyMap<instancePieceId, info> = new Map(),
+    d: ReadonlyMap<InstancePieceId, Info> = new Map(),
     id?: string
   ) {
     this.id = id ?? crypto.randomUUID();
@@ -50,7 +53,8 @@ export class Instance {
     this.initialPieces = i;
     this.numTeams = n;
   }
-  movePiece(from: coordinate, to: moveCalculationResult) {
+
+  movePiece(from: Coordinate, to: MoveCalculationResult) {
     const instancePiece = this.piecesRecord.getInstancePiece(from);
     const toLocation = to.landing;
     const toCapture = to.capturing ?? toLocation;
@@ -59,12 +63,12 @@ export class Instance {
       return this;
     }
     let newPieces = this.piecesRecord;
-    //check to see if the piece on to is a king?
-    if (this.piecesRecord.map.get(coordinateToString(toCapture))?.piece.name == "King") {
-      //END GAME GOES HERE
-      //bandaid fix is to make it just spawn that game again
-      //WE NEED INITIAL PIECES????
-      return new Instance(this.board, this.numTeams, this.initialPieces, this.initialPieces); //something
+    // check to see if the piece on to is a king?
+    if (this.piecesRecord.map.get(coordinateToString(toCapture))?.piece.name === 'King') {
+      // END GAME GOES HERE
+      // bandaid fix is to make it just spawn that game again
+      // WE NEED INITIAL PIECES????
+      return new Instance(this.board, this.numTeams, this.initialPieces, this.initialPieces); // something
     }
     newPieces = newPieces.removeInstancePiece(from);
     newPieces = newPieces.removeInstancePiece(toCapture);
@@ -78,7 +82,8 @@ export class Instance {
       this.id
     ).recordPieceMove(instancePiece);
   }
-  recordPieceMove(piece: instancePiece): Instance {
+
+  recordPieceMove(piece: InstancePiece): Instance {
     const newData = new Map(this.data);
     const pieceData = newData.get(piece.id);
     if (!pieceData) {
@@ -95,12 +100,14 @@ export class Instance {
       this.id
     );
   }
-  hasPieceMoved(piece: instancePiece): boolean {
+
+  hasPieceMoved(piece: InstancePiece): boolean {
     const pieceData = this.data.get(piece.id);
     const t = pieceData?.hasMoved ?? false;
     return t;
   }
-  addPiece(coordinate: coordinate, piece: Piece, team: team) {
+
+  addPiece(coordinate: Coordinate, piece: Piece, team: Team) {
     let newPieces = this.piecesRecord;
     newPieces = newPieces.setPiece(coordinate, piece, team);
     return new Instance(
@@ -112,7 +119,8 @@ export class Instance {
       this.id
     );
   }
-  addInstancePiece(coordinate: coordinate, instancePiece: instancePiece) {
+
+  addInstancePiece(coordinate: Coordinate, instancePiece: InstancePiece) {
     let newPieces = this.piecesRecord;
     newPieces = newPieces.setInstancePiece(coordinate, instancePiece);
     return new Instance(
@@ -124,7 +132,8 @@ export class Instance {
       this.id
     );
   }
-  removeInstancePiece(coordinate: coordinate) {
+
+  removeInstancePiece(coordinate: Coordinate) {
     let newPieces = this.piecesRecord;
     newPieces = newPieces.removeInstancePiece(coordinate);
     return new Instance(
@@ -136,7 +145,8 @@ export class Instance {
       this.id
     );
   }
-  setTeam(coordinate: coordinate, team: team) {
+
+  setTeam(coordinate: Coordinate, team: Team) {
     let newPieces = this.piecesRecord;
     const piece = newPieces.getInstancePiece(coordinate);
     if (!piece) {
@@ -154,22 +164,25 @@ export class Instance {
       this.id
     );
   }
-  getFriendlyPieces(team: team) {
+
+  getFriendlyPieces(team: Team) {
     return this.piecesRecord
       .getKeys()
       .filter(
-        (value): value is coordinate => this.piecesRecord.getInstancePiece(value)?.team === team
+        (value): value is Coordinate => this.piecesRecord.getInstancePiece(value)?.team === team
       );
   }
-  getEnemyPieces(team: team) {
+
+  getEnemyPieces(team: Team) {
     return this.piecesRecord
       .getKeys()
       .filter(
-        (value): value is coordinate => this.piecesRecord.getInstancePiece(value)?.team !== team
+        (value): value is Coordinate => this.piecesRecord.getInstancePiece(value)?.team !== team
       );
   }
-  getBlockedTiles(piece: Piece): coordinate[] {
-    const blockedSpecialTiles: coordinate[] = [];
+
+  getBlockedTiles(piece: Piece): Coordinate[] {
+    const blockedSpecialTiles: Coordinate[] = [];
     for (const [coord, tile] of this.board.specialTiles) {
       let canMove = false;
       for (const move of piece.moves) {
@@ -184,27 +197,29 @@ export class Instance {
     }
     return blockedSpecialTiles;
   }
-  calculateMoves(pieceLocation: coordinate, teamDirection: direction) {
+
+  calculateMoves(pieceLocation: Coordinate, teamDirection: Direction) {
     const piece = this.piecesRecord.getInstancePiece(pieceLocation);
     if (!piece) return [];
-    const team = piece.team;
+    const { team } = piece;
     const friendlyPieces = this.getFriendlyPieces(team).filter(
       (coordinate) => !checkCoordinateEquality(coordinate, pieceLocation)
     );
     const enemyPieces = this.getEnemyPieces(team);
     // add tile if piece can't move into it (and maybe check if it can move out of it? idk)
-    const blockedSpecialTiles: coordinate[] = this.getBlockedTiles(piece.piece);
+    const blockedSpecialTiles: Coordinate[] = this.getBlockedTiles(piece.piece);
     const blocked = [...friendlyPieces, ...blockedSpecialTiles];
     return calculateMovesRect(
       piece.piece,
       pieceLocation,
       this.board.dimensions as number[],
-      blocked as number[][],
-      enemyPieces as number[][],
+      blocked,
+      enemyPieces,
       teamDirection,
       !this.hasPieceMoved(piece)
     );
   }
+
   toJSON(): InstanceJSON {
     return {
       id: this.id,
@@ -215,6 +230,7 @@ export class Instance {
       data: Array.from(this.data.entries()),
     };
   }
+
   static fromJSON(data: InstanceJSON): Instance {
     const board = data.board ? Board.fromJSON(data.board) : new Board();
     const numTeams = data.numTeams ? data.numTeams : 2;
@@ -225,9 +241,9 @@ export class Instance {
       ? InstancePieceMap.fromJSON(data.initialPieces)
       : new InstancePieceMap();
     const instanceData = data.data
-      ? new Map<instancePieceId, info>(data.data)
-      : new Map<instancePieceId, info>();
-    const id = data.id ? data.id : "";
+      ? new Map<InstancePieceId, Info>(data.data)
+      : new Map<InstancePieceId, Info>();
+    const id = data.id ? data.id : '';
     return new Instance(board, numTeams, piecesRecord, initialPieces, instanceData, id);
   }
 }

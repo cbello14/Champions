@@ -1,28 +1,32 @@
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
-import "./index.css";
-import { BrowserRouter, Routes, Route } from "react-router";
-import PiecePage from "@/components/PiecePage.tsx";
-import GamePage from "@/components/GamePage.tsx";
-import BoardPage from "@/components/BoardPage.tsx";
-import DecisionPage from "@/components/DecisionPage.tsx";
-import RestartGamePage from "@/components/RestartGamePage.tsx";
-import App from "./App.tsx";
-import HomePage from "./components/HomePage.tsx";
-import InstancePage from "./components/InstancePage.tsx";
+import { StrictMode } from 'react';
 
-createRoot(document.getElementById("root")!).render(
+import { createRoot } from 'react-dom/client';
+import { BrowserRouter, Route, Routes } from 'react-router';
+
+import BoardPage from '@/components/BoardPage';
+import DecisionPage from '@/components/DecisionPage';
+import GamePage from '@/components/GamePage';
+import PiecePage from '@/components/PiecePage';
+import RestartGamePage from '@/components/RestartGamePage';
+
+import App from './App';
+import HomePage from './components/HomePage';
+import InstancePage from './components/InstancePage';
+import './index.css';
+
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<App />}>
+        <Route element={<App />} path="/">
           <Route index element={<HomePage />} />
-          <Route path="pieces" element={<PiecePage />} />
-          <Route path="games" element={<GamePage />} />
-          <Route path="boards" element={<BoardPage />} />
-          <Route path="start" element={<DecisionPage />} />
-          <Route path="current-games" element={<RestartGamePage />} />
-          <Route path="play/:instanceId" element={<InstancePage />} />
+          <Route element={<PiecePage />} path="pieces" />
+          <Route element={<GamePage />} path="games" />
+          <Route element={<BoardPage />} path="boards" />
+          <Route element={<DecisionPage />} path="start" />
+          <Route element={<RestartGamePage />} path="current-games" />
+          <Route element={<InstancePage />} path="play/:instanceId" />
         </Route>
       </Routes>
     </BrowserRouter>

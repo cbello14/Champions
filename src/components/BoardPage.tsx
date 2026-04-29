@@ -1,28 +1,32 @@
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Card, CardHeader } from "@/components/ui/card";
+import { useState } from 'react';
+
+import { X } from 'lucide-react';
+import { toast } from 'sonner';
+
+import { Button } from '@/components/ui/button';
+import { Card, CardHeader } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { X } from "lucide-react";
-import { useState } from "react";
-import { useStore } from "@/utils/storage";
-import { Board } from "@/features/boards/board";
-import type { shape } from "@/features/boards/board";
-import BoardBasic from "./BoardComponents/BoardBasic";
-import BoardList from "./BoardList";
-import SideBar from "./SideBar";
-import { Label } from "./ui/label";
-import { toast } from "sonner";
+} from '@/components/ui/select';
+import { Board } from '@/features/boards/board';
+import { useStore } from '@/utils/storage';
+
+import BoardBasic from './BoardComponents/BoardBasic';
+import BoardList from './BoardList';
+import SideBar from './SideBar';
+import { Label } from './ui/label';
+
+import type { Shape } from '@/features/boards/board';
 
 const BoardPage = () => {
-  const [board, setBoard] = useState<Board>(new Board("New Board"));
+  const [board, setBoard] = useState<Board>(new Board('New Board'));
   const [boardsOpen, setBoardsOpen] = useState<boolean>(true);
-  const [action, setAction] = useState<"tile" | null>(null);
+  const [action, setAction] = useState<'tile' | null>(null);
   const saveBoard = useStore((state) => state.setBoard);
 
   const onNameChange = (name: string) => {
@@ -40,36 +44,32 @@ const BoardPage = () => {
     setBoard(newBoard);
   };
 
-  const onShapeChange = (s: shape) => {
+  const onShapeChange = (s: Shape) => {
     setBoard(board.changeShape(s));
   };
 
   return (
     <div className="flex flex-row p-4">
       <SideBar
+        align="left"
         isOpen={boardsOpen}
-        setIsOpen={(state: boolean) => {
-          setBoardsOpen(state);
-        }}
-        name={"Boards"}
+        name="Boards"
         content={
           <div className="flex flex-col justify-center gap-4">
-            <BoardList
-              onSelectBoard={(board) => {
-                setBoard(board);
-              }}
-            />
+            <BoardList onSelectBoard={setBoard} />
             <Button
               onClick={() => {
-                setBoard(new Board("New Board"));
+                setBoard(new Board('New Board'));
               }}
             >
-              {" "}
-              New Board{" "}
+              {' '}
+              New Board{' '}
             </Button>
           </div>
         }
-        align={"left"}
+        setIsOpen={(state: boolean) => {
+          setBoardsOpen(state);
+        }}
       />
       <main className="flex grow-5 items-center justify-center">
         <div className="flex flex-col center">
@@ -89,22 +89,22 @@ const BoardPage = () => {
                 <div className="flex flex-row items-center gap-4">
                   <Label> Dimensions: </Label>
                   <Input
-                    type="number"
-                    placeholder="8"
-                    value={board.dimensions[0]}
                     min={1}
+                    placeholder="8"
+                    type="number"
+                    value={board.dimensions[0]}
                     onChange={(e) => {
-                      onXChange(parseInt(e.target.value));
+                      onXChange(parseInt(e.target.value, 10));
                     }}
                   />
                   <X size={50} />
                   <Input
-                    type="number"
-                    placeholder="8"
-                    value={board.dimensions[1]}
                     min={1}
+                    placeholder="8"
+                    type="number"
+                    value={board.dimensions[1]}
                     onChange={(e) => {
-                      onYChange(parseInt(e.target.value));
+                      onYChange(parseInt(e.target.value, 10));
                     }}
                   />
                 </div>
@@ -112,7 +112,7 @@ const BoardPage = () => {
                   <Label> Shape: </Label>
                   <Select
                     defaultValue={board.shape}
-                    onValueChange={(v: shape) => {
+                    onValueChange={(v: Shape) => {
                       onShapeChange(v);
                     }}
                   >
@@ -130,23 +130,21 @@ const BoardPage = () => {
           </Card>
 
           <BoardBasic
-            dimensions={[...board.dimensions]}
-            cellWidth={100}
             board={board}
-            setBoard={(board: Board) => {
-              setBoard(board);
-            }}
+            cellWidth={100}
+            dimensions={[...board.dimensions]}
             onClickAction={action}
+            setBoard={setBoard}
           />
           <div className="flex flex-row justify-center">
             <Button
               className="m-5"
               onClick={() => {
-                setAction("tile");
+                setAction('tile');
               }}
             >
-              {" "}
-              Block / Unblock Tile{" "}
+              {' '}
+              Block / Unblock Tile{' '}
             </Button>
             <Button
               className="m-5"
@@ -154,20 +152,20 @@ const BoardPage = () => {
                 setAction(null);
               }}
             >
-              {" "}
-              Stop Editing{" "}
+              {' '}
+              Stop Editing{' '}
             </Button>
           </div>
           <Button
             className="m-5"
             type="submit"
             onClick={() => {
-              toast("Board Saved", { position: "top-center" });
+              toast('Board Saved', { position: 'top-center' });
               saveBoard(board);
             }}
           >
-            {" "}
-            Save{" "}
+            {' '}
+            Save{' '}
           </Button>
         </div>
       </main>

@@ -1,8 +1,10 @@
-import { Button } from "./ui/button";
-import { Board } from "@/features/boards/board";
-import { Game } from "@/features/games/game";
-import { Instance } from "@/features/instances/instance";
-import BoardSnapshot from "./BoardComponents/BoardSnapshot";
+import { Board } from '@/features/boards/board';
+import { Game } from '@/features/games/game';
+
+import BoardSnapshot from './BoardComponents/BoardSnapshot';
+import { Button } from './ui/button';
+
+import type { Instance } from '@/features/instances/instance';
 
 const SnapshotButton = ({
   snapshotItem,
@@ -11,7 +13,7 @@ const SnapshotButton = ({
 }: {
   snapshotItem: Board | Game | Instance;
   onClick: () => void;
-  text?: string;
+  text: string | undefined;
 }) => {
   let board;
   let pieces;
@@ -27,12 +29,12 @@ const SnapshotButton = ({
   }
 
   return (
-    <Button onClick={onClick} className="h-auto">
+    <Button className="h-auto" onClick={onClick}>
       <div className="flex flex-col">
         <div>
-          <BoardSnapshot cellWidth={20} board={board} pieces={pieces} />
+          <BoardSnapshot board={board} cellWidth={20} pieces={pieces} />
         </div>
-        {text && <span>{text}</span>}
+        {text ? <span>{text}</span> : null}
       </div>
     </Button>
   );

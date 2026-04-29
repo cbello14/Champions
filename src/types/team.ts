@@ -1,25 +1,18 @@
-import type { coordinate } from "@/features/boards/board";
-import { moveDirection } from "./move";
+import { moveDirection } from './move';
 
-export type turn = number;
-export type team = number;
-export type teamDirection = (coordinate: coordinate) => coordinate;
+import type { Coordinate } from '@/features/boards/board';
 
-export const rectTeamDirection: Record<string, teamDirection> = {
+export type Turn = number;
+export type Team = number;
+export type TeamDirection = (coordinate: Coordinate) => Coordinate;
+
+export const rectTeamDirection: Record<string, TeamDirection> = {
   [moveDirection.up]: ([x, y]) => [x, y],
   [moveDirection.down]: ([x, y]) => [-x, -y],
   [moveDirection.right]: ([x, y]) => [-y, x],
   [moveDirection.left]: ([x, y]) => [y, -x],
-  [moveDirection.upright]: ([x, y]) => {
-    return [x - y, x + y];
-  },
-  [moveDirection.downright]: ([x, y]) => {
-    return [-y - x, x - y];
-  },
-  [moveDirection.downleft]: ([x, y]) => {
-    return [y - x, -x - y];
-  },
-  [moveDirection.upleft]: ([x, y]) => {
-    return [y + x, y - x];
-  },
+  [moveDirection.upright]: ([x, y]) => [x - y, x + y],
+  [moveDirection.downright]: ([x, y]) => [-y - x, x - y],
+  [moveDirection.downleft]: ([x, y]) => [y - x, -x - y],
+  [moveDirection.upleft]: ([x, y]) => [y + x, y - x],
 };

@@ -1,23 +1,23 @@
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
-import { Piece } from "@/features/pieces/piece.ts";
-import { Tile } from "@/features/tiles/tile";
-import { Board } from "@/features/boards/board.ts";
-import { Game } from "@/features/games/game.ts";
-import { Instance } from "@/features/instances/instance.ts";
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
-import { pawn, knight, bishop, rook, queen, king } from "@/features/pieces/defaultPieces";
-import { fullBlocker } from "@/features/tiles/defaultTiles";
-import { basic } from "@/features/boards/defaultBoards";
-import { basicGame } from "@/features/games/defaultGames";
+import { Board } from '@/features/boards/board';
+import { basic } from '@/features/boards/defaultBoards';
+import basicGame from '@/features/games/defaultGames';
+import { Game } from '@/features/games/game';
+import { Instance } from '@/features/instances/instance';
+import { bishop, king, knight, pawn, queen, rook } from '@/features/pieces/defaultPieces';
+import { Piece } from '@/features/pieces/piece';
+import fullBlocker from '@/features/tiles/defaultTiles';
+import { Tile } from '@/features/tiles/tile';
 
-import type { PieceJSON } from "@/features/pieces/piece.ts";
-import type { TileJSON } from "@/features/tiles/tile.ts";
-import type { BoardJSON } from "@/features/boards/board.ts";
-import type { GameJSON } from "@/features/games/game.ts";
-import type { InstanceJSON } from "@/features/instances/instance.ts";
+import type { BoardJSON } from '@/features/boards/board';
+import type { GameJSON } from '@/features/games/game';
+import type { InstanceJSON } from '@/features/instances/instance';
+import type { PieceJSON } from '@/features/pieces/piece';
+import type { TileJSON } from '@/features/tiles/tile';
 
-interface StorageState {
+export interface StorageState {
   pieces: Record<string, PieceJSON>;
   tiles: Record<string, TileJSON>;
   boards: Record<string, BoardJSON>;
@@ -105,7 +105,7 @@ export const useStore = create<StorageState>()(
       },
 
       getPieces: () => {
-        const pieces = get().pieces;
+        const { pieces } = get();
         return Object.values(pieces).map((pieceJSON) => Piece.fromJSON(pieceJSON));
       },
       getPiece: (id) => {
@@ -113,7 +113,7 @@ export const useStore = create<StorageState>()(
         return json ? Piece.fromJSON(json) : null;
       },
       getTiles: () => {
-        const tiles = get().tiles;
+        const { tiles } = get();
         return Object.values(tiles).map((tileJSON) => Tile.fromJSON(tileJSON));
       },
       getTile: (id) => {
@@ -121,7 +121,7 @@ export const useStore = create<StorageState>()(
         return json ? Tile.fromJSON(json) : null;
       },
       getBoards: () => {
-        const boards = get().boards;
+        const { boards } = get();
         return Object.values(boards).map((boardJSON) => Board.fromJSON(boardJSON));
       },
       getBoard: (id) => {
@@ -129,7 +129,7 @@ export const useStore = create<StorageState>()(
         return json ? Board.fromJSON(json) : null;
       },
       getGames: () => {
-        const games = get().games;
+        const { games } = get();
         return Object.values(games).map((gameJSON) => Game.fromJSON(gameJSON));
       },
       getGame: (id) => {
@@ -137,7 +137,7 @@ export const useStore = create<StorageState>()(
         return json ? Game.fromJSON(json) : null;
       },
       getInstances: () => {
-        const instances = get().instances;
+        const { instances } = get();
         return Object.values(instances).map((instanceJSON) => Instance.fromJSON(instanceJSON));
       },
       getInstance: (id) => {
@@ -192,7 +192,7 @@ export const useStore = create<StorageState>()(
       },
     }),
     {
-      name: "champions-storage",
+      name: 'champions-storage',
     }
   )
 );

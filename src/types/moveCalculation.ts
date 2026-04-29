@@ -1,68 +1,61 @@
-import { Piece } from "@/features/pieces/piece";
-import {
-  type movement,
-  type move,
-  type direction,
-  moveReflect,
-  moveDirection,
-  moveMovementType,
-  type permission,
-} from "./move";
-import {
-  checkCoordinateArrayIncludes,
-  checkCoordinateEquality,
-  type coordinate,
-  type dimension,
-} from "@/features/boards/board";
-import { rectTeamDirection } from "./team";
-import type { capture } from "./capture";
+/* eslint-disable @typescript-eslint/no-use-before-define */
+import { checkCoordinateArrayIncludes, checkCoordinateEquality } from '@/features/boards/board';
 
-export interface attributeParams {
+import { moveDirection, moveMovementType, moveReflect } from './move';
+import { rectTeamDirection } from './team';
+
+import type { Coordinate, Dimension } from '@/features/boards/board';
+import type { Piece } from '@/features/pieces/piece';
+
+import type { Capture } from './capture';
+import type { Direction, Move, Movement, Permission } from './move';
+
+export interface AttributeParams {
   isJump: boolean;
   flippedHorizontally: boolean;
   flippedVertically: boolean;
-  captureType: capture;
-  requiresCapture: permission;
+  captureType: Capture;
+  requiresCapture: Permission;
 }
 
-export interface moveCalculationResult {
-  landing: coordinate;
-  capturing: coordinate | null;
+export interface MoveCalculationResult {
+  landing: Coordinate;
+  capturing: Coordinate | null;
 }
 
 // unfortunately the code is pretty messy so comments are added for clariy (its really hard to write a chess move parser that calculates possible move locations along with capturing)
 const calculateMovesRect = (
   piece: Piece,
-  location: coordinate,
-  boardSize: dimension,
-  blocking: coordinate[],
-  enemyPieces: coordinate[],
-  teamDirection: direction,
+  location: Coordinate,
+  boardSize: Dimension,
+  blocking: Coordinate[],
+  enemyPieces: Coordinate[],
+  teamDirection: Direction,
   isFirstMove: boolean
 ) => {
   // initialize our possible move array
-  const possibleMoves: moveCalculationResult[] = [];
+  const possibleMoves: MoveCalculationResult[] = [];
   // iterate through each move in the array
-  piece.moves.forEach((move: move, index: number) => {
+  piece.moves.forEach((move: Move, index: number) => {
     const isJump = move.attributes.type === moveMovementType.jump;
     let blockingCoords = [...blocking];
     let enemyCoords = [...enemyPieces];
-    if (move.attributes.initialMove === "required" && !isFirstMove) {
+    if (move.attributes.initialMove === 'required' && !isFirstMove) {
       return;
     }
-    if (move.attributes.initialMove === "disabled" && isFirstMove) {
+    if (move.attributes.initialMove === 'disabled' && isFirstMove) {
       return;
     }
     // if move isnt allowed to capture, or just cant, then enemypieces are blocking
-    if (move.attributes.capturing === "disabled" || piece.captures[index] === "no-capture") {
+    if (move.attributes.capturing === 'disabled' || piece.captures[index] === 'no-capture') {
       blockingCoords = blocking.concat(enemyPieces);
       enemyCoords = [];
     }
     const attributes = {
-      isJump: isJump,
+      isJump,
       flippedHorizontally: false,
       flippedVertically: false,
-      captureType: move.attributes.capturing !== "disabled" ? piece.captures[index] : "no-capture",
+      captureType: move.attributes.capturing !== 'disabled' ? piece.captures[index] : 'no-capture',
       requiresCapture: move.attributes.capturing,
     };
     // run the move normally and add its moves to the results
@@ -131,13 +124,13 @@ const calculateMovesRect = (
 };
 
 const calculateMoveRect = (
-  location: coordinate,
-  move: move,
-  boardSize: dimension,
-  blocking: coordinate[],
-  enemyPieces: coordinate[],
-  attributes: attributeParams,
-  teamDirection: direction
+  location: Coordinate,
+  move: Move,
+  boardSize: Dimension,
+  blocking: Coordinate[],
+  enemyPieces: Coordinate[],
+  attributes: AttributeParams,
+  teamDirection: Direction
 ) => {
   // if the move is a jump or a slide it requires different logic
   if (attributes.isJump) {
@@ -150,20 +143,19 @@ const calculateMoveRect = (
       attributes,
       teamDirection
     );
-  } else {
-    return calculateMoveRectNoJump(
-      location,
-      move,
-      boardSize,
-      blocking,
-      enemyPieces,
-      attributes,
-      teamDirection
-    );
   }
+  return calculateMoveRectNoJump(
+    location,
+    move,
+    boardSize,
+    blocking,
+    enemyPieces,
+    attributes,
+    teamDirection
+  );
 };
 
-//concept for maybe later - what if we do it when a king is taken instead?
+// concept for maybe later - what if we do it when a king is taken instead?
 // const checkCheckmate = () =>{
 // 	//determines if a position is checkmate
 // 	//how do we determine checkmate?
@@ -181,19 +173,19 @@ const calculateMoveRect = (
 // }
 
 const calculateMoveRectJump = (
-  location: coordinate,
-  move: move,
-  boardSize: dimension,
-  blocking: coordinate[],
-  enemyPieces: coordinate[],
-  attributes: attributeParams,
-  teamDirection: direction
+  location: Coordinate,
+  move: Move,
+  boardSize: Dimension,
+  blocking: Coordinate[],
+  enemyPieces: Coordinate[],
+  attributes: AttributeParams,
+  teamDirection: Direction
 ) => {
-  //landing location is the final destionation of the jump
-  let landingLocation: coordinate = location;
-  const result: moveCalculationResult = { landing: [], capturing: null };
+  // landing location is the final destionation of the jump
+  let landingLocation: Coordinate = location;
+  const result: MoveCalculationResult = { landing: [], capturing: null };
   // go through each individual movement and find where it will land, using where it lands to calculate the next movements starting position
-  move.movements.forEach((movement: movement) => {
+  move.movements.forEach((movement: Movement) => {
     landingLocation = calculateMovementRectJump(
       landingLocation,
       movement,
@@ -214,7 +206,7 @@ const calculateMoveRectJump = (
   const landedOnEnemy = enemyPieces.some((enemyLoc) =>
     checkCoordinateEquality(enemyLoc, landingLocation)
   );
-  if (landedOnEnemy && attributes.captureType === "direct") {
+  if (landedOnEnemy && attributes.captureType === 'direct') {
     result.capturing = landingLocation;
   }
   // otherwise if capturing is a in a different spot, calculate that different spot and see if it captures
@@ -229,24 +221,24 @@ const calculateMoveRectJump = (
     );
   }
   // if our move requires capturing but in the end nothing was captured the entire move failed
-  if (result.capturing === null && attributes.requiresCapture === "required") {
+  if (result.capturing === null && attributes.requiresCapture === 'required') {
     return [];
   }
   return [result];
 };
 
 const calculateCaptureMovement = (
-  location: coordinate,
-  movements: movement[],
-  boardSize: dimension,
-  enemyPieces: coordinate[],
-  attributes: attributeParams,
-  teamDirection: direction
+  location: Coordinate,
+  movements: Movement[],
+  boardSize: Dimension,
+  enemyPieces: Coordinate[],
+  attributes: AttributeParams,
+  teamDirection: Direction
 ) => {
   // calculating capturing for different spots from where we land is basically jumping
   // calculate each movement using the end of the previous movement
-  let landingLocation: coordinate = location;
-  movements.forEach((movement: movement) => {
+  let landingLocation: Coordinate = location;
+  movements.forEach((movement: Movement) => {
     landingLocation = calculateMovementRectJump(
       landingLocation,
       movement,
@@ -263,34 +255,34 @@ const calculateCaptureMovement = (
   // if landed on enemy return that spot, success
   const landedOnEnemy = checkCoordinateArrayIncludes(enemyPieces, landingLocation);
   if (landedOnEnemy) {
-    //also check if the enemy is a king, if so, idk do something with it
+    // also check if the enemy is a king, if so, idk do something with it
 
     return landingLocation;
-    //ASDF
+    // ASDF
   }
-  //otherwise we failed for some other reason so return null
+  // otherwise we failed for some other reason so return null
   return null;
 };
 
 const calculateMoveRectNoJump = (
-  location: coordinate,
-  move: move,
-  boardSize: dimension,
-  blocking: coordinate[],
-  enemyPieces: coordinate[],
-  attributes: attributeParams,
-  teamDirection: direction
+  location: Coordinate,
+  move: Move,
+  boardSize: Dimension,
+  blocking: Coordinate[],
+  enemyPieces: Coordinate[],
+  attributes: AttributeParams,
+  teamDirection: Direction
 ) => {
   // calculating moves via sliding
-  const possibleMoves: moveCalculationResult[] = [];
+  const possibleMoves: MoveCalculationResult[] = [];
   let startingLocation = location;
   // go through each movement, and take each spot it returns and it to our results
-  move.movements.forEach((movement: movement) => {
+  move.movements.forEach((movement: Movement) => {
     // if starting location doesnt exist then something happened in the previous movement so stop
     if (!startingLocation.length) {
       return;
     }
-    //get all the results from this movement
+    // get all the results from this movement
     const movements = calculateMovementRectNoJump(
       startingLocation,
       movement,
@@ -304,25 +296,25 @@ const calculateMoveRectNoJump = (
     if (!movements.length) {
       return;
     }
-    //add to the moves
+    // add to the moves
     possibleMoves.push(...movements);
-    //set the starting location of the next movement as the last location of this movement
+    // set the starting location of the next movement as the last location of this movement
     startingLocation = possibleMoves[possibleMoves.length - 1].landing;
   });
   return possibleMoves;
 };
 
 const calculateMovementRectNoJump = (
-  location: coordinate,
-  movement: movement,
-  boardSize: dimension,
-  blocking: coordinate[],
-  enemyPieces: coordinate[],
-  attributes: attributeParams,
-  teamDirection: direction
+  location: Coordinate,
+  movement: Movement,
+  boardSize: Dimension,
+  blocking: Coordinate[],
+  enemyPieces: Coordinate[],
+  attributes: AttributeParams,
+  teamDirection: Direction
 ) => {
   // set up our return array
-  const possibleMoves: moveCalculationResult[] = [];
+  const possibleMoves: MoveCalculationResult[] = [];
   const movementDirection = parseDirectionRect(
     movement.direction,
     teamDirection,
@@ -334,8 +326,8 @@ const calculateMovementRectNoJump = (
     movement.distance === Infinity ? Math.max(boardSize[0], boardSize[1]) : movement.distance;
   let prevLoc = location;
   // loop through all the spots in the direction of that distance
-  for (let i = 0; i < distance; i++) {
-    const result: moveCalculationResult = { landing: [], capturing: null };
+  for (let i = 0; i < distance; i += 1) {
+    const result: MoveCalculationResult = { landing: [], capturing: null };
     // get the location of teh next move
     const nextLoc = sumRectCoords(prevLoc, movementDirection);
     // if we landed on an invalid spot or out of bounds, then our sliding is blocked so we stop
@@ -349,7 +341,7 @@ const calculateMovementRectNoJump = (
     // if we landed on an enemy and we capture the enemy we land on add it to our result and exit because we cant continue moving
     const landedOnEnemy = checkCoordinateArrayIncludes(enemyPieces, nextLoc);
 
-    if (attributes.captureType === "direct" && landedOnEnemy) {
+    if (attributes.captureType === 'direct' && landedOnEnemy) {
       result.capturing = nextLoc;
       possibleMoves.push(result);
       break;
@@ -366,7 +358,7 @@ const calculateMovementRectNoJump = (
       );
     }
     // if we didnt capture anything but we need to capture something, dont include this spot to our results and exit
-    if (result.capturing === null && attributes.requiresCapture === "required") {
+    if (result.capturing === null && attributes.requiresCapture === 'required') {
       break;
     }
     // otherwise add our result to our list and keep iterating
@@ -377,14 +369,14 @@ const calculateMovementRectNoJump = (
 };
 
 const calculateMovementRectJump = (
-  location: coordinate,
-  movement: movement,
-  boardSize: dimension,
-  attributes: attributeParams,
-  teamDirection: direction
+  location: Coordinate,
+  movement: Movement,
+  boardSize: Dimension,
+  attributes: AttributeParams,
+  teamDirection: Direction
 ) => {
-  //start with our current direction
-  let currentLocation: coordinate = location;
+  // start with our current direction
+  let currentLocation: Coordinate = location;
   const movementDirection = parseDirectionRect(
     movement.direction,
     teamDirection,
@@ -394,7 +386,7 @@ const calculateMovementRectJump = (
   // set distance to be either the one given in movement, or the largest dim of the board if movement's is Infinity
   const distance =
     movement.distance === Infinity ? Math.max(boardSize[0], boardSize[1]) : movement.distance;
-  for (let i = 0; i < distance; i++) {
+  for (let i = 0; i < distance; i += 1) {
     const prevLocation = currentLocation;
     currentLocation = sumRectCoords(currentLocation, movementDirection);
     // if our movement distance is Infinity and we just went out of bounds then just return the prevlocation which was still in bounds
@@ -406,8 +398,8 @@ const calculateMovementRectJump = (
 };
 
 const parseDirectionRect = (
-  direction: direction,
-  teamDirection: direction,
+  direction: Direction,
+  teamDirection: Direction,
   flippedHorizontally: boolean,
   flippedVertically: boolean
 ) => {
@@ -446,13 +438,13 @@ const parseDirectionRect = (
   return rectTeamDirection[teamDirection](coordinateDirection);
 };
 
-const checkCoordInRectDim = (coordinate: coordinate, dimension: dimension) =>
+const checkCoordInRectDim = (coordinate: Coordinate, dimension: Dimension) =>
   coordinate[0] < 0 ||
   coordinate[1] < 0 ||
   coordinate[0] >= dimension[0] ||
   coordinate[1] >= dimension[1];
 
-const sumRectCoords = (coordinateOne: coordinate, coordinateTwo: coordinate) => [
+const sumRectCoords = (coordinateOne: Coordinate, coordinateTwo: Coordinate) => [
   coordinateOne[0] + coordinateTwo[0],
   coordinateOne[1] + coordinateTwo[1],
 ];

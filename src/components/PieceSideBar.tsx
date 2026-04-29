@@ -1,5 +1,6 @@
-import { Piece } from "@/features/pieces/piece";
-import { Button } from "./ui/button";
+import { Piece } from '@/features/pieces/piece';
+
+import { Button } from './ui/button';
 
 const PieceSideBar = ({
   pieces,
@@ -7,31 +8,29 @@ const PieceSideBar = ({
 }: {
   pieces: Piece[];
   setPiece: (piece: Piece) => void;
-}) => {
-  return (
-    <div className="flex flex-col center">
+}) => (
+  <div className="flex flex-col center">
+    <Button
+      key="add-piece"
+      className="m-1"
+      onClick={() => {
+        setPiece(new Piece('New Piece'));
+      }}
+    >
+      Add Piece
+    </Button>
+    {Object.values(pieces).map((p) => (
       <Button
-        key="add-piece"
+        key={p.id}
         className="m-1"
         onClick={() => {
-          setPiece(new Piece("New Piece"));
+          setPiece(p);
         }}
       >
-        Add Piece
+        {p.name}
       </Button>
-      {Object.values(pieces).map((p) => (
-        <Button
-          key={p.id}
-          className="m-1"
-          onClick={() => {
-            setPiece(p);
-          }}
-        >
-          {p.name}
-        </Button>
-      ))}
-    </div>
-  );
-};
+    ))}
+  </div>
+);
 
 export default PieceSideBar;
